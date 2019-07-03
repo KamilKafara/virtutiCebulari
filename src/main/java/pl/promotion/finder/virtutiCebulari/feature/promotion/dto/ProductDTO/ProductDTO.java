@@ -11,8 +11,8 @@ import java.util.Date;
 @NoArgsConstructor
 public class ProductDTO {
     private String productName;
-    private Double oldPrice;
-    private Double newPrice;
+    private String oldPrice;
+    private String newPrice;
     private Integer amount;
     private Date expirationDate;
     private String shopName;
