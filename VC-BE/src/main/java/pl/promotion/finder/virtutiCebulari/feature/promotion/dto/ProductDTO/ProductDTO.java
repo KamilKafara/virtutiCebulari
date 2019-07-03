@@ -10,10 +10,11 @@ import java.util.Date;
 @ToString
 @NoArgsConstructor
 public class ProductDTO {
+    private Long id;
     private String productName;
-    private Double oldPrice;
-    private Double newPrice;
-    private Integer amount;
+    private String oldPrice;
+    private String newPrice;
+    private String amount;
     private Date expirationDate;
     private String shopName;
     private String pictureUrl;

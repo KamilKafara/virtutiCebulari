@@ -1,3 +1,8 @@
+.mvn/*
+.idea/*
+mvn*
+mvnv.cmd 
+mvn/*
 HELP.md
 target/
 !.mvn/wrapper/maven-wrapper.jar
