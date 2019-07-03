@@ -72,9 +72,9 @@ public class PromotionService {
                 productDTO.setOldPrice(oldPrice);
                 productDTO.setNewPrice(newPrice);
 
-                Elements itemToSold = element.getElementsByClass("pull-left").select("strong");
-                if (!itemToSold.isEmpty()) {
-                    productDTO.setAmount(Integer.parseInt(itemToSold.text()));
+                Elements soldItem = element.getElementsByClass("pull-left").select("strong");
+                if (!soldItem.isEmpty()) {
+                    productDTO.setAmount(soldItem.text());
                 }
                 productDTO.setShopName("x-kom.pl");
                 productDTO.setProductUrl("https://www.x-kom.pl/goracy_strzal/");
@@ -97,10 +97,19 @@ public class PromotionService {
                 String productUrl = productNameElements.attr("href");
                 productDTO.setProductName(productName);
                 productDTO.setProductUrl(productUrl);
+                productDTO.setShopName("morene.net");
             }
             if (element.hasClass("promo-box-availability")) { // liczba sztuk
                 Elements availabilityBlock = element.getElementsByClass("promo-box-availability");
-//                System.out.println(availabilityBlock);
+                for (Element availabilityElement : availabilityBlock) {
+                    String soldItem = availabilityElement.getElementsByClass("status-box-expired").text().replaceAll("Sprzedano ", "");
+                    String remainedItem = availabilityElement.getElementsByClass("status-box-was").text().replaceAll("Pozostało ", "");
+                    productDTO.setAmount(remainedItem);
+                }
+            }
+            String pictureUrl = element.getElementsByClass("prom-box-image").select("img").attr("src");
+            if (pictureUrl.length() > 3) {
+                productDTO.setPictureUrl(element.getElementsByClass("prom-box-image").select("img").attr("src"));
             }
         }
 
