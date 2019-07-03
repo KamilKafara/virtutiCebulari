@@ -45,8 +45,8 @@ public class PromotionService {
                 String productUrl = urlBlock.attr("src");
                 productDTO.setPictureUrl(productUrl);
 
-                Double oldPrice = Double.valueOf(element.getElementsByClass("old-price").text().replaceAll(",", ".").replaceAll(" zł", ""));
-                Double newPrice = Double.valueOf(element.getElementsByClass("new-price").text().replaceAll(",", ".").replaceAll(" zł", ""));
+                Double oldPrice = Double.valueOf(element.getElementsByClass("old-price").text().replaceAll(",", ".").replaceAll("[^\\d.]", ""));
+                Double newPrice = Double.valueOf(element.getElementsByClass("new-price").text().replaceAll(",", ".").replaceAll("[^\\d.]", ""));
                 productDTO.setOldPrice(oldPrice);
                 productDTO.setNewPrice(newPrice);
 
