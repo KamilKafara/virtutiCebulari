@@ -13,54 +13,49 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class PromotionService {
 
-    public ProductDTO parseHtml(String shopUrl) throws IOException {
+    public List<ProductDTO> getAllPromotion() throws IOException {
+        List<ProductDTO> productDTOList = new ArrayList<>();
+        URLConnection connection = new URL("https://www.morele.net/").openConnection();
+        connection.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.95 Safari/537.11");
+        connection.connect();
 
-        switch (shopUrl) {
-            case "morele": {
-                URLConnection connection = new URL("https://www.morele.net/").openConnection();
-                connection.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.95 Safari/537.11");
-                connection.connect();
+        BufferedReader r = new BufferedReader(new InputStreamReader(connection.getInputStream(), Charset.forName("UTF-8")));
 
-                BufferedReader r = new BufferedReader(new InputStreamReader(connection.getInputStream(), Charset.forName("UTF-8")));
-
-                StringBuilder sb = new StringBuilder();
-                String line;
-                while ((line = r.readLine()) != null) {
-                    sb.append(line);
-                }
-
-                Document document = Jsoup.parse(sb.toString());
-                return getMoreleProduct(document);
-
-            }
-            case "x-kom.pl": {
-                URL urlXkom = new URL("https://www.x-kom.pl/");
-
-                BufferedReader in = new BufferedReader(new InputStreamReader(urlXkom.openStream()));
-                String inputLine;
-                StringBuilder sb = new StringBuilder();
-                while ((inputLine = in.readLine()) != null) {
-                    sb.append(inputLine);
-                }
-                Document document = Jsoup.parse(sb.toString());
-                return getXkomProduct(document);
-
-            }
-            default: {
-                return null;
-            }
+        StringBuilder moreleSB = new StringBuilder();
+        String line;
+        while ((line = r.readLine()) != null) {
+            moreleSB.append(line);
         }
+
+        Document moreleDocument = Jsoup.parse(moreleSB.toString());
+        ProductDTO moreleProduct = getMoreleProduct(moreleDocument);
+
+        URL urlXkom = new URL("https://www.x-kom.pl/");
+        BufferedReader in = new BufferedReader(new InputStreamReader(urlXkom.openStream()));
+        String inputLine;
+        StringBuilder xKomSB = new StringBuilder();
+        while ((inputLine = in.readLine()) != null) {
+            xKomSB.append(inputLine);
+        }
+        Document xKomDocument = Jsoup.parse(xKomSB.toString());
+        ProductDTO xkomProduct = getXkomProduct(xKomDocument);
+        productDTOList.add(xkomProduct);
+        productDTOList.add(moreleProduct);
+        return productDTOList;
     }
 
-    public ProductDTO getXkomProduct(Document document) {
+
+    private ProductDTO getXkomProduct(Document document) {
         Elements pElements = document.select("div");
         ProductDTO productDTO = new ProductDTO();
-        for (int i = 0; i < pElements.size(); i++) {
-            Element element = pElements.get(i);
+        productDTO.setId(1L);
+        for (Element element : pElements) {
             if (element.hasClass("hot-shot")) {
                 productDTO.setProductName(element.getElementsByClass("product-name").text());
                 Elements urlBlock = element.getElementsByClass("img-responsive center-block");
@@ -83,9 +78,10 @@ public class PromotionService {
         return productDTO;
     }
 
-    public ProductDTO getMoreleProduct(Document document) {
+    private ProductDTO getMoreleProduct(Document document) {
         Elements elements = document.select("div");
         ProductDTO productDTO = new ProductDTO();
+        productDTO.setId(2L);
         for (Element element : elements) {
             if (element.hasClass("prom-box-content")) {
                 Elements oldPrice = element.getElementsByClass("promo-box-old-price");
@@ -114,5 +110,9 @@ public class PromotionService {
         }
 
         return productDTO;
+    }
+
+    public ProductDTO getPromotionByShop(String shopName) {
+        return null;
     }
 }
