@@ -21,8 +21,38 @@ public class PromotionService {
 
     public List<ProductDTO> getAllPromotion() throws IOException {
         List<ProductDTO> productDTOList = new ArrayList<>();
-        URLConnection connection = new URL("https://www.morele.net/").openConnection();
-        connection.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.95 Safari/537.11");
+        StringBuilder moreleSB = bufferMoreleURL("https://www.morele.net/");
+        Document moreleDocument = Jsoup.parse(moreleSB.toString());
+        ProductDTO moreleProduct = getMoreleProduct(moreleDocument);
+        productDTOList.add(moreleProduct);
+//
+        StringBuilder xkomSB = bufferURL("https://www.x-kom.pl/");
+        Document xKomDocument = Jsoup.parse(xkomSB.toString());
+        ProductDTO xkomProduct = getXkomProduct(xKomDocument);
+        productDTOList.add(xkomProduct);
+
+        StringBuilder komputronikSB = bufferMoreleURL("https://www.komputronik.pl");
+        Document komputronikDocument = Jsoup.parse(komputronikSB.toString());
+        getKomputronikProduct(komputronikDocument);
+
+        return productDTOList;
+    }
+
+    private StringBuilder bufferURL(String url) throws IOException {
+        URL shopURL = new URL(url);
+        BufferedReader in = new BufferedReader(new InputStreamReader(shopURL.openStream()));
+        String inputLine;
+        StringBuilder xkomSB = new StringBuilder();
+        while ((inputLine = in.readLine()) != null) {
+            xkomSB.append(inputLine);
+        }
+        return xkomSB;
+    }
+
+    private StringBuilder bufferMoreleURL(String url) throws IOException {
+        URLConnection connection = new URL(url).openConnection();
+//        connection.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.95 Safari/537.11");
+        connection.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36");
         connection.connect();
 
         BufferedReader r = new BufferedReader(new InputStreamReader(connection.getInputStream(), Charset.forName("UTF-8")));
@@ -32,22 +62,7 @@ public class PromotionService {
         while ((line = r.readLine()) != null) {
             moreleSB.append(line);
         }
-
-        Document moreleDocument = Jsoup.parse(moreleSB.toString());
-        ProductDTO moreleProduct = getMoreleProduct(moreleDocument);
-
-        URL urlXkom = new URL("https://www.x-kom.pl/");
-        BufferedReader in = new BufferedReader(new InputStreamReader(urlXkom.openStream()));
-        String inputLine;
-        StringBuilder xKomSB = new StringBuilder();
-        while ((inputLine = in.readLine()) != null) {
-            xKomSB.append(inputLine);
-        }
-        Document xKomDocument = Jsoup.parse(xKomSB.toString());
-        ProductDTO xkomProduct = getXkomProduct(xKomDocument);
-        productDTOList.add(xkomProduct);
-        productDTOList.add(moreleProduct);
-        return productDTOList;
+        return moreleSB;
     }
 
 
@@ -112,7 +127,28 @@ public class PromotionService {
         return productDTO;
     }
 
+    private void getKomputronikProduct(Document document) {
+        Elements elements = document.select("div");
+        ProductDTO productDTO = new ProductDTO();
+        productDTO.setId(3L);
+        System.out.println(elements);
+        for (Element element : elements) {
+            if (element.hasClass("so2-wrap")) {
+                Elements productNameElements = element.getElementsByClass("row so2-title").select("a");
+                String productURL = productNameElements.attr("ng-href");
+                String productName = productNameElements.select("span").text();
+            }
+            if (element.hasClass("row so2-price")) {
+                Elements priceElements = element.select("span");
+                String oldPrice = priceElements.first().text();
+                String newPrice = priceElements.last().text();
+            }
+        }
+
+    }
+
     public ProductDTO getPromotionByShop(String shopName) {
+
         return null;
     }
 }
