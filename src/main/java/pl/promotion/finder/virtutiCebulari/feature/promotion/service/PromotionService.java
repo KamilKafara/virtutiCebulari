@@ -21,22 +21,24 @@ public class PromotionService {
 
     public List<ProductDTO> getAllPromotion() throws IOException {
         List<ProductDTO> productDTOList = new ArrayList<>();
-        StringBuilder moreleSB = bufferMoreleURL("https://www.morele.net/");
-        Document moreleDocument = Jsoup.parse(moreleSB.toString());
-        ProductDTO moreleProduct = getMoreleProduct(moreleDocument);
-        productDTOList.add(moreleProduct);
-//
-        StringBuilder xkomSB = bufferURL("https://www.x-kom.pl/");
-        Document xKomDocument = Jsoup.parse(xkomSB.toString());
-        ProductDTO xkomProduct = getXkomProduct(xKomDocument);
-        productDTOList.add(xkomProduct);
-
-        StringBuilder komputronikSB = bufferMoreleURL("https://www.komputronik.pl");
-        Document komputronikDocument = Jsoup.parse(komputronikSB.toString());
-        getKomputronikProduct(komputronikDocument);
+        productDTOList.add(getMorele());
+        productDTOList.add(getXkom());
 
         return productDTOList;
     }
+
+    private ProductDTO getMorele() throws IOException {
+        StringBuilder moreleSB = bufferMoreleURL("https://www.morele.net/");
+        Document moreleDocument = Jsoup.parse(moreleSB.toString());
+        return getMoreleProduct(moreleDocument);
+    }
+
+    private ProductDTO getXkom() throws IOException {
+        StringBuilder xkomSB = bufferURL("https://www.x-kom.pl/");
+        Document xKomDocument = Jsoup.parse(xkomSB.toString());
+        return getXkomProduct(xKomDocument);
+    }
+
 
     private StringBuilder bufferURL(String url) throws IOException {
         URL shopURL = new URL(url);
@@ -51,7 +53,6 @@ public class PromotionService {
 
     private StringBuilder bufferMoreleURL(String url) throws IOException {
         URLConnection connection = new URL(url).openConnection();
-//        connection.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.95 Safari/537.11");
         connection.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36");
         connection.connect();
 
@@ -147,8 +148,16 @@ public class PromotionService {
 
     }
 
-    public ProductDTO getPromotionByShop(String shopName) {
-
-        return null;
+    public ProductDTO getPromotionByShop(String shopName) throws IOException {
+        switch (shopName) {
+            case "xkom": {
+                return getXkom();
+            }
+            case "morele": {
+                return getMorele();
+            }
+            default:
+                return null;
+        }
     }
 }

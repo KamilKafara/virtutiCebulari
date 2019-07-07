@@ -26,7 +26,7 @@ public class PromotionController {
         return promotionService.getAllPromotion();
     }
 
-    @GetMapping("/shopName")
+    @GetMapping("/{shopName}")
     private ProductDTO getPromotionByShop(@PathVariable("shopName") String shopName) throws IOException {
         return promotionService.getPromotionByShop(shopName);
     }
