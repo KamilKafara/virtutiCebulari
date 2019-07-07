@@ -1,16 +1,14 @@
 package pl.promotion.finder.virtutiCebulari.feature.promotion.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import pl.promotion.finder.virtutiCebulari.feature.promotion.dto.ProductDTO.ProductDTO;
 import pl.promotion.finder.virtutiCebulari.feature.promotion.service.PromotionService;
 
 import java.io.IOException;
 import java.util.List;
 
+@CrossOrigin
 @RestController
 @RequestMapping("/promotion")
 public class PromotionController {
