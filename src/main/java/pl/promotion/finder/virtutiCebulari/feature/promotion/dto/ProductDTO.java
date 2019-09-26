@@ -1,4 +1,4 @@
-package pl.promotion.finder.virtutiCebulari.feature.promotion.dto.ProductDTO;
+package pl.promotion.finder.virtutiCebulari.feature.promotion.dto;
 
 import lombok.*;
 
