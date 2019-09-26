@@ -34,13 +34,13 @@ public class AmsoService {
         String price = elements.getElementsByClass("price").text();
         String oldPrice = elements.getElementsByClass("max-price").text();
         String productName = elements.getElementsByClass("product-name").attr("title");
-        String productUrl = "amso.pl" + elements.getElementsByClass("product-name").attr("href");
+        String productUrl = "https://amso.pl" + elements.getElementsByClass("product-name").attr("href");
 
         Elements imageElement = elements.getElementsByClass("product-icon");
         Elements imageUrl = imageElement.select("img");
         ProductDTO productDTO = new ProductDTO();
         for (Element element : imageUrl) {
-            productDTO.setPictureUrl("amso.pl" + element.select("img").attr("data-src"));
+            productDTO.setPictureUrl("https://amso.pl" + element.select("img").attr("data-src"));
             break;
         }
         productDTO.setId(3L);
@@ -49,7 +49,7 @@ public class AmsoService {
         productDTO.setNewPrice(price);
         productDTO.setAmount(amount.replaceAll("[^\\d]", ""));
 //        productDTO.setExpirationDate(expirationDate);
-        productDTO.setShopName("amso.pl");
+        productDTO.setShopName("https://amso.pl");
         productDTO.setProductUrl(productUrl);
 
         return productDTO;
