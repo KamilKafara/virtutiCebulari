@@ -5,7 +5,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.stereotype.Service;
-import pl.promotion.finder.virtutiCebulari.feature.promotion.dto.ProductDTO;
+import pl.promotion.finder.virtutiCebulari.feature.dto.ProductDTO;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -47,7 +47,7 @@ public class AmsoService {
         productDTO.setProductName(productName);
         productDTO.setOldPrice(oldPrice);
         productDTO.setNewPrice(price);
-        productDTO.setAmount(amount);
+        productDTO.setAmount(amount.replaceAll("[^\\d]", ""));
 //        productDTO.setExpirationDate(expirationDate);
         productDTO.setShopName("amso.pl");
         productDTO.setProductUrl(productUrl);

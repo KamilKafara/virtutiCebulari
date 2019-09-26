@@ -4,7 +4,7 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 import org.springframework.stereotype.Service;
-import pl.promotion.finder.virtutiCebulari.feature.promotion.dto.ProductDTO;
+import pl.promotion.finder.virtutiCebulari.feature.dto.ProductDTO;
 
 import java.io.BufferedReader;
 import java.io.IOException;

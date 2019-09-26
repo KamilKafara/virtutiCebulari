@@ -1,11 +1,11 @@
-package pl.promotion.finder.virtutiCebulari.feature.promotion.service;
+package pl.promotion.finder.virtutiCebulari.feature.service;
 
 import org.springframework.stereotype.Service;
 import pl.promotion.finder.virtutiCebulari.feature.amso.AmsoService;
 import pl.promotion.finder.virtutiCebulari.feature.combat.CombatService;
+import pl.promotion.finder.virtutiCebulari.feature.dto.ProductDTO;
 import pl.promotion.finder.virtutiCebulari.feature.komputronik.KomputronikService;
 import pl.promotion.finder.virtutiCebulari.feature.morele.MoreleService;
-import pl.promotion.finder.virtutiCebulari.feature.promotion.dto.ProductDTO;
 import pl.promotion.finder.virtutiCebulari.feature.xkom.XkomService;
 
 import java.io.IOException;

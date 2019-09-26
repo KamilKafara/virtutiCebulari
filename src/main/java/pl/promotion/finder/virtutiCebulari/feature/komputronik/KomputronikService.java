@@ -7,7 +7,7 @@ import com.gargoylesoftware.htmlunit.html.HtmlAnchor;
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import org.springframework.stereotype.Service;
-import pl.promotion.finder.virtutiCebulari.feature.promotion.dto.ProductDTO;
+import pl.promotion.finder.virtutiCebulari.feature.dto.ProductDTO;
 
 import java.io.IOException;
 import java.util.List;
