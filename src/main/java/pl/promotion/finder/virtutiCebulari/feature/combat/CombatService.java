@@ -2,6 +2,7 @@ package pl.promotion.finder.virtutiCebulari.feature.combat;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.stereotype.Service;
 import pl.promotion.finder.virtutiCebulari.feature.dto.ProductDTO;
@@ -21,14 +22,15 @@ public class CombatService {
         StringBuilder combatSB = new StringBuilder();
         while ((inputLine = in.readLine()) != null) {
             combatSB.append(inputLine);
+//            System.out.println(inputLine);
         }
         Document combatDocument = Jsoup.parse(combatSB.toString());
         return getCombatProduct(combatDocument);
     }
 
     private ProductDTO getCombatProduct(Document document) {
-        Elements pElements = document.select("a");
-
+        Elements title = document.getElementsByClass("div.deals-of");
+        Elements box = document.getElementsByClass("price");
 
         return new ProductDTO();
     }

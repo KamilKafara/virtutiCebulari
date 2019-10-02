@@ -29,6 +29,13 @@ public class AmsoService {
 
     private ProductDTO getAmsoProduct(Document document) {
         Element elements = document.getElementById("main_hotspot_zone1");
+        ProductDTO productDTO = new ProductDTO();
+        productDTO.setId(3L);
+        productDTO.setShopName("https://amso.pl");
+
+        if (elements.childNodeSize() == 0) {
+            return productDTO;
+        }
         String amount = elements.getElementById("pts_total").text();
         String expirationDate = elements.getElementById("pts_time").text();
         String price = elements.getElementsByClass("price").text();
@@ -38,18 +45,15 @@ public class AmsoService {
 
         Elements imageElement = elements.getElementsByClass("product-icon");
         Elements imageUrl = imageElement.select("img");
-        ProductDTO productDTO = new ProductDTO();
         for (Element element : imageUrl) {
             productDTO.setPictureUrl("https://amso.pl" + element.select("img").attr("data-src"));
             break;
         }
-        productDTO.setId(3L);
         productDTO.setProductName(productName);
         productDTO.setOldPrice(oldPrice);
         productDTO.setNewPrice(price);
         productDTO.setAmount(amount.replaceAll("[^\\d]", ""));
 //        productDTO.setExpirationDate(expirationDate);
-        productDTO.setShopName("https://amso.pl");
         productDTO.setProductUrl(productUrl);
 
         return productDTO;

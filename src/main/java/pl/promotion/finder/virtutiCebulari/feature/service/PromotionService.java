@@ -2,6 +2,7 @@ package pl.promotion.finder.virtutiCebulari.feature.service;
 
 import org.springframework.stereotype.Service;
 import pl.promotion.finder.virtutiCebulari.feature.amso.AmsoService;
+import pl.promotion.finder.virtutiCebulari.feature.carinet.CarinetService;
 import pl.promotion.finder.virtutiCebulari.feature.combat.CombatService;
 import pl.promotion.finder.virtutiCebulari.feature.dto.ProductDTO;
 import pl.promotion.finder.virtutiCebulari.feature.komputronik.KomputronikService;
@@ -19,13 +20,15 @@ public class PromotionService {
     private final KomputronikService komputronikService;
     private final CombatService combatService;
     private final AmsoService amsoService;
+    private final CarinetService carinetService;
 
-    public PromotionService(MoreleService moreleService, XkomService xkomService, KomputronikService komputronikService, CombatService combatService, AmsoService amsoService) {
+    public PromotionService(MoreleService moreleService, XkomService xkomService, KomputronikService komputronikService, CombatService combatService, AmsoService amsoService, CarinetService carinetService) {
         this.moreleService = moreleService;
         this.xkomService = xkomService;
         this.komputronikService = komputronikService;
         this.combatService = combatService;
         this.amsoService = amsoService;
+        this.carinetService = carinetService;
     }
 
     public List<ProductDTO> getAllPromotion() throws IOException {
@@ -52,6 +55,9 @@ public class PromotionService {
             }
             case "amso": {
                 return amsoService.getAmso();
+            }
+            case "carinet": {
+                return carinetService.getCarinet();
             }
             default: {
                 return null;
