@@ -10,13 +10,16 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.net.URLConnection;
 
 @Service
 public class AltoService {
     public ProductDTO getAlto() throws IOException {
+        URLConnection connection = new URL("https://www.al.to/").openConnection();
+        connection.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.95 Safari/537.11");
+        connection.connect();
 
-        URL urlAlto = new URL("https://www.al.to/");
-        BufferedReader in = new BufferedReader(new InputStreamReader(urlAlto.openStream()));
+        BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
         String inputLine;
         StringBuilder altoSB = new StringBuilder();
         while ((inputLine = in.readLine()) != null) {
@@ -29,8 +32,6 @@ public class AltoService {
 
     private ProductDTO getAltoProduct(Document document) {
         Element element = document.select("div#hotShot").first();
-        System.out.println(element);
-
         String amount = element.getElementsByClass("pull-left").first().text().replaceAll("[^\\d]", "");
         String newPrice = element.getElementsByClass("new-price").text();
         String oldPrice = element.getElementsByClass("old-price").text();
@@ -44,6 +45,7 @@ public class AltoService {
         productDTO.setOldPrice(oldPrice);
         productDTO.setProductName(productName);
         productDTO.setPictureUrl(productUrl);
+        productDTO.setShopName("al.to");
         productDTO.setProductUrl("https://www.al.to/goracy_strzal/19860");
         return productDTO;
     }
