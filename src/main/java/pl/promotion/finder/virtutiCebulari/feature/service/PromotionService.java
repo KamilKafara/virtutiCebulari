@@ -39,6 +39,7 @@ public class PromotionService {
         productDTOList.add(xkomService.getXkom());
         productDTOList.add(moreleService.getMorele());
         productDTOList.add(amsoService.getAmso());
+        productDTOList.add(altoService.getAlto());
         return productDTOList;
     }
 
