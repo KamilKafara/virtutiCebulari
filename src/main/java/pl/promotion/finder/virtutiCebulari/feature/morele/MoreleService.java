@@ -40,7 +40,7 @@ public class MoreleService {
     private ProductDTO getMoreleProduct(Document document) {
         Elements elements = document.select("div");
         ProductDTO productDTO = new ProductDTO();
-        productDTO.setId(2L);
+        productDTO.setId(2);
         for (Element element : elements) {
             if (element.hasClass("prom-box-content")) {
                 Elements oldPrice = element.getElementsByClass("promo-box-old-price");

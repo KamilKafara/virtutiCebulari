@@ -31,7 +31,7 @@ public class XkomService {
     private ProductDTO getXkomProduct(Document document) {
         Elements pElements = document.select("div");
         ProductDTO productDTO = new ProductDTO();
-        productDTO.setId(1L);
+        productDTO.setId(1);
         for (Element element : pElements) {
             if (element.hasClass("hot-shot")) {
                 productDTO.setProductName(element.getElementsByClass("product-name").text());

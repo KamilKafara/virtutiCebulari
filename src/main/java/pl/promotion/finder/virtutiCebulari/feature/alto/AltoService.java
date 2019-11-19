@@ -30,6 +30,7 @@ public class AltoService {
     private ProductDTO getAltoProduct(Document document) {
         Element element = document.select("div#hotShot").first();
         System.out.println(element);
+
         String amount = element.getElementsByClass("pull-left").first().text().replaceAll("[^\\d]", "");
         String newPrice = element.getElementsByClass("new-price").text();
         String oldPrice = element.getElementsByClass("old-price").text();
@@ -37,6 +38,7 @@ public class AltoService {
         String productUrl = element.getElementsByClass("img-responsive center-block").attr("src");
 
         ProductDTO productDTO = new ProductDTO();
+        productDTO.setId(4);
         productDTO.setAmount(amount);
         productDTO.setNewPrice(newPrice);
         productDTO.setOldPrice(oldPrice);

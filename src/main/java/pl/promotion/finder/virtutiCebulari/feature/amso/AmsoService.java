@@ -30,7 +30,7 @@ public class AmsoService {
     private ProductDTO getAmsoProduct(Document document) {
         Element elements = document.getElementById("main_hotspot_zone1");
         ProductDTO productDTO = new ProductDTO();
-        productDTO.setId(3L);
+        productDTO.setId(3);
         productDTO.setShopName("https://amso.pl");
 
         if (elements.childNodeSize() == 0) {

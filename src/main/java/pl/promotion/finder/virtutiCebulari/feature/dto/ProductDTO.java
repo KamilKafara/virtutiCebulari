@@ -10,7 +10,7 @@ import java.util.Date;
 @ToString
 @NoArgsConstructor
 public class ProductDTO {
-    private Long id;
+    private int id;
     private String productName;
     private String oldPrice;
     private String newPrice;
