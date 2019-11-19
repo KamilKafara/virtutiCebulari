@@ -34,7 +34,7 @@ public class CarinetService {
         String imageUrl = elements.tagName("img").select("img.img-responsive").attr("src");
         String amount = elements.tagName("div").select("div.availability").select("span").text().replaceAll("[^\\d]", "");
         ProductDTO productDTO = new ProductDTO();
-        productDTO.setId(5L);
+        productDTO.setId(5);
         Elements productUrl = elements.tagName("a").select("a");
         for (Element element : productUrl) {
             if (element.getElementsByTag("a").hasAttr("href")) {
