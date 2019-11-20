@@ -1,11 +1,10 @@
-package pl.promotion.finder.virtutiCebulari.feature.xkom;
-
+package pl.promotion.finder.feature.shop.service;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.stereotype.Service;
-import pl.promotion.finder.virtutiCebulari.feature.dto.ProductDTO;
+import pl.promotion.finder.feature.shop.dto.ProductDTO;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -15,7 +14,6 @@ import java.net.URL;
 @Service
 public class XkomService {
     public ProductDTO getXkom() throws IOException {
-
         URL urlXkom = new URL("https://www.x-kom.pl/");
         BufferedReader in = new BufferedReader(new InputStreamReader(urlXkom.openStream()));
         String inputLine;
@@ -23,7 +21,6 @@ public class XkomService {
         while ((inputLine = in.readLine()) != null) {
             xkomSB.append(inputLine);
         }
-//        StringBuilder xkomSB = bufferURL("https://www.x-kom.pl/");
         Document xKomDocument = Jsoup.parse(xkomSB.toString());
         return getXkomProduct(xKomDocument);
     }

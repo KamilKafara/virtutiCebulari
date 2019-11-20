@@ -1,11 +1,11 @@
-package pl.promotion.finder.virtutiCebulari.feature.carinet;
+package pl.promotion.finder.feature.shop.service;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.stereotype.Service;
-import pl.promotion.finder.virtutiCebulari.feature.dto.ProductDTO;
+import pl.promotion.finder.feature.shop.dto.ProductDTO;
 
 import java.io.BufferedReader;
 import java.io.IOException;

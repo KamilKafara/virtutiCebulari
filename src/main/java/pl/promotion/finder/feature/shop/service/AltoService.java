@@ -1,10 +1,10 @@
-package pl.promotion.finder.virtutiCebulari.feature.alto;
+package pl.promotion.finder.feature.shop.service;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.springframework.stereotype.Service;
-import pl.promotion.finder.virtutiCebulari.feature.dto.ProductDTO;
+import pl.promotion.finder.feature.shop.dto.ProductDTO;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -28,7 +28,6 @@ public class AltoService {
         Document document = Jsoup.parse(altoSB.toString());
         return getAltoProduct(document);
     }
-
 
     private ProductDTO getAltoProduct(Document document) {
         Element element = document.select("div#hotShot").first();

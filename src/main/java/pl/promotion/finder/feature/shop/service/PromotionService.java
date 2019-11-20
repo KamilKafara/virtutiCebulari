@@ -1,14 +1,7 @@
-package pl.promotion.finder.virtutiCebulari.feature.service;
+package pl.promotion.finder.feature.shop.service;
 
 import org.springframework.stereotype.Service;
-import pl.promotion.finder.virtutiCebulari.feature.alto.AltoService;
-import pl.promotion.finder.virtutiCebulari.feature.amso.AmsoService;
-import pl.promotion.finder.virtutiCebulari.feature.carinet.CarinetService;
-import pl.promotion.finder.virtutiCebulari.feature.combat.CombatService;
-import pl.promotion.finder.virtutiCebulari.feature.dto.ProductDTO;
-import pl.promotion.finder.virtutiCebulari.feature.komputronik.KomputronikService;
-import pl.promotion.finder.virtutiCebulari.feature.morele.MoreleService;
-import pl.promotion.finder.virtutiCebulari.feature.xkom.XkomService;
+import pl.promotion.finder.feature.shop.dto.ProductDTO;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -18,16 +11,14 @@ import java.util.List;
 public class PromotionService {
     private final MoreleService moreleService;
     private final XkomService xkomService;
-    private final KomputronikService komputronikService;
     private final CombatService combatService;
     private final AmsoService amsoService;
     private final CarinetService carinetService;
     private final AltoService altoService;
 
-    public PromotionService(MoreleService moreleService, XkomService xkomService, KomputronikService komputronikService, CombatService combatService, AmsoService amsoService, CarinetService carinetService, AltoService altoService) {
+    public PromotionService(MoreleService moreleService, XkomService xkomService, CombatService combatService, AmsoService amsoService, CarinetService carinetService, AltoService altoService) {
         this.moreleService = moreleService;
         this.xkomService = xkomService;
-        this.komputronikService = komputronikService;
         this.combatService = combatService;
         this.amsoService = amsoService;
         this.carinetService = carinetService;
@@ -50,9 +41,6 @@ public class PromotionService {
             }
             case "morele": {
                 return moreleService.getMorele();
-            }
-            case "komputronik": {
-                return komputronikService.getKomputronikProduct();
             }
             case "combat": {
                 return combatService.getCombat();
