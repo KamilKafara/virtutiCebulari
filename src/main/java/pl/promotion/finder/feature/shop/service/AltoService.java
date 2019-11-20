@@ -55,7 +55,7 @@ public class AltoService {
         productDTO.setProductName(productName);
         productDTO.setPictureUrl(productUrl);
         productDTO.setShopName("al.to");
-        productDTO.setProductUrl("https://www.al.to/goracy_strzal/19860");
+        productDTO.setProductUrl("https://www.al.to/goracy_strzal/");
         return productDTO;
     }
 
