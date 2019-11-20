@@ -4,7 +4,11 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
+import pl.promotion.finder.exception.ErrorCode;
+import pl.promotion.finder.exception.FieldInfo;
 import pl.promotion.finder.feature.shop.dto.ProductDTO;
 
 import java.io.BufferedReader;
@@ -15,17 +19,20 @@ import java.net.URL;
 @Service
 public class CarinetService {
     public ProductDTO getCarinet() throws IOException {
-
-        URL urlCarinet = new URL("https://carinet.pl/pl/");
-        BufferedReader in = new BufferedReader(new InputStreamReader(urlCarinet.openStream()));
-        String inputLine;
-        StringBuilder carinetSB = new StringBuilder();
-        while ((inputLine = in.readLine()) != null) {
-            carinetSB.append(inputLine);
-//            System.out.println(inputLine);
+        try {
+            URL urlCarinet = new URL("https://carinet.pl/pl/");
+            BufferedReader in = new BufferedReader(new InputStreamReader(urlCarinet.openStream()));
+            String inputLine;
+            StringBuilder carinetSB = new StringBuilder();
+            while ((inputLine = in.readLine()) != null) {
+                carinetSB.append(inputLine);
+            }
+            Document carinetDocument = Jsoup.parse(carinetSB.toString());
+            return getCarinetProduct(carinetDocument);
+        } catch (NullPointerException ex) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Not found promotion in carinet.", new FieldInfo("carinet", ErrorCode.NOT_FOUND));
         }
-        Document carinetDocument = Jsoup.parse(carinetSB.toString());
-        return getCarinetProduct(carinetDocument);
+
     }
 
     private ProductDTO getCarinetProduct(Document document) {

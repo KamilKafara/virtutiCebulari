@@ -4,7 +4,11 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
+import pl.promotion.finder.exception.ErrorCode;
+import pl.promotion.finder.exception.FieldInfo;
 import pl.promotion.finder.feature.shop.dto.ProductDTO;
 
 import java.io.BufferedReader;
@@ -18,16 +22,19 @@ import java.nio.charset.Charset;
 public class MoreleService {
 
     public ProductDTO getMorele() throws IOException {
-        StringBuilder moreleSB = bufferMoreleURL("https://www.morele.net/");
-        Document moreleDocument = Jsoup.parse(moreleSB.toString());
-        return getMoreleProduct(moreleDocument);
+        try {
+            StringBuilder moreleSB = bufferMoreleURL("https://www.morele.net/");
+            Document moreleDocument = Jsoup.parse(moreleSB.toString());
+            return getMoreleProduct(moreleDocument);
+        } catch (NullPointerException ex) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Not found promotion in morele.", new FieldInfo("morele", ErrorCode.NOT_FOUND));
+        }
     }
 
     private StringBuilder bufferMoreleURL(String url) throws IOException {
         URLConnection connection = new URL(url).openConnection();
         connection.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36");
         connection.connect();
-
         BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream(), Charset.forName("UTF-8")));
         StringBuilder moreleSB = new StringBuilder();
         String line;

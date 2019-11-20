@@ -1,10 +1,16 @@
 package pl.promotion.finder.feature.shop.service;
+
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
+import pl.promotion.finder.exception.ErrorCode;
+import pl.promotion.finder.exception.FieldInfo;
 import pl.promotion.finder.feature.shop.dto.ProductDTO;
+import pl.promotion.finder.validation.ValidationService;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -14,15 +20,19 @@ import java.net.URL;
 @Service
 public class XkomService {
     public ProductDTO getXkom() throws IOException {
-        URL urlXkom = new URL("https://www.x-kom.pl/");
-        BufferedReader in = new BufferedReader(new InputStreamReader(urlXkom.openStream()));
-        String inputLine;
-        StringBuilder xkomSB = new StringBuilder();
-        while ((inputLine = in.readLine()) != null) {
-            xkomSB.append(inputLine);
+        try {
+            URL urlXkom = new URL("https://www.x-kom.pl/");
+            BufferedReader in = new BufferedReader(new InputStreamReader(urlXkom.openStream()));
+            String inputLine;
+            StringBuilder xkomSB = new StringBuilder();
+            while ((inputLine = in.readLine()) != null) {
+                xkomSB.append(inputLine);
+            }
+            Document xKomDocument = Jsoup.parse(xkomSB.toString());
+            return getXkomProduct(xKomDocument);
+        } catch (NullPointerException ex) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Not found promotion in xkom.", new FieldInfo("xkom", ErrorCode.NOT_FOUND));
         }
-        Document xKomDocument = Jsoup.parse(xkomSB.toString());
-        return getXkomProduct(xKomDocument);
     }
 
     private ProductDTO getXkomProduct(Document document) {
@@ -37,6 +47,7 @@ public class XkomService {
                 productDTO.setPictureUrl(productUrl);
 
                 String oldPrice = element.getElementsByClass("old-price").text();
+
                 String newPrice = element.getElementsByClass("new-price").text();
                 productDTO.setOldPrice(oldPrice);
                 productDTO.setNewPrice(newPrice);
@@ -51,5 +62,6 @@ public class XkomService {
         }
         return productDTO;
     }
+
 
 }

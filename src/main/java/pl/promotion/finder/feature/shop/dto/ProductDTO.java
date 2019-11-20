@@ -15,7 +15,6 @@ public class ProductDTO {
     private String oldPrice;
     private String newPrice;
     private String amount;
-    private Date expirationDate;
     private String shopName;
     private String pictureUrl;
     private String productUrl;
