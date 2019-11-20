@@ -10,7 +10,6 @@ import org.springframework.web.server.ResponseStatusException;
 import pl.promotion.finder.exception.ErrorCode;
 import pl.promotion.finder.exception.FieldInfo;
 import pl.promotion.finder.feature.shop.dto.ProductDTO;
-import pl.promotion.finder.validation.ValidationService;
 
 import java.io.BufferedReader;
 import java.io.IOException;
