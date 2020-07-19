@@ -39,15 +39,15 @@ public class XkomService {
         ProductDTO productDTO = new ProductDTO();
         productDTO.setId(1);
         for (Element element : pElements) {
-            if (element.hasClass("hot-shot")) {
-                productDTO.setProductName(element.getElementsByClass("product-name").text());
-                Elements urlBlock = element.getElementsByClass("img-responsive center-block");
+            if (element.hasClass("mbxiax-1 fXZaIQ")) {
+                productDTO.setProductName(element.getElementsByClass("sc-1bb6kqq-10 kBnBfM m80syu-0 hGKlIY").text());
+                Elements urlBlock = element.getElementsByClass("sc-1re71we-20 bFMNMa");
                 String productUrl = urlBlock.attr("src");
                 productDTO.setPictureUrl(productUrl);
 
-                String oldPrice = element.getElementsByClass("old-price").text();
+                String oldPrice = element.getElementsByClass("sc-1bb6kqq-5 iWkRRi").text();
 
-                String newPrice = element.getElementsByClass("new-price").text();
+                String newPrice = element.getElementsByClass("sc-1bb6kqq-4 cLmEvj").text();
                 productDTO.setOldPrice(oldPrice);
                 productDTO.setNewPrice(newPrice);
 
