@@ -41,12 +41,20 @@ public class XkomService {
         for (Element element : pElements) {
             if (element.hasClass("mbxiax-1 fXZaIQ")) {
                 productDTO.setProductName(element.getElementsByClass("sc-1bb6kqq-10 kBnBfM m80syu-0 hGKlIY").text());
-                Elements urlBlock = element.getElementsByClass("sc-1re71we-20 bFMNMa");
-                String productUrl = urlBlock.attr("src");
-                productDTO.setPictureUrl(productUrl);
+                Elements urlBlock = element.getElementsByClass("sc-1tblmgq-0");
+
+                Elements productImgElements = urlBlock.tagName("img");
+                for (Element el : productImgElements) {
+                    Elements imgs = el.getElementsByTag("img");
+                    if (imgs.hasAttr("src")) {
+                        Elements pictureURL = el.getElementsByAttribute("src");
+                        Element pc = pictureURL.get(0);
+                        String picURL = pc.attr("src");
+                        productDTO.setPictureUrl(picURL);
+                    }
+                }
 
                 String oldPrice = element.getElementsByClass("sc-1bb6kqq-5 iWkRRi").text();
-
                 String newPrice = element.getElementsByClass("sc-1bb6kqq-4 cLmEvj").text();
                 productDTO.setOldPrice(oldPrice);
                 productDTO.setNewPrice(newPrice);
@@ -64,3 +72,4 @@ public class XkomService {
 
 
 }
+;
