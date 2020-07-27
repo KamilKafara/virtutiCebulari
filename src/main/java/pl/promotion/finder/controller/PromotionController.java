@@ -12,7 +12,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/promotion")
 public class PromotionController {
-    private PromotionService promotionService;
+    private final PromotionService promotionService;
 
     @Autowired
     public PromotionController(PromotionService promotionService) {

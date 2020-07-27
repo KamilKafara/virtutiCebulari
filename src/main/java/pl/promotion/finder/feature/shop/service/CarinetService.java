@@ -44,12 +44,15 @@ public class CarinetService {
         productDTO.setId(5);
         Elements productUrl = elements.tagName("a").select("a");
         for (Element element : productUrl) {
-            if (element.getElementsByTag("a").hasAttr("href")) {
-                productDTO.setProductUrl(element.attr("href"));
-                break;
-            }
+            productDTO.setProductName(element.getElementsByTag("h4").text());
+            String item = element.select("a").first().attr("href");
+            productDTO.setProductUrl(item);
         }
+        Element oldPrice = document.select("span.old").first();
+        Element newPrice = document.select("span.new").first();
 
+        productDTO.setNewPrice(newPrice.text());
+        productDTO.setOldPrice(oldPrice.text());
         productDTO.setPictureUrl(imageUrl);
         productDTO.setAmount(amount.replaceAll("[^\\d]", ""));
         productDTO.setShopName("https://carinet.pl");

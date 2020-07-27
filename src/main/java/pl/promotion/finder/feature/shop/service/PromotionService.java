@@ -29,8 +29,7 @@ public class PromotionService {
         List<ProductDTO> productDTOList = new ArrayList<>();
         productDTOList.add(xkomService.getXkom());
         productDTOList.add(moreleService.getMorele());
-        productDTOList.add(amsoService.getAmso());
-        productDTOList.add(altoService.getAlto());
+        productDTOList.add(carinetService.getCarinet());
         return productDTOList;
     }
 
