@@ -1,16 +1,15 @@
 package pl.promotion.finder.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
 import pl.promotion.finder.feature.shop.dto.ProductDTO;
 import pl.promotion.finder.feature.shop.service.PromotionService;
 
 import java.io.IOException;
-import java.util.List;
+import java.util.TreeSet;
 
-@CrossOrigin
 @RestController
-@RequestMapping("/promotion")
 public class PromotionController {
     private final PromotionService promotionService;
 
@@ -20,13 +19,7 @@ public class PromotionController {
     }
 
     @GetMapping
-    private List<ProductDTO> getAllPromotion() throws IOException {
-        return promotionService.getAllPromotion();
+    private TreeSet<ProductDTO> getAllPromotion() throws IOException {
+        return promotionService.getDailyPromotion();
     }
-
-    @GetMapping("/{shopName}")
-    private ProductDTO getPromotionByShop(@PathVariable("shopName") String shopName) throws IOException {
-        return promotionService.getPromotionByShop(shopName);
-    }
-
 }

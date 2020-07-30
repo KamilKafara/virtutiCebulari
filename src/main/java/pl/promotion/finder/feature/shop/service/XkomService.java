@@ -1,5 +1,6 @@
 package pl.promotion.finder.feature.shop.service;
 
+import lombok.extern.log4j.Log4j2;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -16,11 +17,24 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 
+@Log4j2
 @Service
-public class XkomService {
-    public ProductDTO getXkom() throws IOException {
+public class XkomService implements Promotion {
+
+    private static final String hotShotTag = "div.sc-bwzfXH.sc-1bb6kqq-2.cNKcdN.sc-htpNat.gSgMmi";
+    private static final String propertyTag = "sc-1tblmgq-1 grqydx";
+    private static final String newPriceTag = "sc-1bb6kqq-5 iWkRRi";
+    private static final String oldPriceTag = "sc-1bb6kqq-4 XUMZh";
+    private static final String productNameTag = "product-name";
+    private static final String amountValue = "empty";
+    private static final String productImageTag = "img-responsive center-block";
+    private static final String shopName = "x-kom";
+    private static final String productURL = "https://www.x-kom.pl/goracy_strzal";
+
+    @Override
+    public ProductDTO getPromotion() throws IOException {
         try {
-            URL urlXkom = new URL("https://www.x-kom.pl/");
+            URL urlXkom = new URL(productURL);
             BufferedReader in = new BufferedReader(new InputStreamReader(urlXkom.openStream()));
             String inputLine;
             StringBuilder xkomSB = new StringBuilder();
@@ -30,46 +44,23 @@ public class XkomService {
             Document xKomDocument = Jsoup.parse(xkomSB.toString());
             return getXkomProduct(xKomDocument);
         } catch (NullPointerException ex) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Not found promotion in xkom.", new FieldInfo("xkom", ErrorCode.NOT_FOUND));
+            log.error(new ResponseStatusException(HttpStatus.NOT_FOUND, "Not found promotion in xkom.", new FieldInfo(shopName, ErrorCode.NOT_FOUND)));
+            log.error(ex.getStackTrace());
         }
+        return null;
     }
 
     private ProductDTO getXkomProduct(Document document) {
-        Elements pElements = document.select("div");
-        ProductDTO productDTO = new ProductDTO();
-        productDTO.setId(1);
-        for (Element element : pElements) {
-            if (element.hasClass("mbxiax-1 fXZaIQ")) {
-                productDTO.setProductName(element.getElementsByClass("sc-1bb6kqq-10 kBnBfM m80syu-0 hGKlIY").text());
-                Elements urlBlock = element.getElementsByClass("sc-1tblmgq-0");
-
-                Elements productImgElements = urlBlock.tagName("img");
-                for (Element el : productImgElements) {
-                    Elements imgs = el.getElementsByTag("img");
-                    if (imgs.hasAttr("src")) {
-                        Elements pictureURL = el.getElementsByAttribute("src");
-                        Element pc = pictureURL.get(0);
-                        String picURL = pc.attr("src");
-                        productDTO.setPictureUrl(picURL);
-                    }
-                }
-
-                String oldPrice = element.getElementsByClass("sc-1bb6kqq-5 iWkRRi").text();
-                String newPrice = element.getElementsByClass("sc-1bb6kqq-4 cLmEvj").text();
-                productDTO.setOldPrice(oldPrice);
-                productDTO.setNewPrice(newPrice);
-
-                Elements soldItem = element.getElementsByClass("pull-left").select("strong");
-                if (!soldItem.isEmpty()) {
-                    productDTO.setAmount(soldItem.text());
-                }
-                productDTO.setShopName("x-kom.pl");
-                productDTO.setProductUrl("https://www.x-kom.pl/goracy_strzal/");
-            }
-        }
+        Element element = document.select(hotShotTag).first();
+        ProductDTO productDTO = new ProductDTO(shopName, productURL);
+        Elements productProperty = element.getElementsByClass(propertyTag);
+        productDTO.setPictureUrl(productProperty.attr(productImageTag));
+        productDTO.setProductName(productProperty.attr(productNameTag));
+        String oldPrice = element.getElementsByClass(oldPriceTag).text();
+        String newPrice = element.getElementsByClass(newPriceTag).text();
+        productDTO.setAmount(amountValue);
+        productDTO.setOldPrice(oldPrice);
+        productDTO.setNewPrice(newPrice);
         return productDTO;
     }
-
-
 }
-;

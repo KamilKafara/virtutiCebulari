@@ -2,25 +2,25 @@ package pl.promotion.finder.feature.shop.dto;
 
 import lombok.*;
 
-import java.util.Date;
-
 @Setter
 @Getter
-@Data
 @ToString
-@NoArgsConstructor
 public class ProductDTO {
-    private int id;
+    private final String shopName;
+
+    private String productUrl;
     private String productName;
-    @NonNull
     private String oldPrice;
-    @NonNull
     private String newPrice;
     private String amount;
-    @NonNull
-    private String shopName;
-    @NonNull
     private String pictureUrl;
-    @NonNull
-    private String productUrl;
+
+    public ProductDTO(String shopName, String productUrl) {
+        this.shopName = shopName;
+        this.productUrl = productUrl;
+    }
+
+    public void setProductUrl(String productUrl) {
+        this.productUrl = productUrl;
+    }
 }

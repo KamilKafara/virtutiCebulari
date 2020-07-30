@@ -1,5 +1,6 @@
 package pl.promotion.finder.feature.shop.service;
 
+import lombok.extern.log4j.Log4j2;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -18,18 +19,18 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.nio.charset.Charset;
 
+@Log4j2
 @Service
-public class MoreleService {
+public class MoreleService implements Promotion {
+    private static final String hotShotTag = "div#hotShot";
+    private static final String amountTag = "pull-left";
+    private static final String newPriceTag = "new-price";
+    private static final String oldPriceTag = "old-price";
+    private static final String productNameTag = "product-name";
+    private static final String productImageTag = "img-responsive center-block";
+    private static final String shopName = "morene.net";
+    private static final String productURL = "https://www.morele.net/";
 
-    public ProductDTO getMorele() throws IOException {
-        try {
-            StringBuilder moreleSB = bufferMoreleURL("https://www.morele.net/");
-            Document moreleDocument = Jsoup.parse(moreleSB.toString());
-            return getMoreleProduct(moreleDocument);
-        } catch (NullPointerException ex) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Not found promotion in morele.", new FieldInfo("morele", ErrorCode.NOT_FOUND));
-        }
-    }
 
     private StringBuilder bufferMoreleURL(String url) throws IOException {
         URLConnection connection = new URL(url).openConnection();
@@ -46,8 +47,7 @@ public class MoreleService {
 
     private ProductDTO getMoreleProduct(Document document) {
         Elements elements = document.select("div");
-        ProductDTO productDTO = new ProductDTO();
-        productDTO.setId(2);
+        ProductDTO productDTO = new ProductDTO(shopName, productURL);
         for (Element element : elements) {
             if (element.hasClass("prom-box-content")) {
                 Elements oldPrice = element.getElementsByClass("promo-box-old-price");
@@ -57,9 +57,11 @@ public class MoreleService {
                 Elements productNameElements = element.getElementsByClass("promo-box-name").select("a");
                 String productName = productNameElements.attr("title");
                 String productUrl = productNameElements.attr("href");
+                if (productUrl.isEmpty()) {
+                    throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Not found promotion in morele.", new FieldInfo("morele", ErrorCode.NOT_FOUND));
+                }
                 productDTO.setProductName(productName);
-                productDTO.setProductUrl(productUrl);
-                productDTO.setShopName("morene.net");
+//                productDTO.setProductUrl(productUrl);
             }
             if (element.hasClass("promo-box-availability")) { // liczba sztuk
                 Elements availabilityBlock = element.getElementsByClass("promo-box-availability");
@@ -74,8 +76,21 @@ public class MoreleService {
                 productDTO.setPictureUrl(element.getElementsByClass("prom-box-image").select("img").attr("src"));
             }
         }
+        if (elements.isEmpty()) {
+            log.error(new ResponseStatusException(HttpStatus.NOT_FOUND, "Not found promotion in " + shopName, new FieldInfo(shopName, ErrorCode.NOT_FOUND)));
+        }
 
         return productDTO;
     }
 
+    @Override
+    public ProductDTO getPromotion() throws IOException {
+        try {
+            StringBuilder moreleSB = bufferMoreleURL(productURL);
+            Document moreleDocument = Jsoup.parse(moreleSB.toString());
+            return getMoreleProduct(moreleDocument);
+        } catch (NullPointerException ex) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Not found promotion in morele.", new FieldInfo("morele", ErrorCode.NOT_FOUND));
+        }
+    }
 }

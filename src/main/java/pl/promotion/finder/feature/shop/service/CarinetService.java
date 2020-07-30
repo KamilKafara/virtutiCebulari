@@ -1,5 +1,6 @@
 package pl.promotion.finder.feature.shop.service;
 
+import lombok.extern.log4j.Log4j2;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -16,9 +17,21 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 
+@Log4j2
 @Service
-public class CarinetService {
-    public ProductDTO getCarinet() throws IOException {
+public class CarinetService implements Promotion {
+    private static final String hotShotTag = "hotshot";
+    private static final String amountTag = "div.availability";
+    private static final String newPriceTag = "span.old";
+    private static final String oldPriceTag = "span.new";
+    private static final String productNameTag = "h4";
+    private static final String productImageTag = "img.img-responsive";
+    private static final String shopName = "carinet";
+    private static final String productURL = "https://carinet.pl/pl";
+    private static final String productUrlTag = "a.href";
+
+    @Override
+    public ProductDTO getPromotion() throws IOException {
         try {
             URL urlCarinet = new URL("https://carinet.pl/pl/");
             BufferedReader in = new BufferedReader(new InputStreamReader(urlCarinet.openStream()));
@@ -30,32 +43,33 @@ public class CarinetService {
             Document carinetDocument = Jsoup.parse(carinetSB.toString());
             return getCarinetProduct(carinetDocument);
         } catch (NullPointerException ex) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Not found promotion in carinet.", new FieldInfo("carinet", ErrorCode.NOT_FOUND));
+            log.error(new ResponseStatusException(HttpStatus.NOT_FOUND, "Not found promotion in " + shopName, new FieldInfo(shopName, ErrorCode.NOT_FOUND)));
+            log.error(ex.getStackTrace());
         }
-
+        return null;
     }
 
     private ProductDTO getCarinetProduct(Document document) {
-        Elements elements = document.getElementsByClass("hotshot");
+        Elements elements = document.getElementsByClass(hotShotTag);
+        ProductDTO productDTO = new ProductDTO(shopName, productURL);
 
-        String imageUrl = elements.tagName("img").select("img.img-responsive").attr("src");
-        String amount = elements.tagName("div").select("div.availability").select("span").text().replaceAll("[^\\d]", "");
-        ProductDTO productDTO = new ProductDTO();
-        productDTO.setId(5);
-        Elements productUrl = elements.tagName("a").select("a");
-        for (Element element : productUrl) {
-            productDTO.setProductName(element.getElementsByTag("h4").text());
-            String item = element.select("a").first().attr("href");
-            productDTO.setProductUrl(item);
-        }
-        Element oldPrice = document.select("span.old").first();
-        Element newPrice = document.select("span.new").first();
-
-        productDTO.setNewPrice(newPrice.text());
-        productDTO.setOldPrice(oldPrice.text());
+        String imageUrl = elements.select(productImageTag).attr("src");
         productDTO.setPictureUrl(imageUrl);
+        productDTO.setProductName(elements.select(productNameTag).text());
+
+        String productUrl = elements.select(productUrlTag).first().text();
+        productDTO.setProductUrl(productUrl);
+
+        Element oldPrice = document.select(newPriceTag).first();
+        productDTO.setOldPrice(oldPrice.text());
+
+        Element newPrice = document.select(oldPriceTag).first();
+        productDTO.setNewPrice(newPrice.text());
+
+        String amount = elements.select(amountTag).select("span").text().replaceAll("[^\\d]", "");
         productDTO.setAmount(amount.replaceAll("[^\\d]", ""));
-        productDTO.setShopName("https://carinet.pl");
         return productDTO;
     }
+
+
 }

@@ -6,6 +6,7 @@ import pl.promotion.finder.feature.shop.dto.ProductDTO;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.TreeSet;
 
 @Service
 public class PromotionService {
@@ -25,37 +26,12 @@ public class PromotionService {
         this.altoService = altoService;
     }
 
-    public List<ProductDTO> getAllPromotion() throws IOException {
-        List<ProductDTO> productDTOList = new ArrayList<>();
-        productDTOList.add(xkomService.getXkom());
-        productDTOList.add(moreleService.getMorele());
-        productDTOList.add(carinetService.getCarinet());
+    public TreeSet<ProductDTO> getDailyPromotion() throws IOException {
+        TreeSet <ProductDTO> productDTOList = new TreeSet <>();
+        productDTOList.add(xkomService.getPromotion());
+        productDTOList.add(moreleService.getPromotion());
+        productDTOList.add(carinetService.getPromotion());
         return productDTOList;
     }
 
-    public ProductDTO getPromotionByShop(String shopName) throws IOException {
-        switch (shopName) {
-            case "xkom": {
-                return xkomService.getXkom();
-            }
-            case "morele": {
-                return moreleService.getMorele();
-            }
-            case "combat": {
-                return combatService.getCombat();
-            }
-            case "amso": {
-                return amsoService.getAmso();
-            }
-            case "carinet": {
-                return carinetService.getCarinet();
-            }
-            case "alto": {
-                return altoService.getAlto();
-            }
-            default: {
-                return null;
-            }
-        }
-    }
 }
