@@ -55,18 +55,17 @@ public class AltoService implements Promotion {
 
     private ProductDTO getAltoProduct(Document document) {
         Element element = document.select(hotShotTag).first();
-        String amount = element.getElementsByClass(amountTag).first().text().replaceAll("[^\\d]", "");
-        String newPrice = element.getElementsByClass(newPriceTag).text();
-        String oldPrice = element.getElementsByClass(oldPriceTag).text();
-        String productName = element.getElementsByClass(productNameTag).text();
-        String productUrl = element.getElementsByClass(productImageTag).attr("src");
-
         ProductDTO productDTO = new ProductDTO(shopName, productURL);
-        productDTO.setAmount(amount);
-        productDTO.setNewPrice(newPrice);
-        productDTO.setOldPrice(oldPrice);
+        String productName = element.getElementsByClass(productNameTag).text();
         productDTO.setProductName(productName);
+        String newPrice = element.getElementsByClass(newPriceTag).text();
+        productDTO.setNewPrice(newPrice);
+        String oldPrice = element.getElementsByClass(oldPriceTag).text();
+        productDTO.setOldPrice(oldPrice);
+        String productUrl = element.getElementsByClass(productImageTag).attr("src");
         productDTO.setPictureUrl(productUrl);
+        String amount = element.getElementsByClass(amountTag).first().text().replaceAll("[^\\d]", "");
+        productDTO.setAmount(amount);
 
         return productDTO;
     }

@@ -7,7 +7,7 @@ import pl.promotion.finder.feature.shop.dto.ProductDTO;
 import pl.promotion.finder.feature.shop.service.PromotionService;
 
 import java.io.IOException;
-import java.util.TreeSet;
+import java.util.List;
 
 @RestController
 public class PromotionController {
@@ -19,7 +19,7 @@ public class PromotionController {
     }
 
     @GetMapping
-    private TreeSet<ProductDTO> getAllPromotion() throws IOException {
+    private List<ProductDTO> getAllPromotion() throws IOException {
         return promotionService.getDailyPromotion();
     }
 }

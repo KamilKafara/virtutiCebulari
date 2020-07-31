@@ -22,7 +22,6 @@ import java.net.URL;
 public class AmsoService implements Promotion {
     private static final String shopName = "al.to";
     private static final String productURL = "https://amso.pl/";
-    private static final String shopURL = "https://amso.pl/";
     private static final String hotShotTag = "main_hotspot_zone1";
     private static final String amountTag = "pts_total";
     private static final String newPriceTag = "price";
@@ -33,7 +32,7 @@ public class AmsoService implements Promotion {
     @Override
     public ProductDTO getPromotion() {
         try {
-            URL urlAmso = new URL(shopURL);
+            URL urlAmso = new URL(productURL);
             BufferedReader in = new BufferedReader(new InputStreamReader(urlAmso.openStream()));
             String inputLine;
             StringBuilder amsoSB = new StringBuilder();
@@ -52,19 +51,16 @@ public class AmsoService implements Promotion {
     private ProductDTO getAmsoProduct(Document document) {
         Element elements = document.getElementById(hotShotTag);
         ProductDTO productDTO = new ProductDTO(shopName, productURL);
-        String amount = elements.getElementById(amountTag).text();
+
         String newPrice = elements.getElementsByClass(newPriceTag).text();
-        String oldPrice = elements.getElementsByClass(oldPriceTag).text();
-        String productName = elements.getElementsByClass(productNameTag).attr("title");
-        Elements imageElement = elements.getElementsByClass(productImageTag);
-        Elements imageUrl = imageElement.select("img");
-        for (Element element : imageUrl) {
-            productDTO.setPictureUrl(shopURL + element.select("img").attr("data-src"));
-            break;
-        }
-        productDTO.setProductName(productName);
-        productDTO.setOldPrice(oldPrice);
         productDTO.setNewPrice(newPrice);
+        String oldPrice = elements.getElementsByClass(oldPriceTag).text();
+        productDTO.setOldPrice(oldPrice);
+        String productName = elements.getElementsByClass(productNameTag).attr("title");
+        productDTO.setProductName(productName);
+        Elements imageElement = elements.getElementsByClass(productImageTag);
+        productDTO.setPictureUrl(productURL + imageElement.select("img").attr("data-src"));
+        String amount = elements.getElementById(amountTag).text();
         productDTO.setAmount(amount.replaceAll("[^\\d]", ""));
 
         return productDTO;

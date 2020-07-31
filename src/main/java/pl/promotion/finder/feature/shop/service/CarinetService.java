@@ -27,13 +27,13 @@ public class CarinetService implements Promotion {
     private static final String productNameTag = "h4";
     private static final String productImageTag = "img.img-responsive";
     private static final String shopName = "carinet";
-    private static final String productURL = "https://carinet.pl/pl";
+    private static final String productURL = "https://carinet.pl/pl/";
     private static final String productUrlTag = "a.href";
 
     @Override
     public ProductDTO getPromotion() throws IOException {
         try {
-            URL urlCarinet = new URL("https://carinet.pl/pl/");
+            URL urlCarinet = new URL(productURL);
             BufferedReader in = new BufferedReader(new InputStreamReader(urlCarinet.openStream()));
             String inputLine;
             StringBuilder carinetSB = new StringBuilder();
@@ -56,20 +56,15 @@ public class CarinetService implements Promotion {
         String imageUrl = elements.select(productImageTag).attr("src");
         productDTO.setPictureUrl(imageUrl);
         productDTO.setProductName(elements.select(productNameTag).text());
-
         String productUrl = elements.select(productUrlTag).first().text();
         productDTO.setProductUrl(productUrl);
-
         Element oldPrice = document.select(newPriceTag).first();
         productDTO.setOldPrice(oldPrice.text());
-
         Element newPrice = document.select(oldPriceTag).first();
         productDTO.setNewPrice(newPrice.text());
-
         String amount = elements.select(amountTag).select("span").text().replaceAll("[^\\d]", "");
         productDTO.setAmount(amount.replaceAll("[^\\d]", ""));
+
         return productDTO;
     }
-
-
 }

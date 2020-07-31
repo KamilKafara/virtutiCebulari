@@ -29,12 +29,13 @@ public class XkomService implements Promotion {
     private static final String amountValue = "empty";
     private static final String productImageTag = "img-responsive center-block";
     private static final String shopName = "x-kom";
+    private static final String shopURL = "https://www.x-kom.pl/";
     private static final String productURL = "https://www.x-kom.pl/goracy_strzal";
 
     @Override
     public ProductDTO getPromotion() throws IOException {
         try {
-            URL urlXkom = new URL(productURL);
+            URL urlXkom = new URL(shopURL);
             BufferedReader in = new BufferedReader(new InputStreamReader(urlXkom.openStream()));
             String inputLine;
             StringBuilder xkomSB = new StringBuilder();
@@ -44,7 +45,7 @@ public class XkomService implements Promotion {
             Document xKomDocument = Jsoup.parse(xkomSB.toString());
             return getXkomProduct(xKomDocument);
         } catch (NullPointerException ex) {
-            log.error(new ResponseStatusException(HttpStatus.NOT_FOUND, "Not found promotion in xkom.", new FieldInfo(shopName, ErrorCode.NOT_FOUND)));
+            log.error(new ResponseStatusException(HttpStatus.NOT_FOUND, "Not found promotion in " + shopName, new FieldInfo(shopName, ErrorCode.NOT_FOUND)));
             log.error(ex.getStackTrace());
         }
         return null;
