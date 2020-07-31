@@ -36,7 +36,7 @@ public class XkomService implements Promotion {
     public ProductDTO getPromotion() throws IOException {
         try {
             URL urlXkom = new URL(shopURL);
-            BufferedReader in = new BufferedReader(new InputStreamReader(urlXkom.openStream()));
+            BufferedReader in = new BufferedReader(new InputStreamReader(urlXkom.openStream(),"UTF8"));
             String inputLine;
             StringBuilder xkomSB = new StringBuilder();
             while ((inputLine = in.readLine()) != null) {

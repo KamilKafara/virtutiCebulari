@@ -33,7 +33,7 @@ public class AmsoService implements Promotion {
     public ProductDTO getPromotion() {
         try {
             URL urlAmso = new URL(productURL);
-            BufferedReader in = new BufferedReader(new InputStreamReader(urlAmso.openStream()));
+            BufferedReader in = new BufferedReader(new InputStreamReader(urlAmso.openStream(),"UTF8"));
             String inputLine;
             StringBuilder amsoSB = new StringBuilder();
             while ((inputLine = in.readLine()) != null) {
