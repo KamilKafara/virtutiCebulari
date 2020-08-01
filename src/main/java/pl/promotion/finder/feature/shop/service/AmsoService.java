@@ -20,7 +20,7 @@ import java.net.URL;
 @Log4j2
 @Service
 public class AmsoService implements Promotion {
-    private static final String shopName = "al.to";
+    private static final String shopName = "amso";
     private static final String productURL = "https://amso.pl/";
     private static final String hotShotTag = "main_hotspot_zone1";
     private static final String amountTag = "pts_total";
