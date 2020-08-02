@@ -33,15 +33,8 @@ public class CarinetService implements Promotion {
     @Override
     public ProductDTO getPromotion() throws IOException {
         try {
-            URL urlCarinet = new URL(productURL);
-            BufferedReader in = new BufferedReader(new InputStreamReader(urlCarinet.openStream()));
-            String inputLine;
-            StringBuilder carinetSB = new StringBuilder();
-            while ((inputLine = in.readLine()) != null) {
-                carinetSB.append(inputLine);
-            }
-            Document carinetDocument = Jsoup.parse(carinetSB.toString());
-            return getCarinetProduct(carinetDocument);
+            Document document = Jsoup.connect(productURL).get();
+            return getCarinetProduct(document);
         } catch (NullPointerException ex) {
             log.error(new ResponseStatusException(HttpStatus.NOT_FOUND, "Not found promotion in " + shopName, new FieldInfo(shopName, ErrorCode.NOT_FOUND)));
             log.error(ex.getStackTrace());
@@ -56,7 +49,7 @@ public class CarinetService implements Promotion {
         String imageUrl = elements.select(productImageTag).attr("src");
         productDTO.setPictureUrl(imageUrl);
         productDTO.setProductName(elements.select(productNameTag).text());
-        String productUrl = elements.select(productUrlTag).first().text();
+        String productUrl = elements.select("a").attr("href");
         productDTO.setProductUrl(productUrl);
         Element oldPrice = document.select(newPriceTag).first();
         productDTO.setOldPrice(oldPrice.text());
