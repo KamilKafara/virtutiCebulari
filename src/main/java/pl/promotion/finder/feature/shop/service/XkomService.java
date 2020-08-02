@@ -22,6 +22,7 @@ public class XkomService implements Promotion {
     private static final String propertyTag = "sc-1tblmgq-1 grqydx";
     private static final String oldPriceTag = "sc-1bb6kqq-4";
     private static final String newPriceTag = "sc-1bb6kqq-5";
+
     private static final String productNameTag = "sc-1bb6kqq-10 kBnBfM m80syu-0 hGKlIY";
     private static final String amountValue = "empty";
     private static final String productImageTag = "src";
@@ -47,11 +48,20 @@ public class XkomService implements Promotion {
         Elements productProperty = element.getElementsByClass(propertyTag);
         productDTO.setPictureUrl(productProperty.attr(productImageTag));
         productDTO.setProductName(element.getElementsByClass(productNameTag).text());
-        String oldPrice = element.getElementsByClass(oldPriceTag).text();
-        String newPrice = element.getElementsByClass(newPriceTag).text();
-        productDTO.setAmount(amountValue);
+        String oldPrice = element.getElementsByClass(oldPriceTag).text().replace("zł", "").replace("\\s+", "");
+        String newPrice = element.getElementsByClass(newPriceTag).text().replace("zł", "").replace("\\s+", "");
+
         productDTO.setOldPrice(oldPrice);
         productDTO.setNewPrice(newPrice);
+
+        Double newPriceDouble = Double.parseDouble(newPrice.replace(",", "."));
+        Double oldPriceDouble = Double.parseDouble(oldPrice.replace(",", "."));
+        if (newPriceDouble > oldPriceDouble) {
+            productDTO.setOldPrice(String.format("%.2f", newPriceDouble) + " zł");
+            productDTO.setNewPrice(String.format("%.2f", oldPriceDouble) + " zł");
+        }
+
+        productDTO.setAmount(amountValue);
         return productDTO;
     }
 }

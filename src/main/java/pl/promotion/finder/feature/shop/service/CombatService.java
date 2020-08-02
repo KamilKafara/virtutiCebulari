@@ -40,8 +40,21 @@ public class CombatService implements Promotion {
         Elements elements = document.select(hotShotTag);
         ProductDTO productDTO = new ProductDTO(shopName, productURL);
         productDTO.setProductName(elements.select(productNameTag).text());
-        productDTO.setOldPrice(elements.select(priceTag).first().text());
-        productDTO.setNewPrice(elements.select(priceTag).last().text());
+        String oldPrice = elements.select(priceTag).first().text().replace("zł", "").replace("\\s+", "");
+        String newPrice = elements.select(priceTag).last().text().replace("zł", "").replace("\\s+", "");
+
+        productDTO.setOldPrice(oldPrice);
+        productDTO.setNewPrice(newPrice);
+
+        Double newPriceDouble = Double.parseDouble(newPrice.replace(",", "."));
+        Double oldPriceDouble = Double.parseDouble(oldPrice.replace(",", "."));
+
+        if (newPriceDouble > oldPriceDouble) {
+            productDTO.setOldPrice(String.format("%.2f", newPriceDouble) + " zł");
+            productDTO.setNewPrice(String.format("%.2f", oldPriceDouble) + " zł");
+        }
+
+
         productDTO.setAmount(amountValue);
         return productDTO;
     }
