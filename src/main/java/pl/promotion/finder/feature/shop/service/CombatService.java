@@ -28,7 +28,7 @@ public class CombatService implements Promotion {
     public ProductDTO getPromotion() {
         try {
             Document document = Jsoup.connect(productURL).get();
-            return getCombatProduct(document);
+            return getProduct(document);
         } catch (NullPointerException | IOException ex) {
             log.error(new ResponseStatusException(HttpStatus.NOT_FOUND, "Not found promotion in " + shopName, new FieldInfo(shopName, ErrorCode.NOT_FOUND)));
             log.error(ex.getStackTrace());
@@ -36,7 +36,7 @@ public class CombatService implements Promotion {
         return null;
     }
 
-    private ProductDTO getCombatProduct(Document document) {
+    public ProductDTO getProduct(Document document) {
         Elements elements = document.select(hotShotTag);
         ProductDTO productDTO = new ProductDTO(shopName, productURL);
         productDTO.setProductName(elements.select(productNameTag).text());

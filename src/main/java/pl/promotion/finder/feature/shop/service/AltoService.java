@@ -44,8 +44,9 @@ public class AltoService implements Promotion {
             while ((inputLine = in.readLine()) != null) {
                 altoSB.append(inputLine);
             }
+
             Document document = Jsoup.parse(altoSB.toString());
-            return getAltoProduct(document);
+            return getProduct(document);
         } catch (NullPointerException ex) {
             log.error(new ResponseStatusException(HttpStatus.NOT_FOUND, "Not found promotion in " + shopName, new FieldInfo(shopName, ErrorCode.NOT_FOUND)));
             log.error(ex.getStackTrace());
@@ -53,7 +54,8 @@ public class AltoService implements Promotion {
         return null;
     }
 
-    private ProductDTO getAltoProduct(Document document) {
+    @Override
+    public ProductDTO getProduct(Document document) {
         Element element = document.select(hotShotTag).first();
         ProductDTO productDTO = new ProductDTO(shopName, productURL);
         String productName = element.getElementsByClass(productNameTag).text();

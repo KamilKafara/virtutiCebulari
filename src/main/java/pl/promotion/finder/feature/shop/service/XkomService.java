@@ -35,15 +35,8 @@ public class XkomService implements Promotion {
     @Override
     public ProductDTO getPromotion() throws IOException {
         try {
-            URL urlXkom = new URL(shopURL);
-            BufferedReader in = new BufferedReader(new InputStreamReader(urlXkom.openStream(),"UTF8"));
-            String inputLine;
-            StringBuilder xkomSB = new StringBuilder();
-            while ((inputLine = in.readLine()) != null) {
-                xkomSB.append(inputLine);
-            }
-            Document xKomDocument = Jsoup.parse(xkomSB.toString());
-            return getXkomProduct(xKomDocument);
+            Document document = Jsoup.connect(shopURL).get();
+            return getProduct(document);
         } catch (NullPointerException ex) {
             log.error(new ResponseStatusException(HttpStatus.NOT_FOUND, "Not found promotion in " + shopName, new FieldInfo(shopName, ErrorCode.NOT_FOUND)));
             log.error(ex.getStackTrace());
@@ -51,7 +44,7 @@ public class XkomService implements Promotion {
         return null;
     }
 
-    private ProductDTO getXkomProduct(Document document) {
+    public ProductDTO getProduct(Document document) {
         Element element = document.select(hotShotTag).first();
         ProductDTO productDTO = new ProductDTO(shopName, productURL);
         Elements productProperty = element.getElementsByClass(propertyTag);

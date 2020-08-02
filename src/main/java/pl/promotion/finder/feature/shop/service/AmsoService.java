@@ -12,10 +12,7 @@ import pl.promotion.finder.exception.ErrorCode;
 import pl.promotion.finder.exception.FieldInfo;
 import pl.promotion.finder.feature.shop.dto.ProductDTO;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.URL;
 
 @Log4j2
 @Service
@@ -32,15 +29,8 @@ public class AmsoService implements Promotion {
     @Override
     public ProductDTO getPromotion() {
         try {
-            URL urlAmso = new URL(productURL);
-            BufferedReader in = new BufferedReader(new InputStreamReader(urlAmso.openStream(),"UTF8"));
-            String inputLine;
-            StringBuilder amsoSB = new StringBuilder();
-            while ((inputLine = in.readLine()) != null) {
-                amsoSB.append(inputLine);
-            }
-            Document amsoDocument = Jsoup.parse(amsoSB.toString());
-            return getAmsoProduct(amsoDocument);
+            Document document = Jsoup.connect(productURL).get();
+            return getProduct(document);
         } catch (NullPointerException | IOException ex) {
             log.error(new ResponseStatusException(HttpStatus.NOT_FOUND, "Not found promotion in " + shopName, new FieldInfo(shopName, ErrorCode.NOT_FOUND)));
             log.error(ex.getStackTrace());
@@ -48,7 +38,8 @@ public class AmsoService implements Promotion {
         return null;
     }
 
-    private ProductDTO getAmsoProduct(Document document) {
+    @Override
+    public ProductDTO getProduct(Document document) {
         Element elements = document.getElementById(hotShotTag);
         ProductDTO productDTO = new ProductDTO(shopName, productURL);
 

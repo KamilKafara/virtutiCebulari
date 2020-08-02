@@ -21,8 +21,8 @@ public class MoreleService implements Promotion {
     private static final String newPriceTag = "div.promo-box-new-price";
     private static final String amountTag = "div.status-box-was";
     private static final String productDetailsTag = "a.prom-box-image";
-    private static final String productImageTag = "img-responsive center-block";
-    private static final String shopName = "morene.net";
+    private static final String productImageTag = "img";
+    private static final String shopName = "morele.net";
     private static final String productURL = "https://www.morele.net/";
     private static final String productUrlAttribute = "href";
     private static final String productNameAttribute = "title";
@@ -31,20 +31,20 @@ public class MoreleService implements Promotion {
     public ProductDTO getPromotion() throws IOException {
         try {
             Document document = Jsoup.connect(productURL).get();
-            return getMoreleProduct(document);
+            return getProduct(document);
         } catch (NullPointerException ex) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Not found promotion in " + shopName, new FieldInfo(shopName, ErrorCode.NOT_FOUND));
         }
     }
 
-    private ProductDTO getMoreleProduct(Document document) {
+    public ProductDTO getProduct(Document document) {
         Elements elements = document.select(hotShotTag);
         ProductDTO productDTO = new ProductDTO(shopName, "");
 
         Elements productDetails = elements.select(productDetailsTag);
         productDTO.setProductUrl(productDetails.attr(productUrlAttribute));
         productDTO.setProductName(productDetails.attr(productNameAttribute));
-        productDTO.setPictureUrl(productDetails.select("img").first().attr("src"));
+        productDTO.setPictureUrl(productDetails.select(productImageTag).first().attr("src"));
         productDTO.setOldPrice(elements.select(oldPriceTag).text());
         productDTO.setNewPrice(elements.select(newPriceTag).text());
         productDTO.setAmount(elements.select(amountTag).text().replaceAll("\\D+", ""));

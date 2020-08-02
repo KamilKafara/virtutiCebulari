@@ -12,10 +12,7 @@ import pl.promotion.finder.exception.ErrorCode;
 import pl.promotion.finder.exception.FieldInfo;
 import pl.promotion.finder.feature.shop.dto.ProductDTO;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.URL;
 
 @Log4j2
 @Service
@@ -28,13 +25,12 @@ public class CarinetService implements Promotion {
     private static final String productImageTag = "img.img-responsive";
     private static final String shopName = "carinet";
     private static final String productURL = "https://carinet.pl/pl/";
-    private static final String productUrlTag = "a.href";
 
     @Override
     public ProductDTO getPromotion() throws IOException {
         try {
             Document document = Jsoup.connect(productURL).get();
-            return getCarinetProduct(document);
+            return getProduct(document);
         } catch (NullPointerException ex) {
             log.error(new ResponseStatusException(HttpStatus.NOT_FOUND, "Not found promotion in " + shopName, new FieldInfo(shopName, ErrorCode.NOT_FOUND)));
             log.error(ex.getStackTrace());
@@ -42,7 +38,7 @@ public class CarinetService implements Promotion {
         return null;
     }
 
-    private ProductDTO getCarinetProduct(Document document) {
+    public ProductDTO getProduct(Document document) {
         Elements elements = document.getElementsByClass(hotShotTag);
         ProductDTO productDTO = new ProductDTO(shopName, productURL);
 
