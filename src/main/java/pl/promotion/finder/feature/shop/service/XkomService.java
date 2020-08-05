@@ -48,20 +48,20 @@ public class XkomService implements Promotion {
         Elements productProperty = element.getElementsByClass(propertyTag);
         productDTO.setPictureUrl(productProperty.attr(productImageTag));
         productDTO.setProductName(element.getElementsByClass(productNameTag).text());
-        String oldPrice = element.getElementsByClass(oldPriceTag).text().replace("zł", "").replace("\\s+", "");
-        String newPrice = element.getElementsByClass(newPriceTag).text().replace("zł", "").replace("\\s+", "");
+        String oldPrice = element.getElementsByClass(oldPriceTag).text().replaceAll("zł", "").replaceAll("\\s+", "");
+        String newPrice = element.getElementsByClass(newPriceTag).text().replaceAll("zł", "").replaceAll("\\s+", "");
 
         productDTO.setOldPrice(oldPrice);
         productDTO.setNewPrice(newPrice);
 
-        Double newPriceDouble = Double.parseDouble(newPrice.replace(",", "."));
-        Double oldPriceDouble = Double.parseDouble(oldPrice.replace(",", "."));
+        Double newPriceDouble = Double.parseDouble(newPrice.replaceAll(",", "."));
+        Double oldPriceDouble = Double.parseDouble(oldPrice.replaceAll(",", "."));
         if (newPriceDouble > oldPriceDouble) {
             productDTO.setOldPrice(String.format("%.2f", newPriceDouble) + " zł");
             productDTO.setNewPrice(String.format("%.2f", oldPriceDouble) + " zł");
         }
-
         productDTO.setAmount(amountValue);
         return productDTO;
     }
+
 }
