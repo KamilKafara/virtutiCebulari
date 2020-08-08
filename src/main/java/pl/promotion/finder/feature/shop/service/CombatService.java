@@ -19,7 +19,7 @@ public class CombatService implements Promotion {
     private static final String hotShotTag = "div.product-essential";
     private static final String priceTag = "span.price";
     private static final String productNameTag = "span.base";
-    private static final String productImageTag = "";
+    private static final String productImageTag = "div.col-md-10";
     private static final String amountValue = "empty";
     private static final String shopName = "combat";
     private static final String productURL = "https://www.combat.pl/goracy-strzal";
@@ -43,6 +43,8 @@ public class CombatService implements Promotion {
         String oldPrice = elements.select(priceTag).first().text().replace("zł", "").replace("\\s+", "");
         String newPrice = elements.select(priceTag).last().text().replace("zł", "").replace("\\s+", "");
 
+        String productImage = document.select(productImageTag).select("img").attr("src");
+        productDTO.setPictureUrl(productImage);
         productDTO.setOldPrice(oldPrice);
         productDTO.setNewPrice(newPrice);
 
@@ -53,8 +55,6 @@ public class CombatService implements Promotion {
             productDTO.setOldPrice(String.format("%.2f", newPriceDouble) + " zł");
             productDTO.setNewPrice(String.format("%.2f", oldPriceDouble) + " zł");
         }
-
-
         productDTO.setAmount(amountValue);
         return productDTO;
     }
