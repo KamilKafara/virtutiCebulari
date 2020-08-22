@@ -11,7 +11,7 @@ import java.io.IOException;
 @Service
 public class SlackMessageSender {
     public void sendPromotionMessage(ProductDTO productDTO) throws IOException, SlackApiException {
-        String token = "";
+        String token = "xoxb-1046773240612-1308627116564-21BL4f5o8YBuZLPRDcy1lZfF";
         Slack slack = Slack.getInstance();
         ChatPostMessageResponse response = slack.methods(token)
                 .chatPostMessage(req -> req
