@@ -17,15 +17,13 @@ import java.io.IOException;
 @Service
 public class AltoService implements Promotion {
 
-    private static final String hotShotTag = "div#hotShot";
-    private static final String amountTag = "pull-left";
-    private static final String newPriceTag = "new-price";
-    private static final String oldPriceTag = "old-price";
-    private static final String productNameTag = "product-name";
-    private static final String productImageTag = "img-responsive center-block";
+    private static final String hotShotTag = "div.mbxiax-1.nnbTK";
+    private static final String newPriceTag = "span.iWkRRi";
+    private static final String oldPriceTag = "span.jgxIHJ";
+    private static final String productNameTag = "span.hGKlIY";
+    private static final String productImageTag = "span.grqydx";
     private static final String shopName = "al.to";
-    private static final String productURL = "https://www.al.to/goracy_strzal/";
-    private static final String connectionProperty = "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.95 Safari/537.11";
+    private static final String productURL = "https://www.al.to/";
 
     @Override
     public ProductDTO getPromotion() throws IOException {
@@ -41,7 +39,7 @@ public class AltoService implements Promotion {
 
     @Override
     public ProductDTO getProduct(Document document) {
-        Element element = document.select(hotShotTag).first();
+        Element element = document.select("div.mbxiax-6.CqKkO").first();
         ProductDTO productDTO = new ProductDTO(shopName, productURL);
         String productName = element.getElementsByClass(productNameTag).text();
         productDTO.setProductName(productName);
@@ -51,8 +49,7 @@ public class AltoService implements Promotion {
         productDTO.setOldPrice(oldPrice);
         String productUrl = element.getElementsByClass(productImageTag).attr("src");
         productDTO.setPictureUrl(productUrl);
-        String amount = element.getElementsByClass(amountTag).first().text().replaceAll("[^\\d]", "");
-        productDTO.setAmount(amount);
+        productDTO.setAmount("empty");
 
         return productDTO;
     }
