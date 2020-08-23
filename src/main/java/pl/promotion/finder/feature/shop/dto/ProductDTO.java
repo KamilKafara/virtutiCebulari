@@ -31,6 +31,14 @@ public class ProductDTO {
         this.productUrl = productUrl;
     }
 
+
+    public String getPictureUrl() {
+        if (this.pictureUrl == null || this.getPictureUrl().equals("")) {
+            this.setPictureUrl("https://paczaizm.pl/content/wp-content/uploads/elon-musk-za-kazdym-jechanym-razem-partia-razem.jpg");
+        }
+        return pictureUrl;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

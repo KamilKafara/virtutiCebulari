@@ -1,6 +1,5 @@
 package pl.promotion.finder.feature.scheduler;
 
-import com.slack.api.methods.SlackApiException;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -12,7 +11,7 @@ import pl.promotion.finder.feature.slackbot.SlackMessageSender;
 
 import java.io.IOException;
 import java.util.Date;
-import java.util.HashMap;
+import java.util.EnumMap;
 
 @Log4j2
 @Component
@@ -25,8 +24,8 @@ public class ScheduledTasks {
     private final CombatService combatService;
     private final MoreleService moreleService;
     private final XkomService xkomService;
-    private HashMap<Shop, ProductDTO> oldPromotions;
-    private HashMap<Shop, ProductDTO> newPromotions;
+    private EnumMap<Shop, ProductDTO> oldPromotions;
+    private EnumMap<Shop, ProductDTO> newPromotions;
 
     public ScheduledTasks(SlackMessageSender slackMessageSender, AmsoService amsoService, CarinetService carinetService, CombatService combatService, MoreleService moreleService, XkomService xkomService) {
         this.slackMessageSender = slackMessageSender;
@@ -39,27 +38,23 @@ public class ScheduledTasks {
     }
 
     protected void clearPromotions() {
-        HashMap<Shop, ProductDTO> oldPromotions = new HashMap<>();
-        oldPromotions.put(Shop.ALTO, null);
-        oldPromotions.put(Shop.AMSO, null);
-        oldPromotions.put(Shop.CARINET, null);
-        oldPromotions.put(Shop.COMBAT, null);
-        oldPromotions.put(Shop.MORELE, null);
-        oldPromotions.put(Shop.XKOM, null);
-        this.oldPromotions = oldPromotions;
+        this.oldPromotions = setNullPromotions();
+        this.newPromotions = setNullPromotions();
+    }
 
-        HashMap<Shop, ProductDTO> newPromotions = new HashMap<>();
-        newPromotions.put(Shop.ALTO, null);
-        newPromotions.put(Shop.AMSO, null);
-        newPromotions.put(Shop.CARINET, null);
-        newPromotions.put(Shop.COMBAT, null);
-        newPromotions.put(Shop.MORELE, null);
-        newPromotions.put(Shop.XKOM, null);
-        this.newPromotions = newPromotions;
+    protected EnumMap<Shop, ProductDTO> setNullPromotions() {
+        EnumMap<Shop, ProductDTO> promotions = new EnumMap<>(Shop.class);
+        promotions.put(Shop.ALTO, null);
+        promotions.put(Shop.AMSO, null);
+        promotions.put(Shop.CARINET, null);
+        promotions.put(Shop.COMBAT, null);
+        promotions.put(Shop.MORELE, null);
+        promotions.put(Shop.XKOM, null);
+        return promotions;
     }
 
     @Scheduled(fixedRate = DURATION)
-    public void reportPromotion() throws IOException, SlackApiException {
+    public void reportPromotion() throws IOException {
         log.info("Promotion scheduler: {}", new Date().toString());
         checkNewPromotion(amsoService, Shop.AMSO);
         checkNewPromotion(carinetService, Shop.CARINET);
@@ -68,13 +63,14 @@ public class ScheduledTasks {
         checkNewPromotion(xkomService, Shop.XKOM);
     }
 
-    private void checkNewPromotion(Promotion promotionService, Shop shop) throws IOException, SlackApiException {
+    private void checkNewPromotion(Promotion promotionService, Shop shop) throws IOException {
         newPromotions.put(shop, promotionService.getPromotion());
         if (oldPromotions.get(shop) != null) {
-            if (!oldPromotions.get(shop).getProductName().equals(newPromotions.get(shop).getProductName())) {
+            ProductDTO promotionToSend = newPromotions.get(shop);
+            if (!oldPromotions.get(shop).getProductName().equals(promotionToSend.getProductName())) {
                 log.info("Send message to slack");
-                slackMessageSender.sendPromotionMessage(newPromotions.get(shop));
-                log.info("Response body for " + shop.toString() + " : " + newPromotions.get(shop));
+                slackMessageSender.sendPromotionMessage(promotionToSend);
+                log.info("Response body for " + shop.toString() + " : " + promotionToSend);
             }
         } else {
             oldPromotions.put(shop, newPromotions.get(shop));
