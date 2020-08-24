@@ -17,7 +17,7 @@ import java.util.EnumMap;
 @Component
 @Service
 public class ScheduledTasks {
-    private static final int DURATION = 10_000;
+    private static final int DURATION = 30_000;
     private final SlackMessageSender slackMessageSender;
     private final AmsoService amsoService;
     private final CarinetService carinetService;
