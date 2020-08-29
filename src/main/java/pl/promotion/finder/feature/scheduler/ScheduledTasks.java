@@ -24,16 +24,18 @@ public class ScheduledTasks {
     private final CombatService combatService;
     private final MoreleService moreleService;
     private final XkomService xkomService;
+    private final ZadowolenieService zadowolenieService;
     private EnumMap<Shop, ProductDTO> oldPromotions;
     private EnumMap<Shop, ProductDTO> newPromotions;
 
-    public ScheduledTasks(SlackMessageSender slackMessageSender, AmsoService amsoService, CarinetService carinetService, CombatService combatService, MoreleService moreleService, XkomService xkomService) {
+    public ScheduledTasks(SlackMessageSender slackMessageSender, AmsoService amsoService, CarinetService carinetService, CombatService combatService, MoreleService moreleService, XkomService xkomService, ZadowolenieService zadowolenieService) {
         this.slackMessageSender = slackMessageSender;
         this.amsoService = amsoService;
         this.carinetService = carinetService;
         this.combatService = combatService;
         this.moreleService = moreleService;
         this.xkomService = xkomService;
+        this.zadowolenieService = zadowolenieService;
         clearPromotions();
     }
 
@@ -50,6 +52,7 @@ public class ScheduledTasks {
         promotions.put(Shop.COMBAT, null);
         promotions.put(Shop.MORELE, null);
         promotions.put(Shop.XKOM, null);
+        promotions.put(Shop.ZADOWOLENIE, null);
         return promotions;
     }
 
@@ -61,12 +64,15 @@ public class ScheduledTasks {
         checkNewPromotion(combatService, Shop.COMBAT);
         checkNewPromotion(moreleService, Shop.MORELE);
         checkNewPromotion(xkomService, Shop.XKOM);
+        checkNewPromotion(zadowolenieService, Shop.ZADOWOLENIE);
     }
 
     private void checkNewPromotion(Promotion promotionService, Shop shop) throws IOException {
         newPromotions.put(shop, promotionService.getPromotion());
         if (oldPromotions.get(shop) != null) {
             ProductDTO promotionToSend = newPromotions.get(shop);
+            slackMessageSender.sendPromotionMessage(promotionToSend);
+
             if (!oldPromotions.get(shop).getProductName().equals(promotionToSend.getProductName())) {
                 log.info("Send message to slack");
                 slackMessageSender.sendPromotionMessage(promotionToSend);
