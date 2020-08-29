@@ -17,14 +17,16 @@ public class PromotionService {
     private final CombatService combatService;
     private final MoreleService moreleService;
     private final XkomService xkomService;
+    private final ZadowolenieService zadowolenieService;
 
-    public PromotionService(AltoService altoService, AmsoService amsoService, CarinetService carinetService, CombatService combatService, MoreleService moreleService, XkomService xkomService) {
+    public PromotionService(AltoService altoService, AmsoService amsoService, CarinetService carinetService, CombatService combatService, MoreleService moreleService, XkomService xkomService, ZadowolenieService zadowolenieService) {
         this.altoService = altoService;
         this.amsoService = amsoService;
         this.carinetService = carinetService;
         this.combatService = combatService;
         this.moreleService = moreleService;
         this.xkomService = xkomService;
+        this.zadowolenieService = zadowolenieService;
     }
 
     public List<ProductDTO> getDailyPromotion() throws IOException {
@@ -35,6 +37,7 @@ public class PromotionService {
         productDTOList.add(combatService.getPromotion());
         productDTOList.add(moreleService.getPromotion());
         productDTOList.add(xkomService.getPromotion());
+        productDTOList.add(zadowolenieService.getPromotion());
 
         return productDTOList.parallelStream().filter(Objects::nonNull).collect(Collectors.toList());
     }

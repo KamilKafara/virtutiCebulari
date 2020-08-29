@@ -19,7 +19,7 @@ public class PromotionController {
     }
 
     @GetMapping
-    private List<ProductDTO> getAllPromotion() throws IOException {
+    public List<ProductDTO> getAllPromotion() throws IOException {
         return promotionService.getDailyPromotion();
     }
 }
