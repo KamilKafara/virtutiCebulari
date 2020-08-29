@@ -23,10 +23,18 @@ import static com.github.seratch.jslack.api.webhook.WebhookPayloads.payload;
 
 @Service
 public class SlackMessageSender {
-    public void sendPromotionMessage(ProductDTO productDTO) throws IOException {
-        String url = "https://hooks.slack.com/services/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";
+    private static final String SLACK_HOOKS_URL = "https://hooks.slack.com/services/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";
+
+    public String sendPromotionMessage(String message) throws IOException {
         Slack slack = Slack.getInstance();
-        slack.send(url, setupPayload(productDTO));
+        String payload = "{\"text\":\"" + message + "!\"}";
+        slack.send(SLACK_HOOKS_URL, payload);
+        return payload;
+    }
+
+    public void sendPromotionMessage(ProductDTO productDTO) throws IOException {
+        Slack slack = Slack.getInstance();
+        slack.send(SLACK_HOOKS_URL, setupPayload(productDTO));
     }
 
     private Payload setupPayload(ProductDTO productDTO) {
