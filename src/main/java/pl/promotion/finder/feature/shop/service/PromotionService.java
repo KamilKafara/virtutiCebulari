@@ -11,7 +11,6 @@ import java.util.stream.Collectors;
 
 @Service
 public class PromotionService {
-    private final AltoService altoService;
     private final AmsoService amsoService;
     private final CarinetService carinetService;
     private final CombatService combatService;
@@ -19,8 +18,7 @@ public class PromotionService {
     private final XkomService xkomService;
     private final ZadowolenieService zadowolenieService;
 
-    public PromotionService(AltoService altoService, AmsoService amsoService, CarinetService carinetService, CombatService combatService, MoreleService moreleService, XkomService xkomService, ZadowolenieService zadowolenieService) {
-        this.altoService = altoService;
+    public PromotionService(AmsoService amsoService, CarinetService carinetService, CombatService combatService, MoreleService moreleService, XkomService xkomService, ZadowolenieService zadowolenieService) {
         this.amsoService = amsoService;
         this.carinetService = carinetService;
         this.combatService = combatService;
@@ -31,7 +29,6 @@ public class PromotionService {
 
     public List<ProductDTO> getDailyPromotion() throws IOException {
         List<ProductDTO> productDTOList = new ArrayList<>();
-        productDTOList.add(altoService.getPromotion());
         productDTOList.add(amsoService.getPromotion());
         productDTOList.add(carinetService.getPromotion());
         productDTOList.add(combatService.getPromotion());
