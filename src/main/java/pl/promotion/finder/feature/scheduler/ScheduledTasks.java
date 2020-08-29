@@ -17,7 +17,7 @@ import java.util.EnumMap;
 @Component
 @Service
 public class ScheduledTasks {
-    private static final int DURATION = 30_000;
+    private static final int DURATION = 10_000;
     private final SlackMessageSender slackMessageSender;
     private final AmsoService amsoService;
     private final CarinetService carinetService;
@@ -71,8 +71,6 @@ public class ScheduledTasks {
         newPromotions.put(shop, promotionService.getPromotion());
         if (oldPromotions.get(shop) != null) {
             ProductDTO promotionToSend = newPromotions.get(shop);
-            slackMessageSender.sendPromotionMessage(promotionToSend);
-
             if (!oldPromotions.get(shop).getProductName().equals(promotionToSend.getProductName())) {
                 log.info("Send message to slack");
                 slackMessageSender.sendPromotionMessage(promotionToSend);
