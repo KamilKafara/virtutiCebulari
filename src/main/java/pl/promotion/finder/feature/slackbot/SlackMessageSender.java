@@ -23,7 +23,7 @@ import static com.github.seratch.jslack.api.webhook.WebhookPayloads.payload;
 
 @Service
 public class SlackMessageSender {
-    private static final String SLACK_HOOKS_URL = "https://hooks.slack.com/services/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";
+    private static final String SLACK_HOOKS_URL = "https://hooks.slack.com/services/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";
 
     public String sendPromotionMessage(String message) throws IOException {
         Slack slack = Slack.getInstance();
