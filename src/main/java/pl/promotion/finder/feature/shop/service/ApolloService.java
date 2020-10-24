@@ -16,22 +16,20 @@ import java.io.IOException;
 @Log4j2
 @Service
 public class ApolloService implements Promotion {
-    private static final String hotShotTag = "daily_offer";
-    private static final String amountTag = "div.progress__wrapper";
-    private static final String newPriceTag = "span.actual";
-    private static final String oldPriceTag = "span.old";
-    private static final String productNameTag = "name";
-    private static final String productImageTag = "img.img-responsive";
-    private static final String shopName = "apollo";
-    private static final String productURL = "https://www.apollo.pl/";
+    private static final String HOT_SHOT_TAG = "daily_offer";
+    private static final String NEW_PRICE_TAG = "span.actual";
+    private static final String SPAN_OLD = "span.old";
+    private static final String PRODUCT_NAME_TAG = "div.img__wrapper";
+    private static final String SHOP_NAME = "apollo";
+    private static final String PRODUCT_URL = "https://www.apollo.pl/";
 
     @Override
     public ProductDTO getPromotion() throws IOException {
         try {
-            Document document = Jsoup.connect(productURL).get();
+            Document document = Jsoup.connect(PRODUCT_URL).get();
             return getProduct(document);
         } catch (NullPointerException ex) {
-            log.error(new ResponseStatusException(HttpStatus.NOT_FOUND, "Not found promotion in " + shopName, new FieldInfo(shopName, ErrorCode.NOT_FOUND)));
+            log.error(new ResponseStatusException(HttpStatus.NOT_FOUND, "Not found promotion in " + SHOP_NAME, new FieldInfo(SHOP_NAME, ErrorCode.NOT_FOUND)));
             log.error(ex.getStackTrace());
         }
         return null;
@@ -39,19 +37,19 @@ public class ApolloService implements Promotion {
 
     @Override
     public ProductDTO getProduct(Document document) {
-        Elements elements = document.getElementsByClass(hotShotTag);
-        ProductDTO productDTO = new ProductDTO(shopName, productURL);
+        Elements elements = document.getElementsByClass(HOT_SHOT_TAG);
+        ProductDTO productDTO = new ProductDTO(SHOP_NAME, PRODUCT_URL);
 
-        String oldPrice = elements.select(oldPriceTag).text();
+        String oldPrice = elements.select(SPAN_OLD).text();
         productDTO.setOldPrice(oldPrice);
 
-        String newPrice = elements.select(newPriceTag).text();
+        String newPrice = elements.select(NEW_PRICE_TAG).text();
         productDTO.setNewPrice(newPrice);
 
-        String productName = elements.select("div.img__wrapper").select("img").attr("alt");
+        String productName = elements.select(PRODUCT_NAME_TAG).select("img").attr("alt");
         productDTO.setProductName(productName);
 
-        String imageUrl = productURL + elements.select("div.img__wrapper").select("img").attr("src");
+        String imageUrl = PRODUCT_URL + elements.select(PRODUCT_NAME_TAG).select("img").attr("src");
         productDTO.setPictureUrl(imageUrl);
 
         return productDTO;

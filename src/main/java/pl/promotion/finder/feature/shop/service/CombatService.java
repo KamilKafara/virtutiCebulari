@@ -16,34 +16,34 @@ import java.io.IOException;
 @Log4j2
 @Service
 public class CombatService implements Promotion {
-    private static final String hotShotTag = "div.product-essential";
-    private static final String priceTag = "span.price";
-    private static final String productNameTag = "span.base";
-    private static final String productImageTag = "div.col-md-10";
-    private static final String amountValue = "empty";
-    private static final String shopName = "combat";
-    private static final String productURL = "https://www.combat.pl/goracy-strzal";
+    private static final String HOT_SHOT_TAG = "div.product-essential";
+    private static final String PRICE_TAG = "span.price";
+    private static final String PRODUCT_NAME_TAG = "span.base";
+    private static final String PRODUCT_IMAGE_TAG = "div.col-md-10";
+    private static final String AMOUNT_VALUE = "empty";
+    private static final String SHOP_NAME = "combat";
+    private static final String PRODUCT_URL = "https://www.combat.pl/goracy-strzal";
 
     @Override
     public ProductDTO getPromotion() {
         try {
-            Document document = Jsoup.connect(productURL).get();
+            Document document = Jsoup.connect(PRODUCT_URL).get();
             return getProduct(document);
         } catch (NullPointerException | IOException ex) {
-            log.error(new ResponseStatusException(HttpStatus.NOT_FOUND, "Not found promotion in " + shopName, new FieldInfo(shopName, ErrorCode.NOT_FOUND)));
+            log.error(new ResponseStatusException(HttpStatus.NOT_FOUND, "Not found promotion in " + SHOP_NAME, new FieldInfo(SHOP_NAME, ErrorCode.NOT_FOUND)));
             log.error(ex.getStackTrace());
         }
         return null;
     }
 
     public ProductDTO getProduct(Document document) {
-        Elements elements = document.select(hotShotTag);
-        ProductDTO productDTO = new ProductDTO(shopName, productURL);
-        productDTO.setProductName(elements.select(productNameTag).text());
-        String oldPrice = elements.select(priceTag).first().text().replace("zł", "").replace("\\s+", "").replaceAll(" ", "");
-        String newPrice = elements.select(priceTag).last().text().replace("zł", "").replace("\\s+", "").replaceAll(" ", "");
+        Elements elements = document.select(HOT_SHOT_TAG);
+        ProductDTO productDTO = new ProductDTO(SHOP_NAME, PRODUCT_URL);
+        productDTO.setProductName(elements.select(PRODUCT_NAME_TAG).text());
+        String oldPrice = elements.select(PRICE_TAG).first().text().replace("zł", "").replace("\\s+", "").replaceAll(" ", "");
+        String newPrice = elements.select(PRICE_TAG).last().text().replace("zł", "").replace("\\s+", "").replaceAll(" ", "");
 
-        String productImage = document.select(productImageTag).select("img").attr("src");
+        String productImage = document.select(PRODUCT_IMAGE_TAG).select("img").attr("src");
         productDTO.setPictureUrl(productImage);
         productDTO.setOldPrice(oldPrice);
         productDTO.setNewPrice(newPrice);
@@ -55,7 +55,7 @@ public class CombatService implements Promotion {
             productDTO.setOldPrice(String.format("%.2f", newPriceDouble) + " zł");
             productDTO.setNewPrice(String.format("%.2f", oldPriceDouble) + " zł");
         }
-        productDTO.setAmount(amountValue);
+        productDTO.setAmount(AMOUNT_VALUE);
         return productDTO;
     }
 }

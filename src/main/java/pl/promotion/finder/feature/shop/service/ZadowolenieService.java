@@ -16,20 +16,20 @@ import java.io.IOException;
 @Log4j2
 @Service
 public class ZadowolenieService implements Promotion {
-    private static final String shopName = "zadowolenie";
-    private static final String shopURL = "https://zadowolenie.pl/";
-    private static final String productURL = "https://zadowolenie.pl/";
-    private static final String hotShotTag = "div.b-dayOffer.product_box_widget";
-    private static final String newPriceTag = "span.js-gridPrice";
-    private static final String productDetailsTag = "a.g-gridImg.g-productBoxWidget_img.js-gridImg";
+    private static final String SHOP_NAME = "zadowolenie";
+    private static final String SHOP_URL = "https://zadowolenie.pl/";
+    private static final String PRODUCT_URL = "https://zadowolenie.pl/";
+    private static final String HOT_SHOT_TAG = "div.b-dayOffer.product_box_widget";
+    private static final String NEW_PRICE_TAG = "span.js-gridPrice";
+    private static final String PRODUCT_DETAILS_TAG = "a.g-gridImg.g-productBoxWidget_img.js-gridImg";
 
     @Override
     public ProductDTO getPromotion() {
         try {
-            Document document = Jsoup.connect(shopURL).get();
+            Document document = Jsoup.connect(SHOP_URL).get();
             return getProduct(document);
         } catch (NullPointerException | IOException ex) {
-            log.error(new ResponseStatusException(HttpStatus.NOT_FOUND, "Not found promotion in " + shopName, new FieldInfo(shopName, ErrorCode.NOT_FOUND)));
+            log.error(new ResponseStatusException(HttpStatus.NOT_FOUND, "Not found promotion in " + SHOP_NAME, new FieldInfo(SHOP_NAME, ErrorCode.NOT_FOUND)));
             log.error(ex.getStackTrace());
         }
         return null;
@@ -37,15 +37,15 @@ public class ZadowolenieService implements Promotion {
 
     @Override
     public ProductDTO getProduct(Document document) {
-        Elements elements = document.select(hotShotTag);
-        ProductDTO productDTO = new ProductDTO(shopName, productURL);
-        String newPrice = elements.select(newPriceTag).text();
+        Elements elements = document.select(HOT_SHOT_TAG);
+        ProductDTO productDTO = new ProductDTO(SHOP_NAME, PRODUCT_URL);
+        String newPrice = elements.select(NEW_PRICE_TAG).text();
         productDTO.setOldPrice(newPrice);
         productDTO.setNewPrice(newPrice);
         productDTO.setAmount("empty");
-        Elements productDetails = elements.select(productDetailsTag).select("img");
+        Elements productDetails = elements.select(PRODUCT_DETAILS_TAG).select("img");
         productDTO.setProductName(productDetails.attr("alt"));
-        productDTO.setPictureUrl(shopURL + productDetails.attr("src"));
+        productDTO.setPictureUrl(SHOP_URL + productDetails.attr("src"));
         return productDTO;
     }
 }

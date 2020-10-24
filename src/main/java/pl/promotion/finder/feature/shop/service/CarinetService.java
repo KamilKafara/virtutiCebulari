@@ -17,41 +17,41 @@ import java.io.IOException;
 @Log4j2
 @Service
 public class CarinetService implements Promotion {
-    private static final String hotShotTag = "hotshot";
-    private static final String amountTag = "div.availability";
-    private static final String newPriceTag = "span.old";
-    private static final String oldPriceTag = "span.new";
-    private static final String productNameTag = "h4";
-    private static final String productImageTag = "img.img-responsive";
-    private static final String shopName = "carinet";
-    private static final String productURL = "https://carinet.pl/pl/";
+    private static final String HOT_SHOT_TAG = "hotshot";
+    private static final String AMOUNT_TAG = "div.availability";
+    private static final String NEW_PRICE_TAG = "span.old";
+    private static final String OLD_PRICE_TAG = "span.new";
+    private static final String PRODUCT_NAME_TAG = "h4";
+    private static final String PRODUCT_IMAGE_TAG = "img.img-responsive";
+    private static final String SHOP_NAME = "carinet";
+    private static final String PRODUCT_URL = "https://carinet.pl/pl/";
 
     @Override
     public ProductDTO getPromotion() throws IOException {
         try {
-            Document document = Jsoup.connect(productURL).get();
+            Document document = Jsoup.connect(PRODUCT_URL).get();
             return getProduct(document);
         } catch (NullPointerException ex) {
-            log.error(new ResponseStatusException(HttpStatus.NOT_FOUND, "Not found promotion in " + shopName, new FieldInfo(shopName, ErrorCode.NOT_FOUND)));
+            log.error(new ResponseStatusException(HttpStatus.NOT_FOUND, "Not found promotion in " + SHOP_NAME, new FieldInfo(SHOP_NAME, ErrorCode.NOT_FOUND)));
             log.error(ex.getStackTrace());
         }
         return null;
     }
 
     public ProductDTO getProduct(Document document) {
-        Elements elements = document.getElementsByClass(hotShotTag);
-        ProductDTO productDTO = new ProductDTO(shopName, productURL);
+        Elements elements = document.getElementsByClass(HOT_SHOT_TAG);
+        ProductDTO productDTO = new ProductDTO(SHOP_NAME, PRODUCT_URL);
 
-        String imageUrl = elements.select(productImageTag).attr("src");
+        String imageUrl = elements.select(PRODUCT_IMAGE_TAG).attr("src");
         productDTO.setPictureUrl(imageUrl);
-        productDTO.setProductName(elements.select(productNameTag).text());
+        productDTO.setProductName(elements.select(PRODUCT_NAME_TAG).text());
         String productUrl = elements.select("a").attr("href");
         productDTO.setProductUrl(productUrl);
-        Element oldPrice = document.select(newPriceTag).first();
+        Element oldPrice = document.select(NEW_PRICE_TAG).first();
         productDTO.setOldPrice(oldPrice.text());
-        Element newPrice = document.select(oldPriceTag).first();
+        Element newPrice = document.select(OLD_PRICE_TAG).first();
         productDTO.setNewPrice(newPrice.text());
-        String amount = elements.select(amountTag).select("span").text().replaceAll("[^\\d]", "");
+        String amount = elements.select(AMOUNT_TAG).select("span").text().replaceAll("[^\\d]", "");
         productDTO.setAmount(amount.replaceAll("[^\\d]", ""));
 
         return productDTO;

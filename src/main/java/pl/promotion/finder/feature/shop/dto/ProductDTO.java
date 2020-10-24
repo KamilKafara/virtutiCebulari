@@ -5,8 +5,6 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
-import java.sql.Timestamp;
-
 @Setter
 @Getter
 @ToString
@@ -19,12 +17,10 @@ public class ProductDTO {
     private String newPrice;
     private String amount;
     private String pictureUrl;
-    private Timestamp time;
 
     public ProductDTO(String shopName, String productUrl) {
         this.shopName = shopName;
         this.productUrl = productUrl;
-        this.time = new Timestamp(System.currentTimeMillis());
     }
 
     public void setProductUrl(String productUrl) {
@@ -50,12 +46,11 @@ public class ProductDTO {
                 Objects.equal(oldPrice, that.oldPrice) &&
                 Objects.equal(newPrice, that.newPrice) &&
                 Objects.equal(amount, that.amount) &&
-                Objects.equal(pictureUrl, that.pictureUrl) &&
-                Objects.equal(time, that.time);
+                Objects.equal(pictureUrl, that.pictureUrl);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(shopName, productUrl, productName, oldPrice, newPrice, amount, pictureUrl, time);
+        return Objects.hashCode(shopName, productUrl, productName, oldPrice, newPrice, amount, pictureUrl);
     }
 }
