@@ -17,19 +17,22 @@ public class PromotionService {
     private final MoreleService moreleService;
     private final XkomService xkomService;
     private final ZadowolenieService zadowolenieService;
+    private final ApolloService apolloService;
 
-    public PromotionService(AmsoService amsoService, CarinetService carinetService, CombatService combatService, MoreleService moreleService, XkomService xkomService, ZadowolenieService zadowolenieService) {
+    public PromotionService(AmsoService amsoService, CarinetService carinetService, CombatService combatService, MoreleService moreleService, XkomService xkomService, ZadowolenieService zadowolenieService, ApolloService apolloService) {
         this.amsoService = amsoService;
         this.carinetService = carinetService;
         this.combatService = combatService;
         this.moreleService = moreleService;
         this.xkomService = xkomService;
         this.zadowolenieService = zadowolenieService;
+        this.apolloService = apolloService;
     }
 
     public List<ProductDTO> getDailyPromotion() throws IOException {
         List<ProductDTO> productDTOList = new ArrayList<>();
         productDTOList.add(amsoService.getPromotion());
+        productDTOList.add(apolloService.getPromotion());
         productDTOList.add(carinetService.getPromotion());
         productDTOList.add(combatService.getPromotion());
         productDTOList.add(moreleService.getPromotion());
