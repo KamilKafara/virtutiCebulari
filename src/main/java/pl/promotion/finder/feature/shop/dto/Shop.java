@@ -7,5 +7,6 @@ public enum Shop {
     COMBAT,
     MORELE,
     XKOM,
-    ZADOWOLENIE
+    ZADOWOLENIE,
+    APOLLO
 }
