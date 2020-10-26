@@ -5,6 +5,12 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+
 @Setter
 @Getter
 @ToString
@@ -27,12 +33,38 @@ public class ProductDTO {
         this.productUrl = productUrl;
     }
 
-
     public String getPictureUrl() {
         if (this.pictureUrl == null || this.pictureUrl.equals("")) {
-            this.setPictureUrl("https://paczaizm.pl/content/wp-content/uploads/elon-musk-za-kazdym-jechanym-razem-partia-razem.jpg");
+            try {
+                this.pictureUrl = getRandomPicture();
+            } catch (NoSuchAlgorithmException e) {
+                e.printStackTrace();
+            }
         }
         return pictureUrl;
+    }
+
+    private String getRandomPicture() throws NoSuchAlgorithmException {
+        List<String> pictures = setupPictures();
+
+        Random rand = SecureRandom.getInstanceStrong();
+        int max = pictures.size() - 1;
+        int min = 0;
+        int randomNum = rand.nextInt((max - min) + 1) + min;
+        return pictures.get(randomNum);
+    }
+
+    private List<String> setupPictures() {
+        List<String> pictures = new ArrayList<>();
+
+        pictures.add("https://paczaizm.pl/content/wp-content/uploads/elon-musk-za-kazdym-jechanym-razem-partia-razem.jpg");
+        pictures.add("https://paczaizm.pl/content/wp-content/uploads/za-kazdym-namalowanym-obrazem-adolf-hitler.jpg");
+        pictures.add("https://paczaizm.pl/content/wp-content/uploads/za-kazdym-otwartym-wlazem-norek-miodowe-lata-partia-razem.jpg");
+        pictures.add("https://paczaizm.pl/content/wp-content/uploads/za-kazdym-zjedzonym-plazem-bocian-partia-razem.jpg");
+        pictures.add("https://www.wykop.pl/cdn/c3201142/comment_EM8D7A8huygUmdBcN4x7Mqzr2sEtN3UW.jpg");
+        pictures.add("http://dev.repostuj.pl/upload/2017/07/original_156488_f209e1ed4f91ed9a839f963bbd2fcebc.jpg");
+        pictures.add("https://www.wykop.pl/cdn/c3201142/comment_N9V3jpD3foMviruzynntCjHbxSr5DYgS.jpg");
+        return pictures;
     }
 
     @Override

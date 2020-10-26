@@ -2,6 +2,7 @@ package pl.promotion.finder.feature.shop.service;
 
 import org.springframework.stereotype.Service;
 import pl.promotion.finder.feature.shop.dto.ProductDTO;
+import pl.promotion.finder.feature.shop.dto.Shop;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -18,8 +19,9 @@ public class PromotionService {
     private final XkomService xkomService;
     private final ZadowolenieService zadowolenieService;
     private final ApolloService apolloService;
+    private final VobisService vobisService;
 
-    public PromotionService(AmsoService amsoService, CarinetService carinetService, CombatService combatService, MoreleService moreleService, XkomService xkomService, ZadowolenieService zadowolenieService, ApolloService apolloService) {
+    public PromotionService(AmsoService amsoService, CarinetService carinetService, CombatService combatService, MoreleService moreleService, XkomService xkomService, ZadowolenieService zadowolenieService, ApolloService apolloService, VobisService vobisService) {
         this.amsoService = amsoService;
         this.carinetService = carinetService;
         this.combatService = combatService;
@@ -27,6 +29,7 @@ public class PromotionService {
         this.xkomService = xkomService;
         this.zadowolenieService = zadowolenieService;
         this.apolloService = apolloService;
+        this.vobisService = vobisService;
     }
 
     public List<ProductDTO> getDailyPromotion() throws IOException {
@@ -38,7 +41,11 @@ public class PromotionService {
         productDTOList.add(moreleService.getPromotion());
         productDTOList.add(xkomService.getPromotion());
         productDTOList.add(zadowolenieService.getPromotion());
+        productDTOList.add(vobisService.getPromotion());
         return productDTOList.parallelStream().filter(Objects::nonNull).collect(Collectors.toList());
     }
 
+    public Shop[] getAllEndpoints() {
+        return Shop.values();
+    }
 }

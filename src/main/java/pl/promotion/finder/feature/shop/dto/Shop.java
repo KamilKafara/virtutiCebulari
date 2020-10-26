@@ -8,5 +8,6 @@ public enum Shop {
     MORELE,
     XKOM,
     ZADOWOLENIE,
-    APOLLO
+    APOLLO,
+    VOBIS
 }
