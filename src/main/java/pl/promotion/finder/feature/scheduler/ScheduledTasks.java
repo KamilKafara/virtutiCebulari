@@ -17,7 +17,7 @@ import java.util.Optional;
 @Component
 @Service
 public class ScheduledTasks {
-    private static final int DURATION = 15_000;
+    private static final int DURATION = 120_000;
     private final SlackMessageSender slackMessageSender;
     private final AmsoService amsoService;
     private final CarinetService carinetService;
