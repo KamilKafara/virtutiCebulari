@@ -24,21 +24,19 @@ public class ScheduledTasks {
     private final CombatService combatService;
     private final MoreleService moreleService;
     private final XkomService xkomService;
-    private final ZadowolenieService zadowolenieService;
     private final VobisService vobisService;
     private final ApolloService apolloService;
 
     private EnumMap<Shop, ProductDTO> oldPromotions;
     private EnumMap<Shop, ProductDTO> newPromotions;
 
-    public ScheduledTasks(SlackMessageSender slackMessageSender, AmsoService amsoService, CarinetService carinetService, CombatService combatService, MoreleService moreleService, XkomService xkomService, ZadowolenieService zadowolenieService, VobisService vobisService, ApolloService apolloService) {
+    public ScheduledTasks(SlackMessageSender slackMessageSender, AmsoService amsoService, CarinetService carinetService, CombatService combatService, MoreleService moreleService, XkomService xkomService, VobisService vobisService, ApolloService apolloService) {
         this.slackMessageSender = slackMessageSender;
         this.amsoService = amsoService;
         this.carinetService = carinetService;
         this.combatService = combatService;
         this.moreleService = moreleService;
         this.xkomService = xkomService;
-        this.zadowolenieService = zadowolenieService;
         this.vobisService = vobisService;
         this.apolloService = apolloService;
         clearPromotions();
@@ -70,7 +68,6 @@ public class ScheduledTasks {
         checkNewPromotion(combatService, Shop.COMBAT);
         checkNewPromotion(moreleService, Shop.MORELE);
         checkNewPromotion(xkomService, Shop.XKOM);
-        checkNewPromotion(zadowolenieService, Shop.ZADOWOLENIE);
         checkNewPromotion(vobisService, Shop.VOBIS);
         checkNewPromotion(apolloService, Shop.APOLLO);
     }
