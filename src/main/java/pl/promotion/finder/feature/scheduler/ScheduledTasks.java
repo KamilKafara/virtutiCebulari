@@ -10,7 +10,6 @@ import pl.promotion.finder.feature.shop.service.*;
 import pl.promotion.finder.feature.slackbot.SlackMessageSender;
 
 import java.io.IOException;
-import java.util.Date;
 import java.util.EnumMap;
 import java.util.Optional;
 
@@ -82,11 +81,14 @@ public class ScheduledTasks {
             Optional<ProductDTO> optionalProductDTO = Optional.ofNullable(newPromotions.get(shop));
             if (optionalProductDTO.isPresent()) {
                 ProductDTO promotionToSend = optionalProductDTO.get();
+                log.info(shop.toString() + promotionToSend.getProductName());
                 if (!oldPromotions.get(shop).getProductName().equals(promotionToSend.getProductName())) {
                     log.info("Send message to slack");
                     log.info(promotionToSend.toString());
                     slackMessageSender.sendPromotionMessage(promotionToSend);
                     log.info("Response body for " + shop.toString() + " : " + promotionToSend);
+                    newPromotions.put(shop, promotionToSend);
+                    oldPromotions.put(shop, promotionToSend);
                 }
             }
         } else {
