@@ -1,6 +1,7 @@
 package pl.promotion.finder.feature.scheduler;
 
 import lombok.extern.log4j.Log4j2;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
@@ -12,12 +13,13 @@ import pl.promotion.finder.feature.slackbot.SlackMessageSender;
 import java.io.IOException;
 import java.util.Date;
 import java.util.EnumMap;
+import java.util.Optional;
 
 @Log4j2
 @Component
 @Service
 public class ScheduledTasks {
-    private static final int DURATION = 30_000;
+    private static final int DURATION = 10_000;
     private final SlackMessageSender slackMessageSender;
     private final AmsoService amsoService;
     private final CarinetService carinetService;
@@ -25,10 +27,13 @@ public class ScheduledTasks {
     private final MoreleService moreleService;
     private final XkomService xkomService;
     private final ZadowolenieService zadowolenieService;
+    private final VobisService vobisService;
+    private final ApolloService apolloService;
+
     private EnumMap<Shop, ProductDTO> oldPromotions;
     private EnumMap<Shop, ProductDTO> newPromotions;
 
-    public ScheduledTasks(SlackMessageSender slackMessageSender, AmsoService amsoService, CarinetService carinetService, CombatService combatService, MoreleService moreleService, XkomService xkomService, ZadowolenieService zadowolenieService) {
+    public ScheduledTasks(SlackMessageSender slackMessageSender, AmsoService amsoService, CarinetService carinetService, CombatService combatService, MoreleService moreleService, XkomService xkomService, ZadowolenieService zadowolenieService, VobisService vobisService, ApolloService apolloService) {
         this.slackMessageSender = slackMessageSender;
         this.amsoService = amsoService;
         this.carinetService = carinetService;
@@ -36,6 +41,8 @@ public class ScheduledTasks {
         this.moreleService = moreleService;
         this.xkomService = xkomService;
         this.zadowolenieService = zadowolenieService;
+        this.vobisService = vobisService;
+        this.apolloService = apolloService;
         clearPromotions();
     }
 
@@ -47,11 +54,13 @@ public class ScheduledTasks {
     protected EnumMap<Shop, ProductDTO> setNullPromotions() {
         EnumMap<Shop, ProductDTO> promotions = new EnumMap<>(Shop.class);
         promotions.put(Shop.ALTO, null);
+        promotions.put(Shop.APOLLO, null);
         promotions.put(Shop.AMSO, null);
         promotions.put(Shop.CARINET, null);
         promotions.put(Shop.COMBAT, null);
         promotions.put(Shop.MORELE, null);
         promotions.put(Shop.XKOM, null);
+        promotions.put(Shop.VOBIS, null);
         promotions.put(Shop.ZADOWOLENIE, null);
         return promotions;
     }
@@ -65,16 +74,23 @@ public class ScheduledTasks {
         checkNewPromotion(moreleService, Shop.MORELE);
         checkNewPromotion(xkomService, Shop.XKOM);
         checkNewPromotion(zadowolenieService, Shop.ZADOWOLENIE);
+        checkNewPromotion(vobisService, Shop.VOBIS);
+        checkNewPromotion(apolloService, Shop.APOLLO);
     }
 
     private void checkNewPromotion(Promotion promotionService, Shop shop) throws IOException {
         newPromotions.put(shop, promotionService.getPromotion());
         if (oldPromotions.get(shop) != null) {
-            ProductDTO promotionToSend = newPromotions.get(shop);
-            if (!oldPromotions.get(shop).getProductName().equals(promotionToSend.getProductName())) {
-                log.info("Send message to slack");
-                slackMessageSender.sendPromotionMessage(promotionToSend);
-                log.info("Response body for " + shop.toString() + " : " + promotionToSend);
+            Optional<ProductDTO> optionalProductDTO = Optional.ofNullable(newPromotions.get(shop));
+            if (optionalProductDTO.isPresent()) {
+                ProductDTO promotionToSend = optionalProductDTO.get();
+                log.info("new promotion ");
+                if (!oldPromotions.get(shop).getProductName().equals(promotionToSend.getProductName())) {
+                    log.info("Send message to slack");
+                    log.info(promotionToSend.toString());
+                    slackMessageSender.sendPromotionMessage(promotionToSend);
+                    log.info("Response body for " + shop.toString() + " : " + promotionToSend);
+                }
             }
         } else {
             oldPromotions.put(shop, newPromotions.get(shop));
