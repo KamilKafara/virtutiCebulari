@@ -1,7 +1,6 @@
 package pl.promotion.finder.feature.scheduler;
 
 import lombok.extern.log4j.Log4j2;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
@@ -19,7 +18,7 @@ import java.util.Optional;
 @Component
 @Service
 public class ScheduledTasks {
-    private static final int DURATION = 10_000;
+    private static final int DURATION = 15_000;
     private final SlackMessageSender slackMessageSender;
     private final AmsoService amsoService;
     private final CarinetService carinetService;
@@ -67,7 +66,6 @@ public class ScheduledTasks {
 
     @Scheduled(fixedRate = DURATION)
     public void reportPromotion() throws IOException {
-        log.info("Promotion scheduler: {}", new Date().toString());
         checkNewPromotion(amsoService, Shop.AMSO);
         checkNewPromotion(carinetService, Shop.CARINET);
         checkNewPromotion(combatService, Shop.COMBAT);
@@ -84,7 +82,6 @@ public class ScheduledTasks {
             Optional<ProductDTO> optionalProductDTO = Optional.ofNullable(newPromotions.get(shop));
             if (optionalProductDTO.isPresent()) {
                 ProductDTO promotionToSend = optionalProductDTO.get();
-                log.info("new promotion ");
                 if (!oldPromotions.get(shop).getProductName().equals(promotionToSend.getProductName())) {
                     log.info("Send message to slack");
                     log.info(promotionToSend.toString());
