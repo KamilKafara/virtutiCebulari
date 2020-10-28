@@ -78,8 +78,7 @@ public class ScheduledTasks {
             Optional<ProductDTO> optionalProductDTO = Optional.ofNullable(newPromotions.get(shop));
             if (optionalProductDTO.isPresent()) {
                 ProductDTO promotionToSend = optionalProductDTO.get();
-                log.info(shop.toString() + " - " + promotionToSend.getProductName());
-                if (!oldPromotions.get(shop).getProductName().equals(promotionToSend.getProductName())) {
+                if (!oldPromotions.get(shop).getProductName().equals(promotionToSend.getProductName()) && (promotionToSend.getNewPrice() != 0.0)) {
                     log.info("Send message to slack");
                     log.info(promotionToSend.toString());
                     slackMessageSender.sendPromotionMessage(promotionToSend);

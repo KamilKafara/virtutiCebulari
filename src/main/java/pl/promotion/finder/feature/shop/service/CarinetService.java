@@ -48,9 +48,9 @@ public class CarinetService implements Promotion {
         String productUrl = elements.select("a").attr("href");
         productDTO.setProductUrl(productUrl);
         Element oldPrice = document.select(NEW_PRICE_TAG).first();
-        productDTO.setOldPrice(oldPrice.text());
+        productDTO.setOldPrice(oldPrice.text().replace(",",""));
         Element newPrice = document.select(OLD_PRICE_TAG).first();
-        productDTO.setNewPrice(newPrice.text());
+        productDTO.setNewPrice(newPrice.text().replace(",",""));
         String amount = elements.select(AMOUNT_TAG).select("span").text().replaceAll("[^\\d]", "");
         productDTO.setAmount(amount.replaceAll("[^\\d]", ""));
 

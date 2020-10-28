@@ -13,6 +13,8 @@ import pl.promotion.finder.exception.FieldInfo;
 import pl.promotion.finder.feature.shop.dto.ProductDTO;
 
 import java.io.IOException;
+import java.time.DayOfWeek;
+import java.time.LocalDate;
 
 @Service
 @Log4j2
@@ -43,7 +45,10 @@ public class VobisService implements Promotion {
     public ProductDTO getProduct(Document document) {
         Elements elements = document.select(HOT_SHOT_TAG);
         ProductDTO productDTO = new ProductDTO(SHOP_NAME, SHOP_PROMOTION_URL);
-        Element element = elements.last();
+        LocalDate date = LocalDate.now();
+
+        DayOfWeek dayOfWeek = date.getDayOfWeek();
+        Element element = elements.get(dayOfWeek.getValue());
         String oldPrice = element.select(SPAN_OLD).text();
         productDTO.setOldPrice(oldPrice);
 
