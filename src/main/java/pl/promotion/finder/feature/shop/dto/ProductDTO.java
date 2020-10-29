@@ -25,8 +25,8 @@ public class ProductDTO {
 
     private String productUrl;
     private String productName;
-    private Double oldPrice;
-    private Double newPrice;
+    private String oldPrice;
+    private String newPrice;
     private String amount;
     private String pictureUrl;
     private Double percentageCut;
@@ -79,21 +79,11 @@ public class ProductDTO {
     }
 
     public void setOldPrice(String oldPrice) {
-        this.oldPrice = parseToDouble(oldPrice);
-        if (this.newPrice != null) {
-            setupPercentageCut();
-        }
+        this.oldPrice = oldPrice;
     }
 
     public void setNewPrice(String newPrice) {
-        this.newPrice = parseToDouble(newPrice);
-        if (this.oldPrice != null) {
-            setupPercentageCut();
-        }
-    }
-
-    private Double parseToDouble(String amount) {
-        return parse(amount).doubleValue();
+        this.newPrice = newPrice;
     }
 
     private BigDecimal parse(String amount) {
@@ -118,7 +108,7 @@ public class ProductDTO {
     }
 
     private void setupPercentageCut() {
-        this.percentageCut = ((oldPrice - newPrice) / oldPrice) * 100;
+        this.percentageCut = ((Double.parseDouble(oldPrice) - Double.parseDouble(newPrice)) / Double.parseDouble(oldPrice)) * 100;
     }
 
     @Override
