@@ -24,7 +24,7 @@ import static com.github.seratch.jslack.api.webhook.WebhookPayloads.payload;
 @Service
 public class SlackMessageSender {
 
-    private static final String SLACK_HOOKS_URL = System.getenv("SLACK_WEBHOOK");
+    private static final String SLACK_HOOKS_URL = System.getenv("https://hooks.slack.com/services/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");
 
     public String sendPromotionMessage(String message) throws IOException {
         Slack slack = Slack.getInstance();
@@ -47,8 +47,8 @@ public class SlackMessageSender {
                 .build();
 
         List<TextObject> priceFields = new ArrayList<>();
-        priceFields.add(markdownText("~" + productDTO.getOldPrice() + "~"));
-        priceFields.add(markdownText("*" + productDTO.getNewPrice() + "*"));
+        priceFields.add(markdownText("~" + productDTO.getOldPrice() + " zł " + "~"));
+        priceFields.add(markdownText("*" + productDTO.getNewPrice() + " zł " + "*"));
 
         SectionBlock shopNameSectionBlock = SectionBlock.builder()
                 .text(plainText(productDTO.getShopName()))
