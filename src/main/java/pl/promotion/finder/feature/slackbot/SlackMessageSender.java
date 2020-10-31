@@ -47,8 +47,8 @@ public class SlackMessageSender {
                 .build();
 
         List<TextObject> priceFields = new ArrayList<>();
-        priceFields.add(markdownText("~" + productDTO.getOldPrice() + " zł " + "~"));
-        priceFields.add(markdownText("*" + productDTO.getNewPrice() + " zł " + "*"));
+        priceFields.add(markdownText("~" + productDTO.getOldPrice()  + "~"));
+        priceFields.add(markdownText("*" + productDTO.getNewPrice()  + "*"));
 
         SectionBlock shopNameSectionBlock = SectionBlock.builder()
                 .text(plainText(productDTO.getShopName()))

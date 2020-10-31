@@ -32,8 +32,12 @@ public class ProductDTO {
     private Double percentageCut;
 
     public ProductDTO(String shopName, String productUrl) {
+        this.newPrice = "";
+        this.oldPrice = "";
         this.shopName = shopName;
         this.productUrl = productUrl;
+        this.amount = "empty";
+
     }
 
     public void setProductUrl(String productUrl) {
@@ -109,6 +113,28 @@ public class ProductDTO {
 
     private void setupPercentageCut() {
         this.percentageCut = ((Double.parseDouble(oldPrice) - Double.parseDouble(newPrice)) / Double.parseDouble(oldPrice)) * 100;
+    }
+
+    public String getOldPrice() {
+        this.oldPrice = oldPrice.replace(",", ".");
+        if (oldPrice.contains("zł")) {
+            return oldPrice;
+        } else if (!oldPrice.equals("")) {
+            return oldPrice + " zł";
+        } else {
+            return null;
+        }
+    }
+
+    public String getNewPrice() {
+        this.newPrice = newPrice.replace(",", ".");
+        if (newPrice.contains("zł")) {
+            return newPrice;
+        } else if (!newPrice.equals("")) {
+            return newPrice + " zł";
+        } else {
+            return null;
+        }
     }
 
     @Override
