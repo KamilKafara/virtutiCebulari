@@ -116,7 +116,7 @@ public class ProductDTO {
     }
 
     public String getOldPrice() {
-        this.oldPrice = oldPrice.replace(",", ".");
+        this.oldPrice = setupPrice(oldPrice);
         if (oldPrice.contains("zł")) {
             return oldPrice;
         } else if (!oldPrice.equals("")) {
@@ -127,7 +127,7 @@ public class ProductDTO {
     }
 
     public String getNewPrice() {
-        this.newPrice = newPrice.replace(",", ".");
+        this.newPrice = setupPrice(newPrice);
         if (newPrice.contains("zł")) {
             return newPrice;
         } else if (!newPrice.equals("")) {
@@ -135,6 +135,10 @@ public class ProductDTO {
         } else {
             return null;
         }
+    }
+
+    private String setupPrice(String price) {
+        return price.replace(",", ".").replace(" ", "");
     }
 
     @Override
