@@ -7,6 +7,7 @@ import lombok.ToString;
 import lombok.extern.log4j.Log4j2;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.text.DecimalFormat;
@@ -37,7 +38,6 @@ public class ProductDTO {
         this.shopName = shopName;
         this.productUrl = productUrl;
         this.amount = "empty";
-
     }
 
     public void setProductUrl(String productUrl) {
@@ -84,14 +84,21 @@ public class ProductDTO {
 
     public void setOldPrice(String oldPrice) {
         this.oldPrice = oldPrice;
+        this.oldPrice = addCurrency(this.oldPrice);
+        if (!ProductDTO.this.newPrice.equals("")) {
+            setupPercentageCut();
+        }
     }
 
     public void setNewPrice(String newPrice) {
         this.newPrice = newPrice;
+        this.newPrice = addCurrency(this.newPrice);
+        if (!oldPrice.equals("")) {
+            setupPercentageCut();
+        }
     }
 
     private BigDecimal parse(String amount) {
-
         if (amount.equals("")) {
             return new BigDecimal("0.0");
         }
@@ -112,28 +119,27 @@ public class ProductDTO {
     }
 
     private void setupPercentageCut() {
-        this.percentageCut = ((Double.parseDouble(oldPrice) - Double.parseDouble(newPrice)) / Double.parseDouble(oldPrice)) * 100;
+        double percentage = (parse(oldPrice).doubleValue() - (parse(newPrice).doubleValue())) / (parse(oldPrice).doubleValue()) * 100;
+        this.percentageCut = BigDecimal.valueOf(percentage).setScale(2, RoundingMode.HALF_UP).doubleValue();
     }
 
     public String getOldPrice() {
         this.oldPrice = setupPrice(oldPrice);
-        if (oldPrice.contains("zł")) {
-            return oldPrice;
-        } else if (!oldPrice.equals("")) {
-            return oldPrice + " zł";
-        } else {
-            return null;
-        }
+        return this.oldPrice;
     }
 
     public String getNewPrice() {
         this.newPrice = setupPrice(newPrice);
-        if (newPrice.contains("zł")) {
-            return newPrice;
-        } else if (!newPrice.equals("")) {
-            return newPrice + " zł";
+        return this.newPrice;
+    }
+
+    private String addCurrency(String content) {
+        if (content.contains("zł")) {
+            return content;
+        } else if (!content.equals("")) {
+            return content + " zł";
         } else {
-            return null;
+            return "";
         }
     }
 

@@ -45,9 +45,21 @@ public class MoreleService implements Promotion {
         productDTO.setProductUrl(productDetails.attr(PRODUCT_URL_ATTRIBUTE));
         productDTO.setProductName(productDetails.attr(PRODUCT_NAME_ATTRIBUTE));
         productDTO.setPictureUrl(productDetails.select(PRODUCT_IMAGE_TAG).first().attr("src"));
-        productDTO.setOldPrice(elements.select(OLD_PRICE_TAG).text());
-        productDTO.setNewPrice(elements.select(NEW_PRICE_TAG).text());
+
+        String oldPrice = elements.select(OLD_PRICE_TAG).text();
+        String oldPriceReplaced = convertToAmountFormat(oldPrice);
+        productDTO.setOldPrice(oldPriceReplaced);
+
+        String newPrice = elements.select(NEW_PRICE_TAG).text();
+        String newPriceReplaced = convertToAmountFormat(newPrice);
+        productDTO.setNewPrice(newPriceReplaced);
+
         productDTO.setAmount(elements.select(AMOUNT_TAG).text().replaceAll("\\D+", ""));
+
         return productDTO;
+    }
+
+    protected String convertToAmountFormat(String context) {
+        return context.replaceAll("[^\\d.]", "")+".00";
     }
 }

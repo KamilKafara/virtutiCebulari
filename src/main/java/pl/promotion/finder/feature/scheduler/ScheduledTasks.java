@@ -82,6 +82,7 @@ public class ScheduledTasks {
                     log.info("Send message to slack");
                     log.info(promotionToSend.toString());
                     slackMessageSender.sendPromotionMessage(promotionToSend);
+
                     log.info("Response body for " + shop.toString() + " : " + promotionToSend);
                     newPromotions.put(shop, promotionToSend);
                     oldPromotions.put(shop, promotionToSend);
