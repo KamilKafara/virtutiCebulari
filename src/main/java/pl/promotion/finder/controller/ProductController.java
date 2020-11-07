@@ -28,9 +28,7 @@ public class ProductController {
         return productService.getAll();
     }
 
-    @PostMapping(value = "/graphQL",
-            consumes = MediaType.APPLICATION_JSON_UTF8_VALUE,
-            produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @PostMapping(value = "/graphQL")
     @ResponseBody
     public ResponseEntity<Object> getAllBooks(@RequestBody String query) {
         ExecutionResult execute = graphQLService.getGraphQL().execute(query);
