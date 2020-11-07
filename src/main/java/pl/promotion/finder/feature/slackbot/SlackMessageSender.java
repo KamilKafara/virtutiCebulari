@@ -7,7 +7,7 @@ import com.github.seratch.jslack.api.model.block.composition.TextObject;
 import com.github.seratch.jslack.api.model.block.element.ImageElement;
 import com.github.seratch.jslack.api.webhook.Payload;
 import org.springframework.stereotype.Service;
-import pl.promotion.finder.feature.shop.dto.ProductDTO;
+import pl.promotion.finder.feature.product.dto.ProductDTO;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -65,13 +65,15 @@ public class SlackMessageSender {
                                 .text("Przejdź do promocji")))
                                 .url(productDTO.getProductUrl())))));
 
-        return payload(b -> b.blocks(
+        Payload slackPayload = payload(b -> b.blocks(
                 asBlocks(
                         productNameWithImageBlock,
                         shopNameSectionBlock,
                         priceSectionBlock,
                         productURLActionBlock
                 )));
+
+        return slackPayload;
     }
 
 }

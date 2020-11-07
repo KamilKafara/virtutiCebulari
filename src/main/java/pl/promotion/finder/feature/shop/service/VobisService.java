@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import pl.promotion.finder.exception.ErrorCode;
 import pl.promotion.finder.exception.FieldInfo;
-import pl.promotion.finder.feature.shop.dto.ProductDTO;
+import pl.promotion.finder.feature.product.dto.ProductDTO;
 
 import java.io.IOException;
 import java.time.DayOfWeek;
@@ -23,7 +23,7 @@ public class VobisService implements Promotion {
     private static final String PRODUCT_DETAILS_TAG = "a.js-product-name";
     private static final String PRODUCT_NAME_ATTRIBUTE = "data-offer-name";
     private static final String HOT_SHOT_TAG = "div.m-offerBox_inner";
-    private static final String SPAN_OLD = "span.is-old.js-gridOldPrice";
+    private static final String OLD_PRICE_TAG = "span.is-old.js-gridOldPrice";
     private static final String NEW_PRICE_TAG = "span.is-new.js-gridPrice";
     private static final String PRODUCT_IMG_TAG = "a.g-gridImg";
     private static final String SHOP_NAME = "vobis";
@@ -49,7 +49,8 @@ public class VobisService implements Promotion {
 
         DayOfWeek dayOfWeek = date.getDayOfWeek();
         Element element = elements.get(dayOfWeek.getValue());
-        String oldPrice = element.select(SPAN_OLD).text();
+
+        String oldPrice = element.select(OLD_PRICE_TAG).text();
         productDTO.setOldPrice(oldPrice);
 
         String newPrice = element.select(NEW_PRICE_TAG).text();

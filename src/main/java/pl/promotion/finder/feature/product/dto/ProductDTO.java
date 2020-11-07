@@ -1,7 +1,8 @@
-package pl.promotion.finder.feature.shop.dto;
+package pl.promotion.finder.feature.product.dto;
 
 import com.google.common.base.Objects;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.extern.log4j.Log4j2;
@@ -10,6 +11,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
+import java.sql.Timestamp;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.ParseException;
@@ -21,9 +23,10 @@ import java.util.Random;
 @Setter
 @Getter
 @ToString
+@NoArgsConstructor
 public class ProductDTO {
-    private final String shopName;
-
+    private Long id;
+    private String shopName;
     private String productUrl;
     private String productName;
     private String oldPrice;
@@ -31,6 +34,7 @@ public class ProductDTO {
     private String amount;
     private String pictureUrl;
     private Double percentageCut;
+    private Timestamp createDate;
 
     public ProductDTO(String shopName, String productUrl) {
         this.newPrice = "";
@@ -85,17 +89,13 @@ public class ProductDTO {
     public void setOldPrice(String oldPrice) {
         this.oldPrice = oldPrice;
         this.oldPrice = addCurrency(this.oldPrice);
-        if (!ProductDTO.this.newPrice.equals("")) {
-            setupPercentageCut();
-        }
+        setupPercentageCut();
     }
 
     public void setNewPrice(String newPrice) {
         this.newPrice = newPrice;
         this.newPrice = addCurrency(this.newPrice);
-        if (!oldPrice.equals("")) {
-            setupPercentageCut();
-        }
+        setupPercentageCut();
     }
 
     private BigDecimal parse(String amount) {
@@ -119,8 +119,12 @@ public class ProductDTO {
     }
 
     private void setupPercentageCut() {
-        double percentage = (parse(oldPrice).doubleValue() - (parse(newPrice).doubleValue())) / (parse(oldPrice).doubleValue()) * 100;
-        this.percentageCut = BigDecimal.valueOf(percentage).setScale(2, RoundingMode.HALF_UP).doubleValue();
+        if ((newPrice != null) && (oldPrice != null)) {
+            double percentage = (parse(oldPrice).doubleValue() - (parse(newPrice).doubleValue())) / (parse(oldPrice).doubleValue()) * 100;
+            this.percentageCut = BigDecimal.valueOf(percentage).setScale(2, RoundingMode.HALF_UP).doubleValue();
+        } else {
+            this.percentageCut = 0.0;
+        }
     }
 
     public String getOldPrice() {
@@ -150,19 +154,21 @@ public class ProductDTO {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (!(o instanceof ProductDTO)) return false;
         ProductDTO that = (ProductDTO) o;
-        return Objects.equal(shopName, that.shopName) &&
-                Objects.equal(productUrl, that.productUrl) &&
-                Objects.equal(productName, that.productName) &&
-                Objects.equal(oldPrice, that.oldPrice) &&
-                Objects.equal(newPrice, that.newPrice) &&
-                Objects.equal(amount, that.amount) &&
-                Objects.equal(pictureUrl, that.pictureUrl);
+        return Objects.equal(getId(), that.getId()) &&
+                Objects.equal(getShopName(), that.getShopName()) &&
+                Objects.equal(getProductUrl(), that.getProductUrl()) &&
+                Objects.equal(getProductName(), that.getProductName()) &&
+                Objects.equal(getOldPrice(), that.getOldPrice()) &&
+                Objects.equal(getNewPrice(), that.getNewPrice()) &&
+                Objects.equal(getAmount(), that.getAmount()) &&
+                Objects.equal(getPictureUrl(), that.getPictureUrl()) &&
+                Objects.equal(getPercentageCut(), that.getPercentageCut());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(shopName, productUrl, productName, oldPrice, newPrice, amount, pictureUrl);
+        return Objects.hashCode(getId(), getShopName(), getProductUrl(), getProductName(), getOldPrice(), getNewPrice(), getAmount(), getPictureUrl(), getPercentageCut());
     }
 }

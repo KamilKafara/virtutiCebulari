@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import pl.promotion.finder.exception.ErrorCode;
 import pl.promotion.finder.exception.FieldInfo;
-import pl.promotion.finder.feature.shop.dto.ProductDTO;
+import pl.promotion.finder.feature.product.dto.ProductDTO;
 
 import java.io.IOException;
 

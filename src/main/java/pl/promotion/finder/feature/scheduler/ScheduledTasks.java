@@ -4,7 +4,8 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
-import pl.promotion.finder.feature.shop.dto.ProductDTO;
+import pl.promotion.finder.feature.product.dto.ProductDTO;
+import pl.promotion.finder.feature.product.service.ProductService;
 import pl.promotion.finder.feature.shop.dto.Shop;
 import pl.promotion.finder.feature.shop.service.*;
 import pl.promotion.finder.feature.slackbot.SlackMessageSender;
@@ -26,11 +27,12 @@ public class ScheduledTasks {
     private final XkomService xkomService;
     private final VobisService vobisService;
     private final ApolloService apolloService;
+    private final ProductService productService;
 
     private EnumMap<Shop, ProductDTO> oldPromotions;
     private EnumMap<Shop, ProductDTO> newPromotions;
 
-    public ScheduledTasks(SlackMessageSender slackMessageSender, AmsoService amsoService, CarinetService carinetService, CombatService combatService, MoreleService moreleService, XkomService xkomService, VobisService vobisService, ApolloService apolloService) {
+    public ScheduledTasks(SlackMessageSender slackMessageSender, AmsoService amsoService, CarinetService carinetService, CombatService combatService, MoreleService moreleService, XkomService xkomService, VobisService vobisService, ApolloService apolloService, ProductService productService) {
         this.slackMessageSender = slackMessageSender;
         this.amsoService = amsoService;
         this.carinetService = carinetService;
@@ -39,6 +41,7 @@ public class ScheduledTasks {
         this.xkomService = xkomService;
         this.vobisService = vobisService;
         this.apolloService = apolloService;
+        this.productService = productService;
         clearPromotions();
     }
 
@@ -81,7 +84,9 @@ public class ScheduledTasks {
                 if (!oldPromotions.get(shop).getProductName().equals(promotionToSend.getProductName()) && (!promotionToSend.getNewPrice().equals("0.0"))) {
                     log.info("Send message to slack");
                     log.info(promotionToSend.toString());
+
                     slackMessageSender.sendPromotionMessage(promotionToSend);
+                    productService.save(promotionToSend);
 
                     log.info("Response body for " + shop.toString() + " : " + promotionToSend);
                     newPromotions.put(shop, promotionToSend);

@@ -2,7 +2,7 @@ package pl.promotion.finder.feature.shop.service;
 
 import org.jsoup.nodes.Document;
 import org.springframework.stereotype.Service;
-import pl.promotion.finder.feature.shop.dto.ProductDTO;
+import pl.promotion.finder.feature.product.dto.ProductDTO;
 
 import java.io.IOException;
 
