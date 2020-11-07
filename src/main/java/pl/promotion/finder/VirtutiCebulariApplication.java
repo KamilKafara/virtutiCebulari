@@ -10,5 +10,4 @@ public class VirtutiCebulariApplication {
     public static void main(String[] args) {
         SpringApplication.run(VirtutiCebulariApplication.class, args);
     }
-
 }

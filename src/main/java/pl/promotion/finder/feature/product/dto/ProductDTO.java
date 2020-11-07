@@ -89,13 +89,13 @@ public class ProductDTO {
     public void setOldPrice(String oldPrice) {
         this.oldPrice = oldPrice;
         this.oldPrice = addCurrency(this.oldPrice);
-        setupPercentageCut();
+//        setupPercentageCut();
     }
 
     public void setNewPrice(String newPrice) {
         this.newPrice = newPrice;
         this.newPrice = addCurrency(this.newPrice);
-        setupPercentageCut();
+//        setupPercentageCut();
     }
 
     private BigDecimal parse(String amount) {

@@ -1,0 +1,23 @@
+schema{
+    query:Query
+}
+
+type Query{
+    allProducts: [Product]
+    product(id: String): Product
+}
+
+type Product {
+    id : Int
+    shopName : String
+    productUrl : String
+    productName : String
+    oldPrice : Int
+    newPrice : Int
+    amount : Float
+    pictureUrl : String
+    percentageCut : String
+    createDate : String
+}
+
+
