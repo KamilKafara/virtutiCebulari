@@ -6,21 +6,21 @@ import graphql.schema.idl.RuntimeWiring;
 import graphql.schema.idl.SchemaGenerator;
 import graphql.schema.idl.SchemaParser;
 import graphql.schema.idl.TypeDefinitionRegistry;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.Resource;
+import lombok.extern.log4j.Log4j2;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
+import org.springframework.util.FileCopyUtils;
 
 import javax.annotation.PostConstruct;
-import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 
+@Log4j2
 @Service
 public class GraphQLService {
     private final AllProductDataFetcher allProductDataFetcher;
     private final ProductDataFetcher productDataFetcher;
-
-    @Value("classpath:schema.graphql")
-    private Resource resource;
+    private static final String fileName = "/schema.graphql";
 
     private GraphQL graphQL;
 
@@ -30,9 +30,16 @@ public class GraphQLService {
     }
 
     @PostConstruct
-    private void loadSchema() throws IOException {
-        File file = resource.getFile();
-        TypeDefinitionRegistry typeDefinitionRegistry = new SchemaParser().parse(file);
+    private void loadSchema() {
+        String data = "";
+        ClassPathResource resource = new ClassPathResource(fileName);
+        try {
+            byte[] dataArr = FileCopyUtils.copyToByteArray(resource.getInputStream());
+            data = new String(dataArr, StandardCharsets.UTF_8);
+        } catch (IOException e) {
+            log.error(e.getMessage());
+        }
+        TypeDefinitionRegistry typeDefinitionRegistry = new SchemaParser().parse(data);
         RuntimeWiring runtimeWiring = buildRuntimeWiring();
         GraphQLSchema graphQLSchema = new SchemaGenerator().makeExecutableSchema(typeDefinitionRegistry, runtimeWiring);
         graphQL = GraphQL.newGraphQL(graphQLSchema).build();
