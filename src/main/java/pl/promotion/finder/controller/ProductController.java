@@ -27,6 +27,16 @@ public class ProductController {
         return productService.getAll();
     }
 
+    @GetMapping("/{id}")
+    public ProductDTO getById(@PathVariable("id") Long id) {
+        return productService.getById(id);
+    }
+
+    @PostMapping
+    public ProductDTO add(@RequestBody ProductDTO productDTO) {
+        return productService.save(productDTO);
+    }
+
     @PostMapping(value = "/graphQL")
     @ResponseBody
     public ResponseEntity<Object> getAllBooks(@RequestBody String query) {
