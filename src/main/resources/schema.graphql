@@ -12,8 +12,8 @@ type Product {
     shopName : String
     productUrl : String
     productName : String
-    oldPrice : Int
-    newPrice : Int
+    oldPrice : String
+    newPrice : String
     amount : Float
     pictureUrl : String
     percentageCut : String
