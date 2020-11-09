@@ -79,17 +79,22 @@ public class ScheduledTasks {
         newPromotions.put(shop, promotionService.getPromotion());
         if (oldPromotions.get(shop) != null) {
             Optional<ProductDTO> optionalProductDTO = Optional.ofNullable(newPromotions.get(shop));
-            if (optionalProductDTO.isPresent()) {
-                ProductDTO promotionToSend = optionalProductDTO.get();
-                if (!oldPromotions.get(shop).getProductName().equals(promotionToSend.getProductName())) {
-                    if (promotionToSend.isFilled()) {
-                        sendMessage(promotionToSend, shop);
-                    }
-                }
+            if (isNew(optionalProductDTO, shop)) {
+                sendMessage(optionalProductDTO.get(), shop);
             }
         } else {
             oldPromotions.put(shop, newPromotions.get(shop));
         }
+    }
+
+    private boolean isNew(Optional<ProductDTO> optionalProductDTO, Shop shop) {
+        if (optionalProductDTO.isPresent()) {
+            ProductDTO promotionToSend = optionalProductDTO.get();
+            if (!oldPromotions.get(shop).getProductName().equals(promotionToSend.getProductName())) {
+                return promotionToSend.isFilled();
+            }
+        }
+        return false;
     }
 
     private void sendMessage(ProductDTO promotionToSend, Shop shop) throws IOException {
