@@ -7,7 +7,6 @@ import pl.promotion.finder.feature.shop.dto.Shop;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -42,7 +41,9 @@ public class PromotionService {
         productDTOList.add(xkomService.getPromotion());
         productDTOList.add(zadowolenieService.getPromotion());
         productDTOList.add(vobisService.getPromotion());
-        return productDTOList.parallelStream().filter(Objects::nonNull).collect(Collectors.toList());
+        return productDTOList.parallelStream()
+                .filter(ProductDTO::isFilled)
+                .collect(Collectors.toList());
     }
 
     public Shop[] getAllEndpoints() {

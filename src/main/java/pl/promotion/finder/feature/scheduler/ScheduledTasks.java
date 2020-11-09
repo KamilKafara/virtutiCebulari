@@ -81,21 +81,27 @@ public class ScheduledTasks {
             Optional<ProductDTO> optionalProductDTO = Optional.ofNullable(newPromotions.get(shop));
             if (optionalProductDTO.isPresent()) {
                 ProductDTO promotionToSend = optionalProductDTO.get();
-                if (!oldPromotions.get(shop).getProductName().equals(promotionToSend.getProductName()) && (!promotionToSend.getNewPrice().equals("0.0"))) {
-                    log.info("Send message to slack");
-                    log.info(promotionToSend.toString());
-
-                    slackMessageSender.sendPromotionMessage(promotionToSend);
-                    productService.save(promotionToSend);
-
-                    log.info("Response body for " + shop.toString() + " : " + promotionToSend);
-                    newPromotions.put(shop, promotionToSend);
-                    oldPromotions.put(shop, promotionToSend);
+                if (!oldPromotions.get(shop).getProductName().equals(promotionToSend.getProductName())) {
+                    if (promotionToSend.isFilled()) {
+                        sendMessage(promotionToSend, shop);
+                    }
                 }
             }
         } else {
             oldPromotions.put(shop, newPromotions.get(shop));
         }
+    }
+
+    private void sendMessage(ProductDTO promotionToSend, Shop shop) throws IOException {
+        log.info("Send message to slack");
+        log.info(promotionToSend.toString());
+
+        slackMessageSender.sendPromotionMessage(promotionToSend);
+        productService.save(promotionToSend);
+
+        log.info("Response body for " + shop.toString() + " : " + promotionToSend);
+        newPromotions.put(shop, promotionToSend);
+        oldPromotions.put(shop, promotionToSend);
     }
 }
 

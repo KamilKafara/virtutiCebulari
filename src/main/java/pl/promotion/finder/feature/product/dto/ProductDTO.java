@@ -6,7 +6,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.validation.annotation.Validated;
 
+import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.security.NoSuchAlgorithmException;
@@ -24,21 +26,25 @@ import java.util.Random;
 @Getter
 @ToString
 @NoArgsConstructor
+@Validated
 public class ProductDTO {
     private Long id;
+    @NotNull
     private String shopName;
+    @NotNull
     private String productUrl;
+    @NotNull
     private String productName;
+    @NotNull
     private String oldPrice;
     private String newPrice;
     private String amount;
+    @NotNull
     private String pictureUrl;
     private Double percentageCut;
     private Timestamp createDate;
 
     public ProductDTO(String shopName, String productUrl) {
-        this.newPrice = "";
-        this.oldPrice = "";
         this.shopName = shopName;
         this.productUrl = productUrl;
         this.amount = "empty";
@@ -138,6 +144,7 @@ public class ProductDTO {
     }
 
     private String addCurrency(String content) {
+        content = content.replaceAll("PLN", "");
         if (content.contains("zł")) {
             return content;
         } else if (!content.equals("")) {
@@ -145,6 +152,31 @@ public class ProductDTO {
         } else {
             return "";
         }
+    }
+
+    public boolean isFilled() {
+        if (newPrice == null) {
+            return false;
+        }
+        if (oldPrice == null) {
+            return false;
+        }
+        if (shopName == null) {
+            return false;
+        }
+        if (oldPrice.equals("")) {
+            return false;
+        }
+        if (shopName.equals("")) {
+            return false;
+        }
+        if (productUrl == null) {
+            return false;
+        }
+        if (productName == null) {
+            return false;
+        }
+        return true;
     }
 
     private String setupPrice(String price) {
