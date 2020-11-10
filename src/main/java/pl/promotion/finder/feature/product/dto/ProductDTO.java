@@ -95,13 +95,11 @@ public class ProductDTO {
     public void setOldPrice(String oldPrice) {
         this.oldPrice = oldPrice;
         this.oldPrice = addCurrency(this.oldPrice);
-//        setupPercentageCut();
     }
 
     public void setNewPrice(String newPrice) {
         this.newPrice = newPrice;
         this.newPrice = addCurrency(this.newPrice);
-//        setupPercentageCut();
     }
 
     private BigDecimal parse(String amount) {
@@ -124,7 +122,19 @@ public class ProductDTO {
         return new BigDecimal(0);
     }
 
-    private void setupPercentageCut() {
+
+    private String addCurrency(String content) {
+        content = content.replaceAll("PLN", "");
+        if (content.contains("zł")) {
+            return content;
+        } else if (!content.equals("")) {
+            return content + " zł";
+        } else {
+            return "";
+        }
+    }
+
+    public void setupPercentageCut() {
         if ((newPrice != null) && (oldPrice != null)) {
             double percentage = (parse(oldPrice).doubleValue() - (parse(newPrice).doubleValue())) / (parse(oldPrice).doubleValue()) * 100;
             this.percentageCut = BigDecimal.valueOf(percentage).setScale(2, RoundingMode.HALF_UP).doubleValue();
@@ -143,15 +153,8 @@ public class ProductDTO {
         return this.newPrice;
     }
 
-    private String addCurrency(String content) {
-        content = content.replaceAll("PLN", "");
-        if (content.contains("zł")) {
-            return content;
-        } else if (!content.equals("")) {
-            return content + " zł";
-        } else {
-            return "";
-        }
+    private String setupPrice(String price) {
+        return price.replace(",", ".").replace(" ", "");
     }
 
     public boolean isFilled() {
@@ -176,12 +179,10 @@ public class ProductDTO {
         if (productName == null) {
             return false;
         }
+        setupPercentageCut();
         return true;
     }
 
-    private String setupPrice(String price) {
-        return price.replace(",", ".").replace(" ", "");
-    }
 
     @Override
     public boolean equals(Object o) {
