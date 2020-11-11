@@ -1,18 +1,19 @@
 package pl.promotion.finder.feature.product.repository;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
+import pl.promotion.finder.feature.shop.repository.Shop;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.sql.Timestamp;
-import java.util.Date;
 
 @Entity
 @Setter
 @Getter
+@NoArgsConstructor
+@AllArgsConstructor
 public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,8 +28,7 @@ public class Product {
     private Double percentageCut;
     private Timestamp createDate;
 
-    public Product() {
-        Date date = new Date();
-        this.createDate = new Timestamp(date.getTime());
-    }
+    @ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
+    private Shop shop;
+
 }

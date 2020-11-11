@@ -7,6 +7,7 @@ import lombok.Setter;
 import lombok.ToString;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.validation.annotation.Validated;
+import pl.promotion.finder.feature.shop.dto.ShopDTO;
 
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
@@ -43,6 +44,7 @@ public class ProductDTO {
     private String pictureUrl;
     private Double percentageCut;
     private Timestamp createDate;
+    private ShopDTO shop;
 
     public ProductDTO(String shopName, String productUrl) {
         this.shopName = shopName;

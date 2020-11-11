@@ -8,6 +8,7 @@ import pl.promotion.finder.feature.product.dto.ProductDTO;
 import pl.promotion.finder.feature.product.service.ProductService;
 import pl.promotion.finder.feature.promotion.service.*;
 import pl.promotion.finder.feature.shop.dto.Shop;
+import pl.promotion.finder.feature.shop.dto.ShopDTO;
 import pl.promotion.finder.feature.slackbot.SlackMessageSender;
 
 import java.io.IOException;
@@ -18,7 +19,7 @@ import java.util.Optional;
 @Component
 @Service
 public class ScheduledTasks {
-    private static final int DURATION = 120_000;
+    private static final int DURATION = 100;
     private final SlackMessageSender slackMessageSender;
     private final AmsoService amsoService;
     private final CarinetService carinetService;
@@ -102,6 +103,7 @@ public class ScheduledTasks {
         log.info(promotionToSend.toString());
 
         slackMessageSender.sendPromotionMessage(promotionToSend);
+        promotionToSend.setShop(new ShopDTO(shop.name().toLowerCase()));
         productService.save(promotionToSend);
 
         log.info("Response body for " + shop.toString() + " : " + promotionToSend);
