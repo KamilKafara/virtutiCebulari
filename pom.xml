@@ -15,7 +15,7 @@
         <version>2.2.0.M4</version>
         <relativePath/>
     </parent>
-    <!--todo: add properties for all dependencies-->
+
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>

@@ -39,7 +39,7 @@ public class ProductController {
 
     @PostMapping(value = "/graphQL")
     @ResponseBody
-    public ResponseEntity<Object> getAllBooks(@RequestBody String query) {
+    public ResponseEntity<Object> getByQuery(@RequestBody String query) {
         ExecutionResult execute = graphQLService.getGraphQL().execute(query);
         return new ResponseEntity<>(execute, HttpStatus.OK);
     }
