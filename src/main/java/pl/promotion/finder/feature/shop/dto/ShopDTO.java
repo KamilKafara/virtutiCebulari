@@ -1,5 +1,6 @@
 package pl.promotion.finder.feature.shop.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,6 +19,8 @@ public class ShopDTO {
     private Long id;
     @NotNull
     private String name;
+    @JsonIgnore
+
     private List<ProductDTO> productList;
 
     public ShopDTO(@NotNull String name) {
