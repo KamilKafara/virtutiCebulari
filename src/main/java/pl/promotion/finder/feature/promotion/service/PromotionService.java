@@ -1,4 +1,4 @@
-package pl.promotion.finder.feature.shop.service;
+package pl.promotion.finder.feature.promotion.service;
 
 import org.springframework.stereotype.Service;
 import pl.promotion.finder.feature.product.dto.ProductDTO;

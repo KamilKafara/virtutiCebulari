@@ -1,4 +1,4 @@
-package pl.promotion.finder.feature.shop.service;
+package pl.promotion.finder.feature.promotion.service;
 
 import org.jsoup.nodes.Document;
 import org.springframework.stereotype.Service;

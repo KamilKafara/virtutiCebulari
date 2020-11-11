@@ -1,4 +1,4 @@
-package pl.promotion.finder.feature.shop.service;
+package pl.promotion.finder.feature.promotion.service;
 
 import lombok.extern.log4j.Log4j2;
 import org.jsoup.Jsoup;

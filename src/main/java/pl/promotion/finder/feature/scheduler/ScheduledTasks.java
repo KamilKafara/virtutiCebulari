@@ -6,8 +6,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import pl.promotion.finder.feature.product.dto.ProductDTO;
 import pl.promotion.finder.feature.product.service.ProductService;
+import pl.promotion.finder.feature.promotion.service.*;
 import pl.promotion.finder.feature.shop.dto.Shop;
-import pl.promotion.finder.feature.shop.service.*;
 import pl.promotion.finder.feature.slackbot.SlackMessageSender;
 
 import java.io.IOException;

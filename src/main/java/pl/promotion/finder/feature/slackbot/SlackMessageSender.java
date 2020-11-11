@@ -67,15 +67,13 @@ public class SlackMessageSender {
                                 .text("Przejdź do promocji")))
                                 .url(productDTO.getProductUrl())))));
 
-        Payload slackPayload = payload(b -> b.blocks(
+        return payload(b -> b.blocks(
                 asBlocks(
                         productNameWithImageBlock,
                         shopNameSectionBlock,
                         priceSectionBlock,
                         productURLActionBlock
                 )));
-
-        return slackPayload;
     }
 
 }

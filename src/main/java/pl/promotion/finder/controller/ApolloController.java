@@ -4,7 +4,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import pl.promotion.finder.feature.product.dto.ProductDTO;
-import pl.promotion.finder.feature.shop.service.ApolloService;
+import pl.promotion.finder.feature.promotion.service.ApolloService;
 
 import java.io.IOException;
 
