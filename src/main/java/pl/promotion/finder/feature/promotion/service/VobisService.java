@@ -47,8 +47,11 @@ public class VobisService implements Promotion {
         ProductDTO productDTO = new ProductDTO(SHOP_NAME, SHOP_PROMOTION_URL);
         LocalDate date = LocalDate.now();
 
+        if (elements.isEmpty()) {
+            return null;
+        }
         DayOfWeek dayOfWeek = date.getDayOfWeek();
-        Element element = elements.get(dayOfWeek.getValue()-1);
+        Element element = elements.get(dayOfWeek.getValue() - 1);
 
         String oldPrice = element.select(OLD_PRICE_TAG).text();
         productDTO.setOldPrice(oldPrice);
