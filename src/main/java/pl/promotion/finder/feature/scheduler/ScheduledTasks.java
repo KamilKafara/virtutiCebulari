@@ -77,7 +77,10 @@ public class ScheduledTasks {
     }
 
     private void checkNewPromotion(Promotion promotionService, Shop shop) throws IOException {
-        newPromotions.put(shop, promotionService.getPromotion());
+        ProductDTO productDTO = promotionService.getPromotion();
+        newPromotions.put(shop, productDTO);
+
+        log.info("SHOP : " + shop + " PRODUCT : " + productDTO.toString());
         if (oldPromotions.get(shop) != null) {
             Optional<ProductDTO> optionalProductDTO = Optional.ofNullable(newPromotions.get(shop));
             if (isNew(optionalProductDTO, shop)) {
