@@ -1,5 +1,6 @@
 package pl.promotion.finder.feature.shop.service;
 
+import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 import pl.promotion.finder.exception.BadRequestException;
@@ -14,6 +15,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+@Log4j2
 @Service
 public class ShopService {
 
@@ -46,8 +48,12 @@ public class ShopService {
     }
 
     public ShopDTO save(@Validated ShopDTO shopDTO) {
+        log.info("save : " + shopDTO.toString());
         if (shopDTO.getId() != null) {
             throw new BadRequestException("Shop id cannot be set.", new FieldInfo("id", ErrorCode.BAD_REQUEST));
+        }
+        if (shopDTO.getName() == null) {
+            throw new BadRequestException("ShopDTO required name.", new FieldInfo("name", ErrorCode.BAD_REQUEST));
         }
         Optional<Shop> shop = Optional.ofNullable(shopRepository.getShopByName(shopDTO.getName()));
         if (shop.isPresent()) {
@@ -58,6 +64,7 @@ public class ShopService {
     }
 
     public ShopDTO edit(ShopDTO shopDTO, Long id) {
+        log.info("edit : " + shopDTO.toString());
         if (!shopDTO.getId().equals(id)) {
             throw new BadRequestException("Shop ids is not equals.", new FieldInfo("id", ErrorCode.BAD_REQUEST));
         }
@@ -66,7 +73,8 @@ public class ShopService {
     }
 
     public void delete(Long id) {
-        Long shopId = getById(id).getId();
-        shopRepository.deleteById(shopId);
+        ShopDTO shopDTO = getById(id);
+        log.info("Delete shop : " + shopDTO.toString());
+        shopRepository.deleteById(shopDTO.getId());
     }
 }

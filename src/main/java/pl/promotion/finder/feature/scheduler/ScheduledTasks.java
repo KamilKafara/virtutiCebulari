@@ -99,8 +99,7 @@ public class ScheduledTasks {
     }
 
     private void sendMessage(ProductDTO promotionToSend, Shop shop) throws IOException {
-        log.info("Send message to slack");
-        log.info(promotionToSend.toString());
+        log.info("Send message to slack: " + promotionToSend.toString());
 
         slackMessageSender.sendPromotionMessage(promotionToSend);
         promotionToSend.setShop(new ShopDTO(shop.name().toLowerCase()));
