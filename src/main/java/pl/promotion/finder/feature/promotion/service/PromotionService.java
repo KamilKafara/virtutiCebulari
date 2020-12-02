@@ -36,7 +36,7 @@ public class PromotionService {
         productDTOList.add(amsoService.getPromotion());
         productDTOList.add(apolloService.getPromotion());
         productDTOList.add(carinetService.getPromotion());
-        productDTOList.add(combatService.getPromotion());
+//        productDTOList.add(combatService.getPromotion());
         productDTOList.add(moreleService.getPromotion());
         productDTOList.add(xkomService.getPromotion());
         productDTOList.add(zadowolenieService.getPromotion());

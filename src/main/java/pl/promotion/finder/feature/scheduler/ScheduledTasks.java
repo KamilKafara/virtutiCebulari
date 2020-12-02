@@ -57,7 +57,7 @@ public class ScheduledTasks {
         promotions.put(Shop.APOLLO, null);
         promotions.put(Shop.AMSO, null);
         promotions.put(Shop.CARINET, null);
-        promotions.put(Shop.COMBAT, null);
+//        promotions.put(Shop.COMBAT, null);
         promotions.put(Shop.MORELE, null);
         promotions.put(Shop.XKOM, null);
         promotions.put(Shop.VOBIS, null);
@@ -69,7 +69,7 @@ public class ScheduledTasks {
     public void reportPromotion() throws IOException {
         checkNewPromotion(amsoService, Shop.AMSO);
         checkNewPromotion(carinetService, Shop.CARINET);
-        checkNewPromotion(combatService, Shop.COMBAT);
+//        checkNewPromotion(combatService, Shop.COMBAT);
         checkNewPromotion(moreleService, Shop.MORELE);
         checkNewPromotion(xkomService, Shop.XKOM);
         checkNewPromotion(vobisService, Shop.VOBIS);
