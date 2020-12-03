@@ -55,7 +55,7 @@ public class ScheduledTasks {
         EnumMap<Shop, ProductDTO> promotions = new EnumMap<>(Shop.class);
         promotions.put(Shop.ALTO, null);
         promotions.put(Shop.APOLLO, null);
-        promotions.put(Shop.AMSO, null);
+//        promotions.put(Shop.AMSO, null);
         promotions.put(Shop.CARINET, null);
 //        promotions.put(Shop.COMBAT, null);
         promotions.put(Shop.MORELE, null);
@@ -67,7 +67,7 @@ public class ScheduledTasks {
 
     @Scheduled(fixedRate = DURATION)
     public void reportPromotion() throws IOException {
-        checkNewPromotion(amsoService, Shop.AMSO);
+//        checkNewPromotion(amsoService, Shop.AMSO);
         checkNewPromotion(carinetService, Shop.CARINET);
 //        checkNewPromotion(combatService, Shop.COMBAT);
         checkNewPromotion(moreleService, Shop.MORELE);
