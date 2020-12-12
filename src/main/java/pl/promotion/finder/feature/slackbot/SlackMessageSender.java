@@ -47,8 +47,11 @@ public class SlackMessageSender {
                 .build();
 
         List<TextObject> priceFields = new ArrayList<>();
-        priceFields.add(markdownText("~" + productDTO.getOldPrice() + "~"));
+        if (!productDTO.getNewPrice().equals(productDTO.getOldPrice())) {
+            priceFields.add(markdownText("~" + productDTO.getOldPrice() + "~"));
+        }
         priceFields.add(markdownText("*" + productDTO.getNewPrice() + "*"));
+
         if (productDTO.getPercentageCut() != null) {
             if (!productDTO.getPercentageCut().isNaN()) {
                 priceFields.add(markdownText("*" + "Obniżka  -" + productDTO.getPercentageCut() + "% " + "*"));

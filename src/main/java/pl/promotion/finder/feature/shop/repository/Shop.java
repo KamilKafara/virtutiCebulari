@@ -22,6 +22,6 @@ public class Shop {
     @NotNull
     private String name;
 
-    @OneToMany(mappedBy = "shop", cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "shop", cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
     private List<Product> products;
 }

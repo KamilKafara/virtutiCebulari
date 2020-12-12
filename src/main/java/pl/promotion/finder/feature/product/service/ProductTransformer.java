@@ -1,7 +1,5 @@
 package pl.promotion.finder.feature.product.service;
 
-import org.modelmapper.ModelMapper;
-import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pl.promotion.finder.feature.product.dto.ProductDTO;
@@ -16,19 +14,37 @@ public class ProductTransformer {
     private ShopTransformer shopTransformer;
 
     public ProductDTO convertToDto(Product product) {
-        ModelMapper modelMapper = new ModelMapper();
-        modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
-        ProductDTO productDTO = modelMapper.map(product, ProductDTO.class);
+        ProductDTO productDTO = new ProductDTO();
+        productDTO.setId(product.getId());
+        productDTO.setShopName(product.getShopName());
+        productDTO.setProductUrl(product.getProductUrl());
+        productDTO.setProductName(product.getProductName());
+        productDTO.setOldPrice(product.getOldPrice());
+        productDTO.setNewPrice(product.getNewPrice());
+        productDTO.setAmount(product.getAmount());
+        productDTO.setPictureUrl(product.getPictureUrl());
+        productDTO.setPercentageCut(product.getPercentageCut());
+        productDTO.setCreateDate(product.getCreateDate());
+
         ShopDTO shopDTO = shopTransformer.convertToDTO(product.getShop());
         productDTO.setShop(shopDTO);
+
         return productDTO;
     }
 
     public Product convertFromDto(ProductDTO productDTO) {
-        ModelMapper modelMapper = new ModelMapper();
-        modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
+        Product product = new Product();
+        product.setId(productDTO.getId());
+        product.setShopName(productDTO.getShopName());
+        product.setProductUrl(productDTO.getProductUrl());
+        product.setProductName(productDTO.getProductName());
+        product.setOldPrice(productDTO.getOldPrice());
+        product.setNewPrice(productDTO.getNewPrice());
+        product.setAmount(productDTO.getAmount());
+        product.setPictureUrl(productDTO.getPictureUrl());
+        product.setPercentageCut(productDTO.getPercentageCut());
+        product.setCreateDate(productDTO.getCreateDate());
 
-        Product product = modelMapper.map(productDTO, Product.class);
         Shop shop = shopTransformer.convertFromDTO(productDTO.getShop());
         product.setShop(shop);
         return product;

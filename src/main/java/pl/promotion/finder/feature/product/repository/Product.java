@@ -28,7 +28,7 @@ public class Product {
     private Double percentageCut;
     private Timestamp createDate;
 
-    @ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
+    @ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
     private Shop shop;
 
 }
