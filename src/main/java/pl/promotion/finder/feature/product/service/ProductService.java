@@ -42,6 +42,9 @@ public class ProductService {
     public List<ProductDTO> getByName(String name) {
         return productRepository.findProductsByProductName(name).stream().map(productTransformer::convertToDto).collect(Collectors.toList());
     }
+    public List<ProductDTO> getByNameAndDate(String name,String date) {
+        return productRepository.findProductsByProductNameAndCreateDate(name,date).stream().map(productTransformer::convertToDto).collect(Collectors.toList());
+    }
 
     public ProductDTO getById(Long id) {
         return productTransformer.convertToDto(productRepository.getOne(id));

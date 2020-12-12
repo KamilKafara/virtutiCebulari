@@ -14,7 +14,6 @@ import pl.promotion.finder.feature.slackbot.SlackMessageSender;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.List;
-import java.util.Objects;
 
 @Log4j2
 @Component
@@ -45,12 +44,12 @@ public class ScheduledTasks {
 
     @Scheduled(fixedRate = DURATION)
     public void reportPromotion() throws IOException {
-//        checkNewPromotion(amsoService, Shop.AMSO);
-//        checkNewPromotion(carinetService, Shop.CARINET);
+        checkNewPromotion(amsoService, Shop.AMSO);
+        checkNewPromotion(carinetService, Shop.CARINET);
 //        checkNewPromotion(combatService, Shop.COMBAT);
-//        checkNewPromotion(moreleService, Shop.MORELE);
-//        checkNewPromotion(xkomService, Shop.XKOM);
-//        checkNewPromotion(vobisService, Shop.VOBIS);
+        checkNewPromotion(moreleService, Shop.MORELE);
+        checkNewPromotion(xkomService, Shop.XKOM);
+        checkNewPromotion(vobisService, Shop.VOBIS);
         checkNewPromotion(apolloService, Shop.APOLLO);
     }
 
@@ -64,15 +63,11 @@ public class ScheduledTasks {
             log.info("isEmpty - send");
             sendMessage(productDTO, shop);
         } else {
-            for (ProductDTO productJPA : productsFromJPA) {
-                String jpaDate = new SimpleDateFormat(dateFormat).format(productJPA.getCreateDate());
-                log.info("currentDate: " + currentDate +" vs jpaDate: " + jpaDate);
-                if (!Objects.equals(currentDate, jpaDate)) {
-                    log.info("notEquals - send");
-                    sendMessage(productDTO, shop);
-                }
+            List<ProductDTO> todayProducts = productService.getByNameAndDate(productDTO.getProductName(), currentDate);
+            if (!todayProducts.isEmpty()) {
+                log.info(" productsFromJPA isEmpty - send");
+                sendMessage(productDTO, shop);
             }
-
         }
     }
 
