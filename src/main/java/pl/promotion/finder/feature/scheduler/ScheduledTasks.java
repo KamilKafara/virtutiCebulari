@@ -60,12 +60,10 @@ public class ScheduledTasks {
 
         List<ProductDTO> productsFromJPA = productService.getByName(productDTO.getProductName());
         if (productsFromJPA.isEmpty()) {
-            log.info("isEmpty - send");
             sendMessage(productDTO, shop);
         } else {
             List<ProductDTO> todayProducts = productService.getByNameAndDate(productDTO.getProductName(), currentDate);
-            if (!todayProducts.isEmpty()) {
-                log.info(" productsFromJPA isEmpty - send");
+            if (todayProducts.isEmpty()) {
                 sendMessage(productDTO, shop);
             }
         }
