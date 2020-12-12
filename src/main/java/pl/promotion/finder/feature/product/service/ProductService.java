@@ -39,7 +39,7 @@ public class ProductService {
         return productRepository.findAll().stream().map(productTransformer::convertToDto).collect(Collectors.toList());
     }
 
-    private List<ProductDTO> getByName(String name) {
+    public List<ProductDTO> getByName(String name) {
         return productRepository.findProductsByProductName(name).stream().map(productTransformer::convertToDto).collect(Collectors.toList());
     }
 

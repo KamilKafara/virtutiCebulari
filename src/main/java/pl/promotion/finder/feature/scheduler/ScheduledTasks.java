@@ -12,8 +12,9 @@ import pl.promotion.finder.feature.shop.dto.ShopDTO;
 import pl.promotion.finder.feature.slackbot.SlackMessageSender;
 
 import java.io.IOException;
-import java.util.EnumMap;
-import java.util.Optional;
+import java.text.SimpleDateFormat;
+import java.util.List;
+import java.util.Objects;
 
 @Log4j2
 @Component
@@ -30,9 +31,6 @@ public class ScheduledTasks {
     private final ApolloService apolloService;
     private final ProductService productService;
 
-    private EnumMap<Shop, ProductDTO> oldPromotions;
-    private EnumMap<Shop, ProductDTO> newPromotions;
-
     public ScheduledTasks(SlackMessageSender slackMessageSender, AmsoService amsoService, CarinetService carinetService, CombatService combatService, MoreleService moreleService, XkomService xkomService, VobisService vobisService, ApolloService apolloService, ProductService productService) {
         this.slackMessageSender = slackMessageSender;
         this.amsoService = amsoService;
@@ -43,62 +41,36 @@ public class ScheduledTasks {
         this.vobisService = vobisService;
         this.apolloService = apolloService;
         this.productService = productService;
-        clearPromotions();
-    }
-
-    protected void clearPromotions() {
-        this.oldPromotions = setNullPromotions();
-        this.newPromotions = setNullPromotions();
-    }
-
-    protected EnumMap<Shop, ProductDTO> setNullPromotions() {
-        EnumMap<Shop, ProductDTO> promotions = new EnumMap<>(Shop.class);
-        promotions.put(Shop.ALTO, null);
-        promotions.put(Shop.APOLLO, null);
-//        promotions.put(Shop.AMSO, null);
-        promotions.put(Shop.CARINET, null);
-//        promotions.put(Shop.COMBAT, null);
-        promotions.put(Shop.MORELE, null);
-        promotions.put(Shop.XKOM, null);
-        promotions.put(Shop.VOBIS, null);
-        promotions.put(Shop.ZADOWOLENIE, null);
-        return promotions;
     }
 
     @Scheduled(fixedRate = DURATION)
     public void reportPromotion() throws IOException {
 //        checkNewPromotion(amsoService, Shop.AMSO);
-        checkNewPromotion(carinetService, Shop.CARINET);
+//        checkNewPromotion(carinetService, Shop.CARINET);
 //        checkNewPromotion(combatService, Shop.COMBAT);
-        checkNewPromotion(moreleService, Shop.MORELE);
-        checkNewPromotion(xkomService, Shop.XKOM);
-        checkNewPromotion(vobisService, Shop.VOBIS);
+//        checkNewPromotion(moreleService, Shop.MORELE);
+//        checkNewPromotion(xkomService, Shop.XKOM);
+//        checkNewPromotion(vobisService, Shop.VOBIS);
         checkNewPromotion(apolloService, Shop.APOLLO);
     }
 
     private void checkNewPromotion(Promotion promotionService, Shop shop) throws IOException {
         ProductDTO productDTO = promotionService.getPromotion();
-        newPromotions.put(shop, productDTO);
+        String dateFormat = "yyyy-MM-dd";
+        String currentDate = new SimpleDateFormat(dateFormat).format(productDTO.getCreateDate());
 
-        log.info("SHOP : " + shop + " PRODUCT : " + productDTO.toString());
-        if (oldPromotions.get(shop) != null) {
-            Optional<ProductDTO> optionalProductDTO = Optional.ofNullable(newPromotions.get(shop));
-            if (isNew(optionalProductDTO, shop)) {
-                sendMessage(optionalProductDTO.get(), shop);
-            }
+        List<ProductDTO> productsFromJPA = productService.getByName(productDTO.getProductName());
+        if (productsFromJPA.isEmpty()) {
+            sendMessage(productDTO, shop);
         } else {
-            oldPromotions.put(shop, newPromotions.get(shop));
-        }
-    }
-
-    private boolean isNew(Optional<ProductDTO> optionalProductDTO, Shop shop) {
-        if (optionalProductDTO.isPresent()) {
-            ProductDTO promotionToSend = optionalProductDTO.get();
-            if (!oldPromotions.get(shop).getProductName().equals(promotionToSend.getProductName())) {
-                return promotionToSend.isFilled();
+            for (ProductDTO productJPA : productsFromJPA) {
+                String jpaDate = new SimpleDateFormat(dateFormat).format(productJPA.getCreateDate());
+                if (!Objects.equals(currentDate, jpaDate)) {
+                    sendMessage(productDTO, shop);
+                }
             }
+
         }
-        return false;
     }
 
     private void sendMessage(ProductDTO promotionToSend, Shop shop) throws IOException {
@@ -109,8 +81,6 @@ public class ScheduledTasks {
         productService.save(promotionToSend);
 
         log.info("Response body for " + shop.toString() + " : " + promotionToSend);
-        newPromotions.put(shop, promotionToSend);
-        oldPromotions.put(shop, promotionToSend);
     }
 }
 

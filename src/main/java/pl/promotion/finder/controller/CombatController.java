@@ -6,8 +6,6 @@ import org.springframework.web.bind.annotation.RestController;
 import pl.promotion.finder.feature.product.dto.ProductDTO;
 import pl.promotion.finder.feature.promotion.service.CombatService;
 
-import java.io.IOException;
-
 @RestController
 @RequestMapping("/combat")
 public class CombatController {
@@ -19,7 +17,7 @@ public class CombatController {
     }
 
     @GetMapping
-    public ProductDTO getPromotion() throws IOException {
+    public ProductDTO getPromotion() {
         return combatService.getPromotion();
     }
 }

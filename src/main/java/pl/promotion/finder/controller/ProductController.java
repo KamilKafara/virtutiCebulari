@@ -33,7 +33,7 @@ public class ProductController {
     }
 
     @PostMapping
-    public ProductDTO add(@RequestBody ProductDTO productDTO) {
+    private ProductDTO add(@RequestBody ProductDTO productDTO) {
         return productService.save(productDTO);
     }
 

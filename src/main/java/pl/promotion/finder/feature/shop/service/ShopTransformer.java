@@ -11,6 +11,7 @@ public class ShopTransformer {
 
     public Shop convertFromDTO(ShopDTO shopDTO) {
         ModelMapper modelMapper = new ModelMapper();
+        modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
         return modelMapper.map(shopDTO, Shop.class);
     }
 

@@ -19,6 +19,7 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Random;
 
@@ -50,6 +51,8 @@ public class ProductDTO {
         this.shopName = shopName;
         this.productUrl = productUrl;
         this.amount = "empty";
+        Date date = new Date();
+        this.createDate = new Timestamp(date.getTime());
     }
 
     public void setProductUrl(String productUrl) {
@@ -115,8 +118,7 @@ public class ProductDTO {
         try {
             amount = amount.replaceAll(" ", "").replaceAll("\\.", ",");
             Number number = format.parse(amount.replaceAll("[^\\d].,", ""));
-            BigDecimal bigDecimalNumber = (BigDecimal) number;
-            return bigDecimalNumber;
+            return (BigDecimal) number;
 
         } catch (ParseException e) {
             e.printStackTrace();
