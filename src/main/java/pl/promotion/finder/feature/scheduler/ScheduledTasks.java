@@ -61,11 +61,14 @@ public class ScheduledTasks {
 
         List<ProductDTO> productsFromJPA = productService.getByName(productDTO.getProductName());
         if (productsFromJPA.isEmpty()) {
+            log.info("isEmpty - send");
             sendMessage(productDTO, shop);
         } else {
             for (ProductDTO productJPA : productsFromJPA) {
                 String jpaDate = new SimpleDateFormat(dateFormat).format(productJPA.getCreateDate());
+                log.info("currentDate: " + currentDate +" vs jpaDate: " + jpaDate);
                 if (!Objects.equals(currentDate, jpaDate)) {
+                    log.info("notEquals - send");
                     sendMessage(productDTO, shop);
                 }
             }
