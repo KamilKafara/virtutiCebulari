@@ -12,6 +12,6 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 
     @Query(value = "SELECT id, amount, create_date, new_price, old_price, percentage_cut, picture_url, product_name, product_url, shop_name, shop_id FROM Product p " +
             "WHERE p.product_name LIKE CONCAT('%', ?1,'%') " +
-            "AND CAST (p.create_date AS VARCHAR) LIKE CONCAT('%', ?2,'%') ", nativeQuery = true)
-    List<Product> findProductsByProductNameAndCreateDate(String name, String currentDate);
+            "AND p.create_date > now() - (INTERVAL '7' DAY)  ", nativeQuery = true)
+    List<Product> findProductsByProductNameAndCreateDate(String name);
 }

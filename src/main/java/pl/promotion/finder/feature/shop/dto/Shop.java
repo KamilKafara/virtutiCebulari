@@ -9,5 +9,6 @@ public enum Shop {
     XKOM,
     ZADOWOLENIE,
     APOLLO,
-    VOBIS
+    VOBIS,
+    NEO24
 }
