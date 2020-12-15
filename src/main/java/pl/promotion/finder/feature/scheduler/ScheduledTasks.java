@@ -52,15 +52,9 @@ public class ScheduledTasks {
 
     private void checkNewPromotion(Promotion promotionService, Shop shop) throws IOException {
         ProductDTO productDTO = promotionService.getPromotion();
-
-        List<ProductDTO> productsFromJPA = productService.getByName(productDTO.getProductName());
+        List<ProductDTO> productsFromJPA = productService.findProductsByInterval(productDTO.getProductName());
         if (productsFromJPA.isEmpty()) {
             sendMessage(productDTO, shop);
-        } else {
-            List<ProductDTO> todayProducts = productService.findProductsByInterval(productDTO.getProductName());
-            if (todayProducts.isEmpty()) {
-                sendMessage(productDTO, shop);
-            }
         }
     }
 
