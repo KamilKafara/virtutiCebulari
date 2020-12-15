@@ -51,11 +51,8 @@ public class SlackMessageSender {
             priceFields.add(markdownText("~" + productDTO.getOldPrice() + "~"));
         }
         priceFields.add(markdownText("*" + productDTO.getNewPrice() + "*"));
-
         if (productDTO.getPercentageCut() != null) {
-            if (!productDTO.getPercentageCut().isNaN()) {
-                priceFields.add(markdownText("*" + "Obniżka  -" + productDTO.getPercentageCut() + "% " + "*"));
-            }
+            priceFields.add(markdownText("*" + "Obniżka  -" + productDTO.getPercentageCut() + "% " + "*"));
         }
 
         SectionBlock shopNameSectionBlock = SectionBlock.builder()

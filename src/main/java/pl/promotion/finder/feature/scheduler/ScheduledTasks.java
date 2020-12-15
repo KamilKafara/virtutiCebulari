@@ -27,8 +27,9 @@ public class ScheduledTasks {
     private final VobisService vobisService;
     private final ApolloService apolloService;
     private final ProductService productService;
+    private final ZadowolenieService zadowolenieService;
 
-    public ScheduledTasks(SlackMessageSender slackMessageSender, AmsoService amsoService, CarinetService carinetService, MoreleService moreleService, XkomService xkomService, VobisService vobisService, ApolloService apolloService, ProductService productService) {
+    public ScheduledTasks(SlackMessageSender slackMessageSender, AmsoService amsoService, CarinetService carinetService, MoreleService moreleService, XkomService xkomService, VobisService vobisService, ApolloService apolloService, ProductService productService, ZadowolenieService zadowolenieService) {
         this.slackMessageSender = slackMessageSender;
         this.amsoService = amsoService;
         this.carinetService = carinetService;
@@ -37,6 +38,7 @@ public class ScheduledTasks {
         this.vobisService = vobisService;
         this.apolloService = apolloService;
         this.productService = productService;
+        this.zadowolenieService = zadowolenieService;
     }
 
     @Scheduled(fixedRate = DURATION)
@@ -47,7 +49,7 @@ public class ScheduledTasks {
         checkNewPromotion(xkomService, Shop.XKOM);
         checkNewPromotion(vobisService, Shop.VOBIS);
         checkNewPromotion(apolloService, Shop.APOLLO);
-        checkNewPromotion(apolloService, Shop.APOLLO);
+        checkNewPromotion(zadowolenieService, Shop.ZADOWOLENIE);
     }
 
     private void checkNewPromotion(Promotion promotionService, Shop shop) throws IOException {
