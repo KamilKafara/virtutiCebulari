@@ -19,11 +19,13 @@ public class Product {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String shopName;
+    @Column(columnDefinition = "TEXT")
     private String productUrl;
     private String productName;
     private String oldPrice;
     private String newPrice;
     private String amount;
+    @Column(columnDefinition = "TEXT")
     private String pictureUrl;
     private Double percentageCut;
     private Timestamp createDate;
