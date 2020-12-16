@@ -49,7 +49,6 @@ public class ScheduledTasks {
         checkNewPromotion(xkomService, Shop.XKOM);
         checkNewPromotion(vobisService, Shop.VOBIS);
         checkNewPromotion(apolloService, Shop.APOLLO);
-        checkNewPromotion(zadowolenieService, Shop.ZADOWOLENIE);
     }
 
     private void checkNewPromotion(Promotion promotionService, Shop shop) throws IOException {
