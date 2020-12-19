@@ -19,8 +19,9 @@ public class PromotionService {
     private final ZadowolenieService zadowolenieService;
     private final ApolloService apolloService;
     private final VobisService vobisService;
+    private final KomputronikService komputronikService;
 
-    public PromotionService(AmsoService amsoService, CarinetService carinetService, CombatService combatService, MoreleService moreleService, XkomService xkomService, ZadowolenieService zadowolenieService, ApolloService apolloService, VobisService vobisService) {
+    public PromotionService(AmsoService amsoService, CarinetService carinetService, CombatService combatService, MoreleService moreleService, XkomService xkomService, ZadowolenieService zadowolenieService, ApolloService apolloService, VobisService vobisService, KomputronikService komputronikService) {
         this.amsoService = amsoService;
         this.carinetService = carinetService;
         this.combatService = combatService;
@@ -29,6 +30,7 @@ public class PromotionService {
         this.zadowolenieService = zadowolenieService;
         this.apolloService = apolloService;
         this.vobisService = vobisService;
+        this.komputronikService = komputronikService;
     }
 
     public List<ProductDTO> getDailyPromotion() throws IOException {
@@ -36,11 +38,12 @@ public class PromotionService {
         productDTOList.add(amsoService.getPromotion());
         productDTOList.add(apolloService.getPromotion());
         productDTOList.add(carinetService.getPromotion());
-//        productDTOList.add(combatService.getPromotion());
+        productDTOList.add(combatService.getPromotion());
         productDTOList.add(moreleService.getPromotion());
         productDTOList.add(xkomService.getPromotion());
         productDTOList.add(zadowolenieService.getPromotion());
         productDTOList.add(vobisService.getPromotion());
+        productDTOList.add(komputronikService.getPromotion());
         return productDTOList.parallelStream()
                 .filter(ProductDTO::isFilled)
                 .collect(Collectors.toList());

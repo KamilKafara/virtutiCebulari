@@ -10,5 +10,6 @@ public enum Shop {
     ZADOWOLENIE,
     APOLLO,
     VOBIS,
-    NEO24
+    NEO24,
+    KOMPUTRONIK
 }
