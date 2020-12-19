@@ -22,7 +22,7 @@ import java.util.List;
 @Service
 public class CombatService implements Promotion {
     private static final String SHOP_NAME = "combat";
-    private static final String SHOP_URL = "https://www.combat.pl";
+    private static final String SHOP_URL = "https://www.combat.pl/media/catalog/product";
     private static final String JSON_URL = "https://www.combat.pl/rest/V1/get-hot-shot";
     private CombatDTO combatDTO;
 
