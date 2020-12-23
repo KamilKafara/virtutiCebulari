@@ -59,6 +59,10 @@ public class VobisService implements Promotion {
         String newPrice = element.select(NEW_PRICE_TAG).text();
         productDTO.setNewPrice(newPrice);
 
+        if (newPrice.isEmpty() || oldPrice.isEmpty()) {
+            return null;
+        }
+
         Elements photoDetails = element.select(PRODUCT_IMG_TAG);
         Elements productImg = photoDetails.select("img");
         productDTO.setPictureUrl(SHOP_URL + productImg.attr("src"));

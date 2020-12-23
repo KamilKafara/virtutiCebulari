@@ -11,5 +11,6 @@ public enum Shop {
     APOLLO,
     VOBIS,
     NEO24,
-    KOMPUTRONIK
+    KOMPUTRONIK,
+    SONY_CENTRE
 }

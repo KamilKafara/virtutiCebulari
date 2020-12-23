@@ -19,8 +19,7 @@ public class XkomControllerController {
     }
 
     @GetMapping
-    private ProductDTO getPromotionByShop() throws IOException {
+    public ProductDTO getPromotionByShop() throws IOException {
         return xkomService.getPromotion();
     }
-
 }

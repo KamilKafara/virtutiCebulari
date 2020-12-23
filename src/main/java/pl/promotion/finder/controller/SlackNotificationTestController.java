@@ -21,6 +21,4 @@ public class SlackNotificationTestController {
     public String sendMessage(@PathVariable("message") String message) throws IOException {
         return slackMessageSender.sendPromotionMessage(message);
     }
-
-
 }
