@@ -30,8 +30,9 @@ public class ScheduledTasks {
     private final ProductService productService;
     private final KomputronikService komputronikService;
     private final SonyCentreService sonyCentreService;
+    private final AllWeldService allWeldService;
 
-    public ScheduledTasks(SlackMessageSender slackMessageSender, AmsoService amsoService, CarinetService carinetService, MoreleService moreleService, XkomService xkomService, VobisService vobisService, ApolloService apolloService, ProductService productService, ZadowolenieService zadowolenieService, CombatService combatService, KomputronikService komputronikService, SonyCentreService sonyCentreService) {
+    public ScheduledTasks(SlackMessageSender slackMessageSender, AmsoService amsoService, CarinetService carinetService, MoreleService moreleService, XkomService xkomService, VobisService vobisService, ApolloService apolloService, ProductService productService, ZadowolenieService zadowolenieService, CombatService combatService, KomputronikService komputronikService, SonyCentreService sonyCentreService, AllWeldService allWeldService) {
         this.slackMessageSender = slackMessageSender;
         this.amsoService = amsoService;
         this.carinetService = carinetService;
@@ -43,6 +44,7 @@ public class ScheduledTasks {
         this.combatService = combatService;
         this.komputronikService = komputronikService;
         this.sonyCentreService = sonyCentreService;
+        this.allWeldService = allWeldService;
     }
 
     @Scheduled(fixedRate = DURATION)
@@ -56,6 +58,7 @@ public class ScheduledTasks {
         checkNewPromotion(combatService, Shop.COMBAT);
         checkNewPromotion(komputronikService, Shop.KOMPUTRONIK);
         checkNewPromotion(sonyCentreService, Shop.SONY_CENTRE);
+        checkNewPromotion(allWeldService, Shop.ALL_WELD);
     }
 
     private void checkNewPromotion(Promotion promotionService, Shop shop) throws IOException {

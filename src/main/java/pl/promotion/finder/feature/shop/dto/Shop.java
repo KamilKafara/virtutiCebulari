@@ -12,5 +12,6 @@ public enum Shop {
     VOBIS,
     NEO24,
     KOMPUTRONIK,
-    SONY_CENTRE
+    SONY_CENTRE,
+    ALL_WELD
 }
