@@ -51,6 +51,8 @@ public class SlackMessageSender {
             priceFields.add(markdownText("~" + productDTO.getOldPrice() + "~"));
         }
         priceFields.add(markdownText("*" + productDTO.getNewPrice() + "*"));
+
+        productDTO.setupPercentageCut();
         if (productDTO.getPercentageCut() != null) {
             priceFields.add(markdownText("*" + "Obniżka  -" + productDTO.getPercentageCut() + "% " + "*"));
         }
@@ -69,13 +71,16 @@ public class SlackMessageSender {
                                 .text("Przejdź do promocji")))
                                 .url(productDTO.getProductUrl())))));
 
-        return payload(b -> b.blocks(
+        Payload payload = payload(b -> b.blocks(
                 asBlocks(
                         productNameWithImageBlock,
                         shopNameSectionBlock,
                         priceSectionBlock,
                         productURLActionBlock
                 )));
+        payload.setText(productDTO.getProductName());
+
+        return payload;
     }
 
 }
