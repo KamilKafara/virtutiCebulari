@@ -31,7 +31,13 @@ public class XkomService implements Promotion {
     @Override
     public ProductDTO getPromotion() throws IOException {
         try {
-            Document document = Jsoup.connect(SHOP_URL).get();
+            Document document = Jsoup.connect(SHOP_URL)
+                    .userAgent("Mozilla/5.0 (Windows NT 6.1; WOW64; rv:54.0) Gecko/20100101 Firefox/70.0")
+                    .followRedirects(true)
+                    .timeout(100)
+                    .ignoreContentType(true)
+                    .get();
+
             return getProduct(document);
         } catch (NullPointerException ex) {
             log.error(new ResponseStatusException(HttpStatus.NOT_FOUND, "Not found promotion in " + SHOP_NAME, new FieldInfo(SHOP_NAME, ErrorCode.NOT_FOUND)));
