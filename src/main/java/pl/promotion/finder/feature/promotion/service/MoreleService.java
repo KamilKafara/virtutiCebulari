@@ -9,9 +9,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import pl.promotion.finder.exception.ErrorCode;
 import pl.promotion.finder.exception.FieldInfo;
+import pl.promotion.finder.feature.product.dto.PriceMapper;
 import pl.promotion.finder.feature.product.dto.ProductDTO;
 
 import java.io.IOException;
+import java.text.ParseException;
 
 @Log4j2
 @Service
@@ -32,12 +34,12 @@ public class MoreleService implements Promotion {
         try {
             Document document = Jsoup.connect(PRODUCT_URL).get();
             return getProduct(document);
-        } catch (NullPointerException ex) {
+        } catch (NullPointerException | ParseException ex) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Not found promotion in " + SHOP_NAME, new FieldInfo(SHOP_NAME, ErrorCode.NOT_FOUND));
         }
     }
 
-    public ProductDTO getProduct(Document document) {
+    public ProductDTO getProduct(Document document) throws ParseException {
         Elements elements = document.select(HOT_SHOT_TAG);
         ProductDTO productDTO = new ProductDTO(SHOP_NAME, "");
 
@@ -47,19 +49,14 @@ public class MoreleService implements Promotion {
         productDTO.setPictureUrl(productDetails.select(PRODUCT_IMAGE_TAG).first().attr("src"));
 
         String oldPrice = elements.select(OLD_PRICE_TAG).text();
-        String oldPriceReplaced = convertToAmountFormat(oldPrice);
-        productDTO.setOldPrice(oldPriceReplaced);
+        productDTO.setOldPrice(PriceMapper.priceFactory(oldPrice));
 
         String newPrice = elements.select(NEW_PRICE_TAG).text();
-        String newPriceReplaced = convertToAmountFormat(newPrice);
-        productDTO.setNewPrice(newPriceReplaced);
+        productDTO.setNewPrice(PriceMapper.priceFactory(newPrice));
 
         productDTO.setAmount(elements.select(AMOUNT_TAG).text().replaceAll("\\D+", ""));
 
         return productDTO;
     }
-
-    protected String convertToAmountFormat(String context) {
-        return context.replaceAll("[^\\d.]", "")+".00";
-    }
 }
+

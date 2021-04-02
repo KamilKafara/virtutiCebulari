@@ -9,9 +9,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import pl.promotion.finder.exception.ErrorCode;
 import pl.promotion.finder.exception.FieldInfo;
+import pl.promotion.finder.feature.product.dto.PriceMapper;
 import pl.promotion.finder.feature.product.dto.ProductDTO;
 
 import java.io.IOException;
+import java.text.ParseException;
 
 @Log4j2
 @Service
@@ -28,7 +30,7 @@ public class ZadowolenieService implements Promotion {
         try {
             Document document = Jsoup.connect(SHOP_URL).get();
             return getProduct(document);
-        } catch (NullPointerException | IOException ex) {
+        } catch (NullPointerException | IOException | ParseException ex) {
             log.error(new ResponseStatusException(HttpStatus.NOT_FOUND, "Not found promotion in " + SHOP_NAME, new FieldInfo(SHOP_NAME, ErrorCode.NOT_FOUND)));
             log.error(ex.getStackTrace());
         }
@@ -36,12 +38,12 @@ public class ZadowolenieService implements Promotion {
     }
 
     @Override
-    public ProductDTO getProduct(Document document) {
+    public ProductDTO getProduct(Document document) throws ParseException {
         Elements elements = document.select(HOT_SHOT_TAG);
         ProductDTO productDTO = new ProductDTO(SHOP_NAME, PRODUCT_URL);
         String newPrice = elements.select(NEW_PRICE_TAG).text();
-        productDTO.setOldPrice(newPrice);
-        productDTO.setNewPrice(newPrice);
+        productDTO.setOldPrice(PriceMapper.priceFactory(newPrice));
+        productDTO.setNewPrice(PriceMapper.priceFactory(newPrice));
         productDTO.setAmount("empty");
         Elements productDetails = elements.select(PRODUCT_DETAILS_TAG).select("img");
         productDTO.setProductName(productDetails.attr("alt"));

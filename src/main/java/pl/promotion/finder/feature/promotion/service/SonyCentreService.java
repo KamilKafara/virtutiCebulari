@@ -10,9 +10,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import pl.promotion.finder.exception.ErrorCode;
 import pl.promotion.finder.exception.FieldInfo;
+import pl.promotion.finder.feature.product.dto.PriceMapper;
 import pl.promotion.finder.feature.product.dto.ProductDTO;
 
 import java.io.IOException;
+import java.text.ParseException;
 
 @Log4j2
 @Service
@@ -29,7 +31,7 @@ public class SonyCentreService implements Promotion {
         try {
             Document document = Jsoup.connect(PRODUCT_URL).get();
             return getProduct(document);
-        } catch (NullPointerException ex) {
+        } catch (NullPointerException | ParseException ex) {
             log.error(new ResponseStatusException(HttpStatus.NOT_FOUND, "Not found promotion in " + SHOP_NAME, new FieldInfo(SHOP_NAME, ErrorCode.NOT_FOUND)));
             log.error(ex.getStackTrace());
         }
@@ -37,7 +39,7 @@ public class SonyCentreService implements Promotion {
     }
 
     @Override
-    public ProductDTO getProduct(Document document) {
+    public ProductDTO getProduct(Document document) throws ParseException {
         Elements elements = document.select(HOT_SHOT_TAG);
         Element productDetails = elements.select("div.desc").last();
         ProductDTO productDTO = new ProductDTO(SHOP_NAME, PRODUCT_URL);
@@ -47,13 +49,13 @@ public class SonyCentreService implements Promotion {
         Elements oldPriceElements = productDetails.getElementsByClass(OLD_PRICE_TAG);
         Element oldPrice = oldPriceElements.select("span").first();
         if (oldPrice.attr("itemprop").equals("price")) {
-            productDTO.setOldPrice(oldPrice.text());
+            productDTO.setOldPrice(PriceMapper.priceFactory(oldPrice.text()));
         }
 
         Elements newPriceElements = productDetails.getElementsByClass(NEW_PRICE_TAG);
         Element newPrice = newPriceElements.select("span").first();
         if (oldPrice.attr("itemprop").equals("price")) {
-            productDTO.setNewPrice(newPrice.text());
+            productDTO.setNewPrice(PriceMapper.priceFactory(newPrice.text()));
         }
 
         productDTO.setProductName(productDetails.select(PRODUCT_NAME_TAG).text());

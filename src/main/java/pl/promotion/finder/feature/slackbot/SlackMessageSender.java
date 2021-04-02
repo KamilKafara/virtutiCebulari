@@ -7,6 +7,9 @@ import com.github.seratch.jslack.api.model.block.composition.TextObject;
 import com.github.seratch.jslack.api.model.block.element.ImageElement;
 import com.github.seratch.jslack.api.webhook.Payload;
 import org.springframework.stereotype.Service;
+import pl.promotion.finder.exception.ErrorCode;
+import pl.promotion.finder.exception.FieldInfo;
+import pl.promotion.finder.exception.NotFoundException;
 import pl.promotion.finder.feature.product.dto.ProductDTO;
 
 import java.io.IOException;
@@ -33,9 +36,13 @@ public class SlackMessageSender {
         return payload;
     }
 
-    public void sendPromotionMessage(ProductDTO productDTO) throws IOException {
+    public void sendPromotionMessage(ProductDTO productDTO) {
         Slack slack = Slack.getInstance();
-        slack.send(SLACK_HOOKS_URL, setupPayload(productDTO));
+        try {
+            slack.send(SLACK_HOOKS_URL, setupPayload(productDTO));
+        } catch (IOException e) {
+            throw new NotFoundException("Not found slack hooks url. Check your environment variables", new FieldInfo("SLACK_HOOKS_URL", ErrorCode.NOT_FOUND_PROPERTY));
+        }
     }
 
     private Payload setupPayload(ProductDTO productDTO) {

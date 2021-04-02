@@ -9,14 +9,15 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import pl.promotion.finder.exception.ErrorCode;
 import pl.promotion.finder.exception.FieldInfo;
+import pl.promotion.finder.feature.product.dto.PriceMapper;
 import pl.promotion.finder.feature.product.dto.ProductDTO;
 
 import java.io.IOException;
+import java.text.ParseException;
 
 @Log4j2
 @Service
 public class AltoService implements Promotion {
-
     private static final String NEW_PRICE_TAG = "span.iWkRRi";
     private static final String OLD_PRICE_TAG = "span.jgxIHJ";
     private static final String PRODUCT_NAME_TAG = "span.hGKlIY";
@@ -29,7 +30,7 @@ public class AltoService implements Promotion {
         try {
             Document document = Jsoup.connect(PRODUCT_URL).get();
             return getProduct(document);
-        } catch (NullPointerException ex) {
+        } catch (NullPointerException | ParseException ex) {
             log.error(new ResponseStatusException(HttpStatus.NOT_FOUND, "Not found promotion in " + SHOP_NAME, new FieldInfo(SHOP_NAME, ErrorCode.NOT_FOUND)));
             log.error(ex.getStackTrace());
         }
@@ -37,15 +38,15 @@ public class AltoService implements Promotion {
     }
 
     @Override
-    public ProductDTO getProduct(Document document) {
+    public ProductDTO getProduct(Document document) throws ParseException {
         Element element = document.select("div.mbxiax-6.CqKkO").first();
         ProductDTO productDTO = new ProductDTO(SHOP_NAME, PRODUCT_URL);
         String productName = element.getElementsByClass(PRODUCT_NAME_TAG).text();
         productDTO.setProductName(productName);
         String newPrice = element.getElementsByClass(NEW_PRICE_TAG).text();
-        productDTO.setNewPrice(newPrice);
+        productDTO.setNewPrice(PriceMapper.priceFactory(newPrice));
         String oldPrice = element.getElementsByClass(OLD_PRICE_TAG).text();
-        productDTO.setOldPrice(oldPrice);
+        productDTO.setOldPrice(PriceMapper.priceFactory(oldPrice));
         String productUrl = element.getElementsByClass(PRODUCT_IMAGE_TAG).attr("src");
         productDTO.setPictureUrl(productUrl);
         productDTO.setAmount("empty");

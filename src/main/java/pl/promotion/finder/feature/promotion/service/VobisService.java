@@ -18,6 +18,7 @@ import java.time.LocalDate;
 
 @Service
 @Log4j2
+@Deprecated
 public class VobisService implements Promotion {
     private static final String SHOP_URL = "https://vobis.pl";
     private static final String PRODUCT_DETAILS_TAG = "a.js-product-name";

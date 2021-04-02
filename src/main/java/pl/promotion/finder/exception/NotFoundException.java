@@ -8,7 +8,7 @@ import java.util.Collections;
 @Getter
 public class NotFoundException extends RuntimeException {
 
-    private Collection<FieldInfo> fields;
+    private final Collection<FieldInfo> fields;
     public NotFoundException(String message, FieldInfo fieldInfo) {
         super(message);
         this.fields = Collections.singletonList(fieldInfo);

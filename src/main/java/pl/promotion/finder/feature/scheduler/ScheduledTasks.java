@@ -1,5 +1,6 @@
 package pl.promotion.finder.feature.scheduler;
 
+import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -17,6 +18,7 @@ import java.util.List;
 @Log4j2
 @Component
 @Service
+@AllArgsConstructor
 public class ScheduledTasks {
     private static final int DURATION = 60_000;
     private final SlackMessageSender slackMessageSender;
@@ -25,35 +27,18 @@ public class ScheduledTasks {
     private final CombatService combatService;
     private final MoreleService moreleService;
     private final XkomService xkomService;
-    private final VobisService vobisService;
     private final ApolloService apolloService;
     private final ProductService productService;
     private final KomputronikService komputronikService;
     private final SonyCentreService sonyCentreService;
     private final AllWeldService allWeldService;
 
-    public ScheduledTasks(SlackMessageSender slackMessageSender, AmsoService amsoService, CarinetService carinetService, MoreleService moreleService, XkomService xkomService, VobisService vobisService, ApolloService apolloService, ProductService productService, ZadowolenieService zadowolenieService, CombatService combatService, KomputronikService komputronikService, SonyCentreService sonyCentreService, AllWeldService allWeldService) {
-        this.slackMessageSender = slackMessageSender;
-        this.amsoService = amsoService;
-        this.carinetService = carinetService;
-        this.moreleService = moreleService;
-        this.xkomService = xkomService;
-        this.vobisService = vobisService;
-        this.apolloService = apolloService;
-        this.productService = productService;
-        this.combatService = combatService;
-        this.komputronikService = komputronikService;
-        this.sonyCentreService = sonyCentreService;
-        this.allWeldService = allWeldService;
-    }
-
     @Scheduled(fixedRate = DURATION)
-    public void reportPromotion() throws IOException {
+    public void reportPromotion() {
         checkNewPromotion(amsoService, Shop.AMSO);
         checkNewPromotion(carinetService, Shop.CARINET);
         checkNewPromotion(moreleService, Shop.MORELE);
         checkNewPromotion(xkomService, Shop.XKOM);
-        checkNewPromotion(vobisService, Shop.VOBIS);
         checkNewPromotion(apolloService, Shop.APOLLO);
         checkNewPromotion(combatService, Shop.COMBAT);
         checkNewPromotion(komputronikService, Shop.KOMPUTRONIK);
@@ -61,8 +46,13 @@ public class ScheduledTasks {
         checkNewPromotion(allWeldService, Shop.ALL_WELD);
     }
 
-    private void checkNewPromotion(Promotion promotionService, Shop shop) throws IOException {
-        ProductDTO productDTO = promotionService.getPromotion();
+    private void checkNewPromotion(Promotion promotionService, Shop shop) {
+        ProductDTO productDTO = null;
+        try {
+            productDTO = promotionService.getPromotion();
+        } catch (IOException e) {
+            log.error(e.getMessage());
+        }
         if (productDTO != null) {
             List<ProductDTO> productsFromJPA = productService.findProductsByInterval(productDTO.getProductName());
             if (productsFromJPA.isEmpty()) {
@@ -71,7 +61,7 @@ public class ScheduledTasks {
         }
     }
 
-    private void sendMessage(ProductDTO promotionToSend, Shop shop) throws IOException {
+    private void sendMessage(ProductDTO promotionToSend, Shop shop) {
         log.info("Send message to slack: " + promotionToSend.toString());
 
         slackMessageSender.sendPromotionMessage(promotionToSend);

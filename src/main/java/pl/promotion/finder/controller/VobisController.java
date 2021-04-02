@@ -8,6 +8,7 @@ import pl.promotion.finder.feature.promotion.service.VobisService;
 
 import java.io.IOException;
 
+@Deprecated
 @RestController
 @RequestMapping("/vobis")
 public class VobisController {

@@ -8,7 +8,7 @@ import java.util.Collections;
 @Getter
 public class BadRequestException extends RuntimeException {
 
-    private Collection<FieldInfo> fields;
+    private final Collection<FieldInfo> fields;
 
     public BadRequestException(String message, FieldInfo fieldInfo) {
         super(message);

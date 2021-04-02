@@ -99,12 +99,10 @@ public class ProductDTO {
 
     public void setOldPrice(String oldPrice) {
         this.oldPrice = oldPrice;
-        this.oldPrice = addCurrency(this.oldPrice);
     }
 
     public void setNewPrice(String newPrice) {
         this.newPrice = newPrice;
-        this.newPrice = addCurrency(this.newPrice);
     }
 
     private BigDecimal parse(String amount) {
@@ -116,7 +114,7 @@ public class ProductDTO {
             ((DecimalFormat) format).setParseBigDecimal(true);
         }
         try {
-            amount = amount.replaceAll(" ", "").replaceAll("\\.", ",");
+            amount = amount.replace(" ", "").replace("\\.", ",");
             Number number = format.parse(amount.replaceAll("[^\\d].,", ""));
             return (BigDecimal) number;
 
@@ -124,18 +122,6 @@ public class ProductDTO {
             e.printStackTrace();
         }
         return new BigDecimal(0);
-    }
-
-
-    private String addCurrency(String content) {
-        content = content.replaceAll("PLN", "");
-        if (content.contains("zł")) {
-            return content;
-        } else if (!content.equals("")) {
-            return content + " zł";
-        } else {
-            return "";
-        }
     }
 
     public void setupPercentageCut() {
@@ -148,17 +134,11 @@ public class ProductDTO {
     }
 
     public String getOldPrice() {
-        this.oldPrice = setupPrice(oldPrice);
         return this.oldPrice;
     }
 
     public String getNewPrice() {
-        this.newPrice = setupPrice(newPrice);
         return this.newPrice;
-    }
-
-    private String setupPrice(String price) {
-        return price.replace(",", ".").replace(" ", "");
     }
 
     public boolean isFilled() {
