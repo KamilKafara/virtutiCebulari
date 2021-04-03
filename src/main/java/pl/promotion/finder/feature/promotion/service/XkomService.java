@@ -20,6 +20,7 @@ import java.text.ParseException;
 @Log4j2
 @Service
 public class XkomService implements Promotion {
+    private static final String XKOM_TIMEOUT = System.getenv("XKOM_TIMEOUT");
 
     private static final String HOT_SHOT_TAG = "div.kNOaST";
     private static final String PROPERTY_TAG = "span.sc-1tblmgq-0.sc-18w91q-5.lcCghT.sc-1tblmgq-2.bmAqLj";
@@ -36,7 +37,7 @@ public class XkomService implements Promotion {
             Document document = Jsoup.connect(SHOP_URL)
                     .userAgent("Mozilla/5.0 (Windows NT 6.1; WOW64; rv:54.0) Gecko/20100101 Firefox/70.0")
                     .followRedirects(true)
-                    .timeout(1000)
+                    .timeout(Integer.parseInt(XKOM_TIMEOUT))
                     .ignoreContentType(true)
                     .get();
 
