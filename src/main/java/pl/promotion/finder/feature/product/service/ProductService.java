@@ -42,6 +42,11 @@ public class ProductService {
     public List<ProductDTO> getByName(String name) {
         return productRepository.findProductsByProductName(name).stream().map(productTransformer::convertToDto).collect(Collectors.toList());
     }
+
+    public ProductDTO getProductByNameWithLowerPrice(String name) {
+        return productTransformer.convertToDto(productRepository.findProductByProductNameWithLowerPrice(name));
+    }
+
     public List<ProductDTO> findProductsByInterval(String name) {
         return productRepository.findProductsByProductNameAndCreateDate(name).stream().map(productTransformer::convertToDto).collect(Collectors.toList());
     }

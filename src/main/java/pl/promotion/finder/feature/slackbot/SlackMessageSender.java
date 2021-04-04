@@ -10,11 +10,15 @@ import org.springframework.stereotype.Service;
 import pl.promotion.finder.exception.ErrorCode;
 import pl.promotion.finder.exception.FieldInfo;
 import pl.promotion.finder.exception.NotFoundException;
+import pl.promotion.finder.feature.product.dto.PriceMapper;
 import pl.promotion.finder.feature.product.dto.ProductDTO;
+import pl.promotion.finder.feature.product.service.ProductService;
 
 import java.io.IOException;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static com.github.seratch.jslack.api.model.block.Blocks.actions;
 import static com.github.seratch.jslack.api.model.block.Blocks.asBlocks;
@@ -28,6 +32,11 @@ import static com.github.seratch.jslack.api.webhook.WebhookPayloads.payload;
 public class SlackMessageSender {
 
     private static final String SLACK_HOOKS_URL = System.getenv("SLACK_WEBHOOK");
+    private final ProductService productService;
+
+    public SlackMessageSender(ProductService productService) {
+        this.productService = productService;
+    }
 
     public String sendPromotionMessage(String message) throws IOException {
         Slack slack = Slack.getInstance();
@@ -62,6 +71,25 @@ public class SlackMessageSender {
         productDTO.setupPercentageCut();
         if (productDTO.getPercentageCut() != null) {
             priceFields.add(markdownText("*" + "Obniżka  -" + productDTO.getPercentageCut() + "% " + "*"));
+        }
+
+        Optional<ProductDTO> productWithLowerPrice = Optional.ofNullable(productService.getProductByNameWithLowerPrice(productDTO.getProductName()));
+        if (productWithLowerPrice.isPresent()) {
+            try {
+                PriceMapper.priceFactory(productWithLowerPrice.get().getNewPrice());
+                double lowerPrice = PriceMapper.getDecimalPrice().doubleValue();
+                PriceMapper.priceFactory(productDTO.getNewPrice());
+                double currentProductPrice = PriceMapper.getDecimalPrice().doubleValue();
+
+                if (lowerPrice < currentProductPrice) {
+                    priceFields.add(markdownText("Ten produkt już kosztował mniej - " + productWithLowerPrice.get().getNewPrice()));
+                    priceFields.add(markdownText("Korzystniejsza promocja już była: " + productWithLowerPrice.get().getCreateDate()));
+                    priceFields.add(markdownText("Zastanów się dwa razy zanim zdecydujesz się na zakup."));
+                }
+
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
         }
 
         SectionBlock shopNameSectionBlock = SectionBlock.builder()

@@ -32,6 +32,16 @@ public class ProductController {
         return productService.getById(id);
     }
 
+    @GetMapping("/productName/{name}")
+    public List<ProductDTO> getProductByProductName(@PathVariable("name") String name) {
+        return productService.getByName(name);
+    }
+
+    @GetMapping("/productWithLowestPriceByName/{name}")
+    public ProductDTO getProductWithLowestPriceByName(@PathVariable("name") String name) {
+        return productService.getProductByNameWithLowerPrice(name);
+    }
+
     @PostMapping
     public ProductDTO add(@RequestBody ProductDTO productDTO) {
         return productService.save(productDTO);

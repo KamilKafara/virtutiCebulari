@@ -121,7 +121,7 @@ public class ProductDTO {
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        return new BigDecimal(0);
+        return new BigDecimal("0.0");
     }
 
     public void setupPercentageCut() {
