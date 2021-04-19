@@ -23,7 +23,6 @@ import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
 import java.util.List;
 
-
 @Log4j2
 @Service
 public class CombatService implements Promotion {
@@ -61,7 +60,6 @@ public class CombatService implements Promotion {
         productDTO.setNewPrice(PriceMapper.priceFactory(parsePrice(combatDTO.getPromotion_price())));
         productDTO.setProductUrl(combatDTO.getRegular_url());
         productDTO.setPictureUrl(SHOP_URL + combatDTO.getPhoto());
-
         return productDTO;
     }
 

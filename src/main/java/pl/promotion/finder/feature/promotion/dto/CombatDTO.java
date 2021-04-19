@@ -31,5 +31,4 @@ public class CombatDTO {
     private List<CombatSalesDTO> sales;
     private String current_time;
     private String regulations;
-
 }

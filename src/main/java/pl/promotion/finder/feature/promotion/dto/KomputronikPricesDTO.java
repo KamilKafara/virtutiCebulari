@@ -1,6 +1,5 @@
 package pl.promotion.finder.feature.promotion.dto;
 
-
 import lombok.*;
 
 @AllArgsConstructor

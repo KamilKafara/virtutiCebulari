@@ -37,7 +37,7 @@ public class XkomService implements Promotion {
             Document document = Jsoup.connect(SHOP_URL)
                     .userAgent("Mozilla/5.0 (Windows NT 6.1; WOW64; rv:54.0) Gecko/20100101 Firefox/70.0")
                     .followRedirects(true)
-                    .timeout(Integer.parseInt(XKOM_TIMEOUT))
+                    .timeout(5000)
                     .ignoreContentType(true)
                     .get();
 
@@ -55,27 +55,20 @@ public class XkomService implements Promotion {
             return null;
         }
         ProductDTO productDTO = new ProductDTO(SHOP_NAME, PRODUCT_URL);
-
         Element productInfo = elements.first();
         Element productProperty = productInfo.select(PROPERTY_TAG).first();
-
         String productImage = productProperty.select("img").attr("src");
         String productName = productProperty.select("img").attr("alt");
-
         productDTO.setPictureUrl(productImage);
         productDTO.setProductName(productName);
-
         String oldPriceText = elements.select(OLD_PRICE_TAG).text();
         String newPriceText = elements.select(NEW_PRICE_TAG).text();
-
         String newPrice = PriceMapper.priceFactory(oldPriceText);
         productDTO.setNewPrice(newPrice);
         BigDecimal bigDecimalNewPrice = PriceMapper.getDecimalPrice();
-
         String oldPrice = PriceMapper.priceFactory(newPriceText);
         productDTO.setOldPrice(oldPrice);
         BigDecimal bigDecimalOldPrice = PriceMapper.getDecimalPrice();
-
         if (bigDecimalNewPrice.doubleValue() > bigDecimalOldPrice.doubleValue()) {
             productDTO.setOldPrice(newPrice);
             productDTO.setNewPrice(oldPrice);

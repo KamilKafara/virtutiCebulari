@@ -48,10 +48,8 @@ public class AllWeldService implements Promotion {
         Elements prices = productDetails.select(PRICE_TAG);
         productDTO.setOldPrice(PriceMapper.priceFactory(prices.select("del").text()));
         productDTO.setNewPrice(PriceMapper.priceFactory(prices.select("em").text()));
-
         productDTO.setProductName(productDetails.select(PRODUCT_NAME_TAG).text());
         productDTO.setPictureUrl(PRODUCT_URL + productDetails.select("a.row").select("img").attr("data-src"));
-
         return productDTO;
     }
 }

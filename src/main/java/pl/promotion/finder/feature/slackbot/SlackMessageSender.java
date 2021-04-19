@@ -6,6 +6,7 @@ import com.github.seratch.jslack.api.model.block.SectionBlock;
 import com.github.seratch.jslack.api.model.block.composition.TextObject;
 import com.github.seratch.jslack.api.model.block.element.ImageElement;
 import com.github.seratch.jslack.api.webhook.Payload;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 import pl.promotion.finder.exception.ErrorCode;
 import pl.promotion.finder.exception.FieldInfo;
@@ -28,6 +29,7 @@ import static com.github.seratch.jslack.api.model.block.element.BlockElements.as
 import static com.github.seratch.jslack.api.model.block.element.BlockElements.button;
 import static com.github.seratch.jslack.api.webhook.WebhookPayloads.payload;
 
+@Log4j2
 @Service
 public class SlackMessageSender {
 
@@ -73,24 +75,7 @@ public class SlackMessageSender {
             priceFields.add(markdownText("*" + "Obniżka  -" + productDTO.getPercentageCut() + "% " + "*"));
         }
 
-        Optional<ProductDTO> productWithLowerPrice = Optional.ofNullable(productService.getProductByNameWithLowerPrice(productDTO.getProductName()));
-        if (productWithLowerPrice.isPresent()) {
-            try {
-                PriceMapper.priceFactory(productWithLowerPrice.get().getNewPrice());
-                double lowerPrice = PriceMapper.getDecimalPrice().doubleValue();
-                PriceMapper.priceFactory(productDTO.getNewPrice());
-                double currentProductPrice = PriceMapper.getDecimalPrice().doubleValue();
-
-                if (lowerPrice < currentProductPrice) {
-                    priceFields.add(markdownText("Ten produkt już kosztował mniej - " + productWithLowerPrice.get().getNewPrice()));
-                    priceFields.add(markdownText("Korzystniejsza promocja już była: " + productWithLowerPrice.get().getCreateDate()));
-                    priceFields.add(markdownText("Zastanów się dwa razy zanim zdecydujesz się na zakup."));
-                }
-
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-        }
+        addAnnotationWithLowerPrice(priceFields, productDTO);
 
         SectionBlock shopNameSectionBlock = SectionBlock.builder()
                 .text(plainText(productDTO.getShopName()))
@@ -118,4 +103,24 @@ public class SlackMessageSender {
         return payload;
     }
 
+    private void addAnnotationWithLowerPrice(List<TextObject> priceFields, ProductDTO productDTO) {
+        Optional<ProductDTO> productWithLowerPrice = Optional.ofNullable(productService.getProductByNameWithLowerPrice(productDTO.getProductName()));
+        if (productWithLowerPrice.isPresent()) {
+            try {
+                PriceMapper.priceFactory(productWithLowerPrice.get().getNewPrice());
+                double lowerPrice = PriceMapper.getDecimalPrice().doubleValue();
+                PriceMapper.priceFactory(productDTO.getNewPrice());
+                double currentProductPrice = PriceMapper.getDecimalPrice().doubleValue();
+
+                if (lowerPrice < currentProductPrice) {
+                    priceFields.add(markdownText("Ten produkt już kosztował mniej - " + productWithLowerPrice.get().getNewPrice()));
+                    priceFields.add(markdownText("Korzystniejsza promocja już była: " + productWithLowerPrice.get().getCreateDate()));
+                    priceFields.add(markdownText("Zastanów się dwa razy zanim zdecydujesz się na zakup."));
+                }
+            } catch (ParseException e) {
+                log.error(e.getMessage());
+                log.error(e);
+            }
+        }
+    }
 }

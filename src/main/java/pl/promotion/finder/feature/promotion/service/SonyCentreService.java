@@ -45,22 +45,18 @@ public class SonyCentreService implements Promotion {
         ProductDTO productDTO = new ProductDTO(SHOP_NAME, PRODUCT_URL);
         String productUrl = productDetails.select("a").attr("href");
         productDTO.setProductUrl(PRODUCT_URL + productUrl);
-
         Elements oldPriceElements = productDetails.getElementsByClass(OLD_PRICE_TAG);
         Element oldPrice = oldPriceElements.select("span").first();
         if (oldPrice.attr("itemprop").equals("price")) {
             productDTO.setOldPrice(PriceMapper.priceFactory(oldPrice.text()));
         }
-
         Elements newPriceElements = productDetails.getElementsByClass(NEW_PRICE_TAG);
         Element newPrice = newPriceElements.select("span").first();
         if (oldPrice.attr("itemprop").equals("price")) {
             productDTO.setNewPrice(PriceMapper.priceFactory(newPrice.text()));
         }
-
         productDTO.setProductName(productDetails.select(PRODUCT_NAME_TAG).text());
         productDTO.setPictureUrl(PRODUCT_URL + productDetails.select("div.img").select("img").attr("src"));
-
         return productDTO;
     }
 }

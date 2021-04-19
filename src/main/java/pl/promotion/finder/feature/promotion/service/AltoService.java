@@ -50,9 +50,6 @@ public class AltoService implements Promotion {
         String productUrl = element.getElementsByClass(PRODUCT_IMAGE_TAG).attr("src");
         productDTO.setPictureUrl(productUrl);
         productDTO.setAmount("empty");
-
         return productDTO;
     }
-
-
 }

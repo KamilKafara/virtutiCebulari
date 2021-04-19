@@ -21,5 +21,4 @@ public class ShopTransformer {
         shopDTO.setName(shop.getName());
         return shopDTO;
     }
-
 }

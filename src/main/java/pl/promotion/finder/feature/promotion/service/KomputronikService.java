@@ -62,13 +62,11 @@ public class KomputronikService implements Promotion {
         productDTO.setProductUrl(product.getUrl());
         productDTO.setShopName(SHOP_NAME);
         productDTO.setAmount(AMOUNT);
-
         String currency = product.getPrices().getPrice_currency();
         PriceMapper.setCurrency(currency);
         productDTO.setOldPrice(PriceMapper.priceFactory(product.getPrices().getPrice_base_gross()));
         productDTO.setNewPrice(PriceMapper.priceFactory(product.getPrices().getFinal_price()));
         productDTO.setPictureUrl(product.getAlternative_image_url());
-
         return productDTO;
     }
 }

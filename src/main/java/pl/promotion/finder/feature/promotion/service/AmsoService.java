@@ -58,6 +58,4 @@ public class AmsoService implements Promotion {
 
         return productDTO;
     }
-
-
 }

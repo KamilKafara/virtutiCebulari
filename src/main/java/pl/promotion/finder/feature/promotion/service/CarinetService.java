@@ -55,7 +55,6 @@ public class CarinetService implements Promotion {
         productDTO.setNewPrice(PriceMapper.priceFactory(newPrice.text()));
         String amount = elements.select(AMOUNT_TAG).select("span").text().replaceAll("[^\\d]", "");
         productDTO.setAmount(amount.replaceAll("[^\\d]", ""));
-
         return productDTO;
     }
 }

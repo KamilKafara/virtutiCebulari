@@ -44,16 +44,12 @@ public class ApolloService implements Promotion {
 
         String oldPrice = elements.select(SPAN_OLD).text();
         productDTO.setOldPrice(PriceMapper.priceFactory(oldPrice));
-
         String newPrice = elements.select(NEW_PRICE_TAG).text();
         productDTO.setNewPrice(PriceMapper.priceFactory(newPrice));
-
         String productName = elements.select(PRODUCT_NAME_TAG).select("img").attr("alt");
         productDTO.setProductName(productName);
-
         String imageUrl = PRODUCT_URL + elements.select(PRODUCT_NAME_TAG).select("img").attr("src");
         productDTO.setPictureUrl(imageUrl);
-
         return productDTO;
     }
 }

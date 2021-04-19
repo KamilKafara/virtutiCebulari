@@ -71,5 +71,3 @@ public class ScheduledTasks {
         log.info("Response body for " + shop.toString() + " : " + promotionToSend);
     }
 }
-
-
