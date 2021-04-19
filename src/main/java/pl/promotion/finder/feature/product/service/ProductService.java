@@ -44,7 +44,8 @@ public class ProductService {
     }
 
     public ProductDTO getProductByNameWithLowerPrice(String name) {
-        return productTransformer.convertToDto(productRepository.findProductByProductNameWithLowerPrice(name));
+        Optional<Product> product = Optional.ofNullable(productRepository.findProductByProductNameWithLowerPrice(name));
+        return product.map(productTransformer::convertToDto).orElse(null);
     }
 
     public List<ProductDTO> findProductsByInterval(String name) {

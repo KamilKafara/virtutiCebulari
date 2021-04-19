@@ -1,6 +1,6 @@
 package pl.promotion.finder.feature.product.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import pl.promotion.finder.feature.product.dto.ProductDTO;
 import pl.promotion.finder.feature.product.repository.Product;
@@ -9,9 +9,9 @@ import pl.promotion.finder.feature.shop.repository.Shop;
 import pl.promotion.finder.feature.shop.service.ShopTransformer;
 
 @Service
+@AllArgsConstructor
 public class ProductTransformer {
-    @Autowired
-    private ShopTransformer shopTransformer;
+    private final ShopTransformer shopTransformer;
 
     public ProductDTO convertToDto(Product product) {
         ProductDTO productDTO = new ProductDTO();
