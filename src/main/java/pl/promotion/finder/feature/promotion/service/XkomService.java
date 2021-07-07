@@ -21,9 +21,9 @@ import java.text.ParseException;
 @Service
 public class XkomService implements Promotion {
     private static final String XKOM_TIMEOUT = System.getenv("XKOM_TIMEOUT");
-
-    private static final String HOT_SHOT_TAG = "div.kNOaST";
-    private static final String PROPERTY_TAG = "span.sc-1tblmgq-0.sc-18w91q-5.lcCghT.sc-1tblmgq-2.bmAqLj";
+    //
+    private static final String HOT_SHOT_TAG = "div.qjKbk";
+    private static final String PROPERTY_TAG = "div.sc-1bb6kqq-1";
     private static final String OLD_PRICE_TAG = "span.dNOsIM";
     private static final String NEW_PRICE_TAG = "span.bxyEHo";
 
