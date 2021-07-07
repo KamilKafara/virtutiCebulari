@@ -1,6 +1,5 @@
 package pl.promotion.finder.feature.product.dto;
 
-import com.google.common.base.Objects;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -18,14 +17,11 @@ import java.sql.Timestamp;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 @Log4j2
-@Setter
 @Getter
+@Setter
 @ToString
 @NoArgsConstructor
 @Validated
@@ -172,19 +168,21 @@ public class ProductDTO {
         if (this == o) return true;
         if (!(o instanceof ProductDTO)) return false;
         ProductDTO that = (ProductDTO) o;
-        return Objects.equal(getId(), that.getId()) &&
-                Objects.equal(getShopName(), that.getShopName()) &&
-                Objects.equal(getProductUrl(), that.getProductUrl()) &&
-                Objects.equal(getProductName(), that.getProductName()) &&
-                Objects.equal(getOldPrice(), that.getOldPrice()) &&
-                Objects.equal(getNewPrice(), that.getNewPrice()) &&
-                Objects.equal(getAmount(), that.getAmount()) &&
-                Objects.equal(getPictureUrl(), that.getPictureUrl()) &&
-                Objects.equal(getPercentageCut(), that.getPercentageCut());
+        return Objects.equals(getId(), that.getId()) &&
+                Objects.equals(getShopName(), that.getShopName()) &&
+                Objects.equals(getProductUrl(), that.getProductUrl()) &&
+                Objects.equals(getProductName(), that.getProductName()) &&
+                Objects.equals(getOldPrice(), that.getOldPrice()) &&
+                Objects.equals(getNewPrice(), that.getNewPrice()) &&
+                Objects.equals(getAmount(), that.getAmount()) &&
+                Objects.equals(getPictureUrl(), that.getPictureUrl()) &&
+                Objects.equals(getPercentageCut(), that.getPercentageCut()) &&
+                Objects.equals(getCreateDate(), that.getCreateDate()) &&
+                Objects.equals(getShop(), that.getShop());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(getId(), getShopName(), getProductUrl(), getProductName(), getOldPrice(), getNewPrice(), getAmount(), getPictureUrl(), getPercentageCut());
+        return Objects.hash(getId(), getShopName(), getProductUrl(), getProductName(), getOldPrice(), getNewPrice(), getAmount(), getPictureUrl(), getPercentageCut(), getCreateDate(), getShop());
     }
 }

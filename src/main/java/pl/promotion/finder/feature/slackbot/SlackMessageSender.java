@@ -34,6 +34,8 @@ import static com.github.seratch.jslack.api.webhook.WebhookPayloads.payload;
 public class SlackMessageSender {
 
     private static final String SLACK_HOOKS_URL = System.getenv("SLACK_WEBHOOK");
+    private static final String GO_TO_PROMOTION = "Przejdź do promocji";
+    private static final String SALE_MESSAGE = "Obniżka  -";
     private final ProductService productService;
 
     public SlackMessageSender(ProductService productService) {
@@ -72,7 +74,7 @@ public class SlackMessageSender {
 
         productDTO.setupPercentageCut();
         if (productDTO.getPercentageCut() != null) {
-            priceFields.add(markdownText("*" + "Obniżka  -" + productDTO.getPercentageCut() + "% " + "*"));
+            priceFields.add(markdownText("*" + SALE_MESSAGE + productDTO.getPercentageCut() + "% " + "*"));
         }
 
         addAnnotationWithLowerPrice(priceFields, productDTO);
@@ -88,7 +90,7 @@ public class SlackMessageSender {
         ActionsBlock productURLActionBlock = actions(
                 a -> a.elements(asElements(button(btn ->
                         btn.text(plainText(pt -> pt.emoji(true)
-                                .text("Przejdź do promocji")))
+                                .text(GO_TO_PROMOTION)))
                                 .url(productDTO.getProductUrl())))));
 
         Payload payload = payload(b -> b.blocks(
