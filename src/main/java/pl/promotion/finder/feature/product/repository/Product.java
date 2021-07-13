@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import pl.promotion.finder.feature.shop.repository.Shop;
+import pl.promotion.finder.feature.shop.repository.ShopEntity;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
@@ -31,6 +31,6 @@ public class Product {
     private Timestamp createDate;
 
     @ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
-    private Shop shop;
+    private ShopEntity shop;
 
 }

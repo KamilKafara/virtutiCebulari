@@ -14,6 +14,7 @@ import pl.promotion.finder.exception.NotFoundException;
 import pl.promotion.finder.feature.product.dto.PriceMapper;
 import pl.promotion.finder.feature.product.dto.ProductDTO;
 import pl.promotion.finder.feature.product.service.ProductService;
+import pl.promotion.finder.feature.slackbot.dto.PayloadFormat;
 
 import java.io.IOException;
 import java.text.ParseException;
@@ -21,12 +22,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static com.github.seratch.jslack.api.model.block.Blocks.actions;
 import static com.github.seratch.jslack.api.model.block.Blocks.asBlocks;
 import static com.github.seratch.jslack.api.model.block.composition.BlockCompositions.markdownText;
 import static com.github.seratch.jslack.api.model.block.composition.BlockCompositions.plainText;
-import static com.github.seratch.jslack.api.model.block.element.BlockElements.asElements;
-import static com.github.seratch.jslack.api.model.block.element.BlockElements.button;
 import static com.github.seratch.jslack.api.webhook.WebhookPayloads.payload;
 
 @Log4j2
@@ -42,10 +40,15 @@ public class SlackMessageSender {
         this.productService = productService;
     }
 
-    public String sendPromotionMessage(String message) throws IOException {
+    public String sendPromotionMessage(String message) {
         Slack slack = Slack.getInstance();
-        String payload = "{\"text\":\"" + message + "!\"}";
-        slack.send(SLACK_HOOKS_URL, payload);
+        String payload = PayloadFormat.buildPayload(message);
+        try {
+            slack.send(SLACK_HOOKS_URL, payload);
+        } catch (IOException e) {
+            e.printStackTrace();
+            log.error(e.getMessage());
+        }
         return payload;
     }
 
@@ -66,32 +69,13 @@ public class SlackMessageSender {
                         .altText(productDTO.getProductName()).build())
                 .build();
 
-        List<TextObject> priceFields = new ArrayList<>();
-        if (!productDTO.getNewPrice().equals(productDTO.getOldPrice())) {
-            priceFields.add(markdownText("~" + productDTO.getOldPrice() + "~"));
-        }
-        priceFields.add(markdownText("*" + productDTO.getNewPrice() + "*"));
-
-        productDTO.setupPercentageCut();
-        if (productDTO.getPercentageCut() != null) {
-            priceFields.add(markdownText("*" + SALE_MESSAGE + productDTO.getPercentageCut() + "% " + "*"));
-        }
+        List<TextObject> priceFields = setupPrice(productDTO);
 
         addAnnotationWithLowerPrice(priceFields, productDTO);
 
-        SectionBlock shopNameSectionBlock = SectionBlock.builder()
-                .text(plainText(productDTO.getShopName()))
-                .build();
-
-        SectionBlock priceSectionBlock = SectionBlock.builder()
-                .fields(priceFields)
-                .build();
-
-        ActionsBlock productURLActionBlock = actions(
-                a -> a.elements(asElements(button(btn ->
-                        btn.text(plainText(pt -> pt.emoji(true)
-                                .text(GO_TO_PROMOTION)))
-                                .url(productDTO.getProductUrl())))));
+        SectionBlock shopNameSectionBlock = PayloadBuilder.buildSectionBlock(productDTO.getShopName());
+        SectionBlock priceSectionBlock = PayloadBuilder.buildSectionBlock(priceFields);
+        ActionsBlock productURLActionBlock = PayloadBuilder.buildActionsBlock(productDTO.getProductUrl(), GO_TO_PROMOTION);
 
         Payload payload = payload(b -> b.blocks(
                 asBlocks(
@@ -105,24 +89,44 @@ public class SlackMessageSender {
         return payload;
     }
 
+    private List<TextObject> setupPrice(ProductDTO productDTO) {
+        List<TextObject> priceFields = new ArrayList<>();
+        if (!productDTO.getNewPrice().equals(productDTO.getOldPrice())) {
+            priceFields.add(markdownText("~" + productDTO.getOldPrice() + "~"));
+        }
+        priceFields.add(markdownText("*" + productDTO.getNewPrice() + "*"));
+
+        productDTO.setupPercentageCut();
+        if (productDTO.getPercentageCut() != null) {
+            priceFields.add(markdownText("*" + SALE_MESSAGE + productDTO.getPercentageCut() + "% " + "*"));
+        }
+        return priceFields;
+    }
+
     private void addAnnotationWithLowerPrice(List<TextObject> priceFields, ProductDTO productDTO) {
         Optional<ProductDTO> productWithLowerPrice = Optional.ofNullable(productService.getProductByNameWithLowerPrice(productDTO.getProductName()));
         if (productWithLowerPrice.isPresent()) {
             try {
                 PriceMapper.priceFactory(productWithLowerPrice.get().getNewPrice());
-                double lowerPrice = PriceMapper.getDecimalPrice().doubleValue();
                 PriceMapper.priceFactory(productDTO.getNewPrice());
+
+                double lowerPrice = PriceMapper.getDecimalPrice().doubleValue();
                 double currentProductPrice = PriceMapper.getDecimalPrice().doubleValue();
 
                 if (lowerPrice < currentProductPrice) {
-                    priceFields.add(markdownText("Ten produkt już kosztował mniej - " + productWithLowerPrice.get().getNewPrice()));
-                    priceFields.add(markdownText("Korzystniejsza promocja już była: " + productWithLowerPrice.get().getCreateDate()));
-                    priceFields.add(markdownText("Zastanów się dwa razy zanim zdecydujesz się na zakup."));
+                    priceFields.addAll(buildAnnotation(productWithLowerPrice.get()));
                 }
             } catch (ParseException e) {
                 log.error(e.getMessage());
-                log.error(e);
             }
         }
+    }
+
+    private List<TextObject> buildAnnotation(ProductDTO productWithLowerPrice) {
+        List<TextObject> annotation = new ArrayList<>();
+        annotation.add(markdownText("Ten produkt już kosztował mniej - " + productWithLowerPrice.getNewPrice()));
+        annotation.add(markdownText("Korzystniejsza promocja już była: " + productWithLowerPrice.getCreateDate()));
+        annotation.add(markdownText("Zastanów się dwa razy zanim zdecydujesz się na zakup."));
+        return annotation;
     }
 }

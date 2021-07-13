@@ -5,13 +5,13 @@ import org.springframework.stereotype.Service;
 import pl.promotion.finder.feature.product.dto.ProductDTO;
 import pl.promotion.finder.feature.product.repository.Product;
 import pl.promotion.finder.feature.shop.dto.ShopDTO;
-import pl.promotion.finder.feature.shop.repository.Shop;
-import pl.promotion.finder.feature.shop.service.ShopTransformer;
+import pl.promotion.finder.feature.shop.repository.ShopEntity;
+import pl.promotion.finder.feature.shop.service.ShopEntityMapper;
 
 @Service
 @AllArgsConstructor
-public class ProductTransformer {
-    private final ShopTransformer shopTransformer;
+public class ProductMapper {
+    private final ShopEntityMapper shopEntityMapper;
 
     public ProductDTO convertToDto(Product product) {
         ProductDTO productDTO = new ProductDTO();
@@ -26,7 +26,7 @@ public class ProductTransformer {
         productDTO.setPercentageCut(product.getPercentageCut());
         productDTO.setCreateDate(product.getCreateDate());
 
-        ShopDTO shopDTO = shopTransformer.convertToDTO(product.getShop());
+        ShopDTO shopDTO = shopEntityMapper.convertToDTO(product.getShop());
         productDTO.setShop(shopDTO);
 
         return productDTO;
@@ -45,7 +45,7 @@ public class ProductTransformer {
         product.setPercentageCut(productDTO.getPercentageCut());
         product.setCreateDate(productDTO.getCreateDate());
 
-        Shop shop = shopTransformer.convertFromDTO(productDTO.getShop());
+        ShopEntity shop = shopEntityMapper.convertFromDTO(productDTO.getShop());
         product.setShop(shop);
         return product;
 

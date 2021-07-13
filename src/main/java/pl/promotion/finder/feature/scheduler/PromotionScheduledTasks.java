@@ -19,7 +19,7 @@ import java.util.List;
 @Component
 @Service
 @AllArgsConstructor
-public class ScheduledTasks {
+public class PromotionScheduledTasks {
     private static final int DURATION = 60_000;
     private final SlackMessageSender slackMessageSender;
     private final AmsoService amsoService;

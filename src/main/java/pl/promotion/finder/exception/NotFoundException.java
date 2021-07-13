@@ -9,6 +9,12 @@ import java.util.Collections;
 public class NotFoundException extends RuntimeException {
 
     private final Collection<FieldInfo> fields;
+
+    public NotFoundException(FieldInfo fieldInfo) {
+        super("Not found field: " + fieldInfo.getName());
+        this.fields = Collections.singletonList(fieldInfo);
+    }
+
     public NotFoundException(String message, FieldInfo fieldInfo) {
         super(message);
         this.fields = Collections.singletonList(fieldInfo);
