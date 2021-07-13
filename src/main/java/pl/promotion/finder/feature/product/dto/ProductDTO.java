@@ -1,7 +1,7 @@
 package pl.promotion.finder.feature.product.dto;
 
+import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.extern.log4j.Log4j2;
@@ -19,11 +19,11 @@ import java.text.NumberFormat;
 import java.text.ParseException;
 import java.util.*;
 
+@Builder
 @Log4j2
 @Getter
 @Setter
 @ToString
-@NoArgsConstructor
 @Validated
 public class ProductDTO {
     private Long id;
@@ -49,10 +49,6 @@ public class ProductDTO {
         this.amount = "empty";
         Date date = new Date();
         this.createDate = new Timestamp(date.getTime());
-    }
-
-    public void setProductUrl(String productUrl) {
-        this.productUrl = productUrl;
     }
 
     public String getPictureUrl() {
@@ -91,14 +87,6 @@ public class ProductDTO {
 
     public Double getPercentageCut() {
         return percentageCut;
-    }
-
-    public void setOldPrice(String oldPrice) {
-        this.oldPrice = oldPrice;
-    }
-
-    public void setNewPrice(String newPrice) {
-        this.newPrice = newPrice;
     }
 
     private BigDecimal parse(String amount) {

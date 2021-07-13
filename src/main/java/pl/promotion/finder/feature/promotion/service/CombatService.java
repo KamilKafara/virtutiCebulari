@@ -51,16 +51,16 @@ public class CombatService implements Promotion {
 
     @Override
     public ProductDTO getProduct(Document document) throws ParseException {
-        ProductDTO productDTO = new ProductDTO();
-        productDTO.setProductName(combatDTO.getName());
-        productDTO.setProductUrl(combatDTO.getRegular_url());
-        productDTO.setShopName(SHOP_NAME);
-        productDTO.setAmount(String.valueOf(combatDTO.getLeft()));
-        productDTO.setOldPrice(PriceMapper.priceFactory(parsePrice(combatDTO.getRegular_price())));
-        productDTO.setNewPrice(PriceMapper.priceFactory(parsePrice(combatDTO.getPromotion_price())));
-        productDTO.setProductUrl(combatDTO.getRegular_url());
-        productDTO.setPictureUrl(SHOP_URL + combatDTO.getPhoto());
-        return productDTO;
+        return ProductDTO.builder()
+                .productName(combatDTO.getName())
+                .productUrl(combatDTO.getRegular_url())
+                .shopName(SHOP_NAME)
+                .amount(String.valueOf(combatDTO.getLeft()))
+                .oldPrice(PriceMapper.priceFactory(parsePrice(combatDTO.getRegular_price())))
+                .newPrice(PriceMapper.priceFactory(parsePrice(combatDTO.getPromotion_price())))
+                .productUrl(combatDTO.getRegular_url())
+                .pictureUrl(SHOP_URL + combatDTO.getPhoto())
+                .build();
     }
 
     private String parsePrice(String price) {
