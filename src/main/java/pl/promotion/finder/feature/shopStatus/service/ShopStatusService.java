@@ -15,6 +15,7 @@ import pl.promotion.finder.feature.shopStatus.dto.ShopStatusDTO;
 import pl.promotion.finder.feature.shopStatus.repository.ShopStatus;
 import pl.promotion.finder.feature.shopStatus.repository.ShopStatusRepository;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -39,6 +40,12 @@ public class ShopStatusService {
         return shopStatusRepository.findAll().stream()
                 .map(shopStatusMapper::toShopStatusDTO)
                 .collect(Collectors.toList());
+    }
+
+    public ShopStatusDTO disableShopById(long id) {
+        ShopStatusDTO foundedShopStatus = getShopById(id);
+        foundedShopStatus.setEnable(false);
+        return update(foundedShopStatus, id);
     }
 
     public ShopStatusDTO getShopById(Long id) {
@@ -83,7 +90,7 @@ public class ShopStatusService {
     }
 
     public ShopStatusDTO save(ShopStatusDTO shopStatus) {
-        if (isShopExist(shopStatus.getShop())) {
+        if (!isShopExist(shopStatus.getShop()) && (isExceptionAlreadyExist(shopStatus))) {
             ShopStatus addedShopStatus = shopStatusRepository.save(shopStatusMapper.fromShopStatusDTO(shopStatus));
             return shopStatusMapper.toShopStatusDTO(addedShopStatus);
         }
@@ -95,6 +102,7 @@ public class ShopStatusService {
         if (isShopExist(shopStatus.getShop())) {
             if (shopStatus.getShop().getId() == shopId) {
                 ShopStatus shopStatusToUpdate = shopStatusMapper.fromShopStatusDTO(shopStatus);
+                shopStatusToUpdate.setLastStatus(new Date());
                 shopStatusToUpdate.setId(shopId);
                 ShopStatus updatedShopStatus = shopStatusRepository.save(shopStatusToUpdate);
                 return shopStatusMapper.toShopStatusDTO(updatedShopStatus);
@@ -102,12 +110,19 @@ public class ShopStatusService {
                 throw new BadRequestException("ShopStatus id's are not equals", new FieldInfo("id", ErrorCode.BAD_REQUEST));
             }
         }
-        throw new NotFoundException("Not found this shopStatus: " + shopStatus.toString(), new FieldInfo("shopStatus", ErrorCode.NOT_FOUND));
-
+        throw new NotFoundException("Not found this shopStatus: " + shopStatus, new FieldInfo("shopStatus", ErrorCode.NOT_FOUND));
     }
+
 
     private boolean isShopExist(ShopEntity shopEntity) {
         Optional<ShopStatus> shopStatus = Optional.ofNullable(shopStatusRepository.findByShop(shopEntity));
         return shopStatus.isPresent();
+    }
+
+    private boolean isExceptionAlreadyExist(ShopStatusDTO currentShopStatus) {
+        List<ShopStatus> statusList = shopStatusRepository.findErrorMessage(currentShopStatus.getShop());
+
+        return !statusList.isEmpty();
+
     }
 }

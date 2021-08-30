@@ -17,5 +17,4 @@ public class ShopStatusMapper {
         ModelMapper modelMapper = new ModelMapper();
         return modelMapper.map(shopStatusDTO, ShopStatus.class);
     }
-
 }

@@ -26,4 +26,6 @@ public interface ShopStatusRepository extends JpaRepository<ShopStatus, Long> {
     List<ShopStatus> findLastShopStatusesByShopName(@Param("shopName") String shopName);
 
     List<ShopStatus> findShopStatusesByEnableIsFalse();
+
+    List<ShopStatus> findErrorMessage(ShopEntity shop);
 }

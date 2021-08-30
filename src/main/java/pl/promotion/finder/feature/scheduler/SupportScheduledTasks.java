@@ -20,11 +20,12 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class SupportScheduledTasks {
     private static final String CRON_DURATION = "0 17 * * *";
+    private static final String CURRENT_ZONE = "Europe/Warsaw";
 
     private final SupportMessageSender supportMessageSender;
     private final ShopStatusService shopStatusService;
 
-    @Scheduled(cron = CRON_DURATION, zone = "Europe/Warsaw")
+    @Scheduled(cron = CRON_DURATION, zone = CURRENT_ZONE)
     public void reportProblems() {
         sendMessageToSupport();
     }
@@ -35,6 +36,7 @@ public class SupportScheduledTasks {
         List<SupportMessageDTO> supportMessageDTOList = lastEnableShopsStatus.stream()
                 .map(messageMapper::toDto)
                 .collect(Collectors.toList());
-        // todo use supportMessageSender
+
+        supportMessageDTOList.forEach(supportMessageSender::registerAnnouncement);
     }
 }
