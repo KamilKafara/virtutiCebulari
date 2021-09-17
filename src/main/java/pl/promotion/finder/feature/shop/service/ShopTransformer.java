@@ -15,7 +15,6 @@ public class ShopTransformer {
     }
 
     public ShopDTO convertToDTO(Shop shop) {
-
         ShopDTO shopDTO = new ShopDTO();
         shopDTO.setId(shop.getId());
         shopDTO.setName(shop.getName());
