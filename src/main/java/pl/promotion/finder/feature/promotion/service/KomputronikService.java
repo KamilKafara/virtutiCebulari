@@ -11,7 +11,9 @@ import pl.promotion.finder.exception.ErrorCode;
 import pl.promotion.finder.exception.FieldInfo;
 import pl.promotion.finder.feature.product.dto.PriceMapper;
 import pl.promotion.finder.feature.product.dto.ProductDTO;
+import pl.promotion.finder.feature.product.dto.ProductDTOBuilder;
 import pl.promotion.finder.feature.promotion.dto.KomputronikDTO;
+import pl.promotion.finder.feature.promotion.dto.KomputronikPricesDTO;
 import pl.promotion.finder.feature.promotion.dto.KomputronikProductDTO;
 
 import java.io.IOException;
@@ -20,13 +22,13 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
+import java.util.Optional;
 
 @Log4j2
 @Service
 public class KomputronikService implements Promotion {
     private static final String SHOP_NAME = "komputronik";
     private static final String JSON_URL = "https://www.komputronik.pl/frontend-api/product/box/occasions";
-    private static final String AMOUNT = "empty";
     private KomputronikDTO komputronikDTO;
 
     public ProductDTO getPromotion() throws IOException {
@@ -53,20 +55,27 @@ public class KomputronikService implements Promotion {
 
     @Override
     public ProductDTO getProduct(Document document) throws ParseException {
-        ProductDTO productDTO = new ProductDTO();
         if (this.komputronikDTO.getProducts().isEmpty()) {
             return null;
         }
-        KomputronikProductDTO product = this.komputronikDTO.getProducts().get(0);
-        productDTO.setProductName(product.getName());
-        productDTO.setProductUrl(product.getUrl());
-        productDTO.setShopName(SHOP_NAME);
-        productDTO.setAmount(AMOUNT);
+
+        Optional<KomputronikProductDTO> optionalProduct = this.komputronikDTO.getProducts().stream().findFirst();
+        if (optionalProduct.isEmpty()) {
+            return null;
+        }
+
+        KomputronikProductDTO product = optionalProduct.get();
         String currency = product.getPrices().getPrice_currency();
         PriceMapper.setCurrency(currency);
-        productDTO.setOldPrice(PriceMapper.priceFactory(product.getPrices().getPrice_base_gross()));
-        productDTO.setNewPrice(PriceMapper.priceFactory(product.getPrices().getFinal_price()));
-        productDTO.setPictureUrl(product.getAlternative_image_url());
-        return productDTO;
+        KomputronikPricesDTO prices = product.getPrices();
+
+        return new ProductDTOBuilder()
+                .withShopName(SHOP_NAME)
+                .withProductUrl(product.getUrl())
+                .withProductName(product.getName())
+                .withPictureUrl(product.getAlternative_image_url())
+                .withOldPrice(prices.getPrice_base_gross())
+                .withNewPrice(prices.getFinal_price())
+                .build();
     }
 }

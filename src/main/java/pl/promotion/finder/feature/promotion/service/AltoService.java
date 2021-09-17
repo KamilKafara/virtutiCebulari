@@ -9,15 +9,18 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import pl.promotion.finder.exception.ErrorCode;
 import pl.promotion.finder.exception.FieldInfo;
-import pl.promotion.finder.feature.product.dto.PriceMapper;
 import pl.promotion.finder.feature.product.dto.ProductDTO;
+import pl.promotion.finder.feature.product.dto.ProductDTOBuilder;
 
 import java.io.IOException;
 import java.text.ParseException;
 
+import static pl.promotion.finder.utils.HtmlTag.SRC;
+
 @Log4j2
 @Service
 public class AltoService implements Promotion {
+    private static final String HOT_SHOT_TAG = "div.mbxiax-6.CqKkO";
     private static final String NEW_PRICE_TAG = "span.iWkRRi";
     private static final String OLD_PRICE_TAG = "span.jgxIHJ";
     private static final String PRODUCT_NAME_TAG = "span.hGKlIY";
@@ -39,17 +42,19 @@ public class AltoService implements Promotion {
 
     @Override
     public ProductDTO getProduct(Document document) throws ParseException {
-        Element element = document.select("div.mbxiax-6.CqKkO").first();
-        ProductDTO productDTO = new ProductDTO(SHOP_NAME, PRODUCT_URL);
+        Element element = document.select(HOT_SHOT_TAG).first();
         String productName = element.getElementsByClass(PRODUCT_NAME_TAG).text();
-        productDTO.setProductName(productName);
         String newPrice = element.getElementsByClass(NEW_PRICE_TAG).text();
-        productDTO.setNewPrice(PriceMapper.priceFactory(newPrice));
         String oldPrice = element.getElementsByClass(OLD_PRICE_TAG).text();
-        productDTO.setOldPrice(PriceMapper.priceFactory(oldPrice));
-        String productUrl = element.getElementsByClass(PRODUCT_IMAGE_TAG).attr("src");
-        productDTO.setPictureUrl(productUrl);
-        productDTO.setAmount("empty");
-        return productDTO;
+        String pictureUrl = element.getElementsByClass(PRODUCT_IMAGE_TAG).attr(SRC);
+
+        return new ProductDTOBuilder()
+                .withShopName(SHOP_NAME)
+                .withProductUrl(PRODUCT_URL)
+                .withProductName(productName)
+                .withPictureUrl(pictureUrl)
+                .withOldPrice(oldPrice)
+                .withNewPrice(newPrice)
+                .build();
     }
 }

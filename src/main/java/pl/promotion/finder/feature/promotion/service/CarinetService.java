@@ -3,18 +3,19 @@ package pl.promotion.finder.feature.promotion.service;
 import lombok.extern.log4j.Log4j2;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import pl.promotion.finder.exception.ErrorCode;
 import pl.promotion.finder.exception.FieldInfo;
-import pl.promotion.finder.feature.product.dto.PriceMapper;
 import pl.promotion.finder.feature.product.dto.ProductDTO;
+import pl.promotion.finder.feature.product.dto.ProductDTOBuilder;
 
 import java.io.IOException;
 import java.text.ParseException;
+
+import static pl.promotion.finder.utils.HtmlTag.*;
 
 @Log4j2
 @Service
@@ -42,19 +43,22 @@ public class CarinetService implements Promotion {
 
     public ProductDTO getProduct(Document document) throws ParseException {
         Elements elements = document.getElementsByClass(HOT_SHOT_TAG);
-        ProductDTO productDTO = new ProductDTO(SHOP_NAME, PRODUCT_URL);
 
-        String imageUrl = elements.select(PRODUCT_IMAGE_TAG).attr("src");
-        productDTO.setPictureUrl(imageUrl);
-        productDTO.setProductName(elements.select(PRODUCT_NAME_TAG).text());
-        String productUrl = elements.select("a").attr("href");
-        productDTO.setProductUrl(productUrl);
-        Element oldPrice = document.select(NEW_PRICE_TAG).first();
-        productDTO.setOldPrice(PriceMapper.priceFactory(oldPrice.text()));
-        Element newPrice = document.select(OLD_PRICE_TAG).first();
-        productDTO.setNewPrice(PriceMapper.priceFactory(newPrice.text()));
-        String amount = elements.select(AMOUNT_TAG).select("span").text().replaceAll("[^\\d]", "");
-        productDTO.setAmount(amount.replaceAll("[^\\d]", ""));
-        return productDTO;
+        String pictureUrl = elements.select(PRODUCT_IMAGE_TAG).attr(SRC);
+        String productName = elements.select(PRODUCT_NAME_TAG).text();
+        String productUrl = elements.select(A).attr(HREF);
+        String oldPrice = document.select(NEW_PRICE_TAG).first().text();
+        String newPrice = document.select(OLD_PRICE_TAG).first().text();
+        String amount = elements.select(AMOUNT_TAG).select(SPAN).text().replaceAll("[^\\d]", "");
+
+        return new ProductDTOBuilder()
+                .withShopName(SHOP_NAME)
+                .withProductUrl(productUrl)
+                .withProductName(productName)
+                .withPictureUrl(pictureUrl)
+                .withOldPrice(oldPrice)
+                .withNewPrice(newPrice)
+                .withAmount(amount)
+                .build();
     }
 }

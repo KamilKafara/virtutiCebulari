@@ -9,11 +9,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import pl.promotion.finder.exception.ErrorCode;
 import pl.promotion.finder.exception.FieldInfo;
-import pl.promotion.finder.feature.product.dto.PriceMapper;
 import pl.promotion.finder.feature.product.dto.ProductDTO;
+import pl.promotion.finder.feature.product.dto.ProductDTOBuilder;
 
 import java.io.IOException;
 import java.text.ParseException;
+
+import static pl.promotion.finder.utils.HtmlTag.*;
 
 @Log4j2
 @Service
@@ -40,16 +42,19 @@ public class ApolloService implements Promotion {
     @Override
     public ProductDTO getProduct(Document document) throws ParseException {
         Elements elements = document.getElementsByClass(HOT_SHOT_TAG);
-        ProductDTO productDTO = new ProductDTO(SHOP_NAME, PRODUCT_URL);
 
+        String productName = elements.select(PRODUCT_NAME_TAG).select(IMG).attr(ALT);
+        String pictureUrl = PRODUCT_URL + elements.select(PRODUCT_NAME_TAG).select(IMG).attr(SRC);
         String oldPrice = elements.select(SPAN_OLD).text();
-        productDTO.setOldPrice(PriceMapper.priceFactory(oldPrice));
         String newPrice = elements.select(NEW_PRICE_TAG).text();
-        productDTO.setNewPrice(PriceMapper.priceFactory(newPrice));
-        String productName = elements.select(PRODUCT_NAME_TAG).select("img").attr("alt");
-        productDTO.setProductName(productName);
-        String imageUrl = PRODUCT_URL + elements.select(PRODUCT_NAME_TAG).select("img").attr("src");
-        productDTO.setPictureUrl(imageUrl);
-        return productDTO;
+
+        return new ProductDTOBuilder()
+                .withShopName(SHOP_NAME)
+                .withProductUrl(PRODUCT_URL)
+                .withProductName(productName)
+                .withPictureUrl(pictureUrl)
+                .withOldPrice(oldPrice)
+                .withNewPrice(newPrice)
+                .build();
     }
 }

@@ -10,12 +10,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import pl.promotion.finder.exception.ErrorCode;
 import pl.promotion.finder.exception.FieldInfo;
-import pl.promotion.finder.feature.product.dto.PriceMapper;
 import pl.promotion.finder.feature.product.dto.ProductDTO;
+import pl.promotion.finder.feature.product.dto.ProductDTOBuilder;
 
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.text.ParseException;
+
+import static pl.promotion.finder.utils.HtmlTag.*;
 
 @Log4j2
 @Service
@@ -25,7 +26,7 @@ public class XkomService implements Promotion {
     private static final String HOT_SHOT_TAG = "div.dyQMoT";
     private static final String PROPERTY_TAG = "div.sc-1bb6kqq-1";
     private static final String OLD_PRICE_TAG = "span.lfqgAC";
-    private static final String NEW_PRICE_TAG = "span.jhAAkN";
+    private static final String NEW_PRICE_TAG = "span.ccdajt";
 
     private static final String SHOP_NAME = "x-kom";
     private static final String SHOP_URL = "https://www.x-kom.pl/";
@@ -52,27 +53,25 @@ public class XkomService implements Promotion {
     public ProductDTO getProduct(Document document) throws ParseException {
         Elements elements = document.select(HOT_SHOT_TAG);
         if (elements.isEmpty()) {
-            return null;
+            return new ProductDTO();
         }
-        ProductDTO productDTO = new ProductDTO(SHOP_NAME, PRODUCT_URL);
         Element productInfo = elements.first();
         Element productProperty = productInfo.select(PROPERTY_TAG).first();
-        String productImage = productProperty.select("img").attr("src");
-        String productName = productProperty.select("img").attr("alt");
-        productDTO.setPictureUrl(productImage);
-        productDTO.setProductName(productName);
+        if (productProperty == null) {
+            return new ProductDTO();
+        }
+        String productName = productProperty.select(IMG).attr(ALT);
+        String productUrl = productProperty.select(IMG).attr(SRC);
         String oldPriceText = elements.select(OLD_PRICE_TAG).text();
         String newPriceText = elements.select(NEW_PRICE_TAG).text();
-        String newPrice = PriceMapper.priceFactory(oldPriceText);
-        productDTO.setNewPrice(newPrice);
-        BigDecimal bigDecimalNewPrice = PriceMapper.getDecimalPrice();
-        String oldPrice = PriceMapper.priceFactory(newPriceText);
-        productDTO.setOldPrice(oldPrice);
-        BigDecimal bigDecimalOldPrice = PriceMapper.getDecimalPrice();
-        if (bigDecimalNewPrice.doubleValue() > bigDecimalOldPrice.doubleValue()) {
-            productDTO.setOldPrice(newPrice);
-            productDTO.setNewPrice(oldPrice);
-        }
-        return productDTO;
+
+        return new ProductDTOBuilder()
+                .withShopName(SHOP_NAME)
+                .withProductUrl(PRODUCT_URL)
+                .withProductName(productName)
+                .withPictureUrl(productUrl)
+                .withOldPrice(oldPriceText)
+                .withNewPrice(newPriceText)
+                .build();
     }
 }

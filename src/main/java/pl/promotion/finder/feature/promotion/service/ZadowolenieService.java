@@ -9,11 +9,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import pl.promotion.finder.exception.ErrorCode;
 import pl.promotion.finder.exception.FieldInfo;
-import pl.promotion.finder.feature.product.dto.PriceMapper;
 import pl.promotion.finder.feature.product.dto.ProductDTO;
+import pl.promotion.finder.feature.product.dto.ProductDTOBuilder;
 
 import java.io.IOException;
 import java.text.ParseException;
+
+import static pl.promotion.finder.utils.HtmlTag.*;
 
 @Log4j2
 @Service
@@ -40,14 +42,18 @@ public class ZadowolenieService implements Promotion {
     @Override
     public ProductDTO getProduct(Document document) throws ParseException {
         Elements elements = document.select(HOT_SHOT_TAG);
-        ProductDTO productDTO = new ProductDTO(SHOP_NAME, PRODUCT_URL);
         String newPrice = elements.select(NEW_PRICE_TAG).text();
-        productDTO.setOldPrice(PriceMapper.priceFactory(newPrice));
-        productDTO.setNewPrice(PriceMapper.priceFactory(newPrice));
-        productDTO.setAmount("empty");
-        Elements productDetails = elements.select(PRODUCT_DETAILS_TAG).select("img");
-        productDTO.setProductName(productDetails.attr("alt"));
-        productDTO.setPictureUrl(SHOP_URL + productDetails.attr("src"));
-        return productDTO;
+        Elements productDetails = elements.select(PRODUCT_DETAILS_TAG).select(IMG);
+        String productName = productDetails.attr(ALT);
+        String pictureUrl = SHOP_URL + productDetails.attr(SRC);
+
+        return new ProductDTOBuilder()
+                .withShopName(SHOP_NAME)
+                .withProductUrl(PRODUCT_URL)
+                .withProductName(productName)
+                .withPictureUrl(pictureUrl)
+                .withOldPrice(newPrice)
+                .withNewPrice(newPrice)
+                .build();
     }
 }
