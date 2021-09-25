@@ -5,7 +5,7 @@ import pl.promotion.finder.feature.shop.dto.ShopDTO;
 import pl.promotion.finder.feature.shop.repository.Shop;
 
 @Service
-public class ShopTransformer {
+public class ShopMapper {
 
     public Shop convertFromDTO(ShopDTO shopDTO) {
         Shop shop = new Shop();

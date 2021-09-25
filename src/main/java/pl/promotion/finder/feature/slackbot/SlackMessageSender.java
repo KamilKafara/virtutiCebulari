@@ -56,7 +56,7 @@ public class SlackMessageSender {
         }
     }
 
-    private Payload setupPayload(ProductDTO productDTO) {
+    public Payload setupPayload(ProductDTO productDTO) {
         SectionBlock productNameWithImageBlock = SectionBlock.builder()
                 .text(plainText(productDTO.getProductName()))
                 .accessory(ImageElement.builder()

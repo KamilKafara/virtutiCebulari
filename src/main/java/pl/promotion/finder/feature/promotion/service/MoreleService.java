@@ -9,11 +9,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import pl.promotion.finder.exception.ErrorCode;
 import pl.promotion.finder.exception.FieldInfo;
-import pl.promotion.finder.feature.product.dto.PriceMapper;
 import pl.promotion.finder.feature.product.dto.ProductDTO;
+import pl.promotion.finder.feature.product.dto.ProductDTOBuilder;
 
 import java.io.IOException;
 import java.text.ParseException;
+
+import static pl.promotion.finder.utils.HtmlTag.SRC;
 
 @Log4j2
 @Service
@@ -41,17 +43,22 @@ public class MoreleService implements Promotion {
 
     public ProductDTO getProduct(Document document) throws ParseException {
         Elements elements = document.select(HOT_SHOT_TAG);
-        ProductDTO productDTO = new ProductDTO(SHOP_NAME, "");
-
         Elements productDetails = elements.select(PRODUCT_DETAILS_TAG);
-        productDTO.setProductUrl(productDetails.attr(PRODUCT_URL_ATTRIBUTE));
-        productDTO.setProductName(productDetails.attr(PRODUCT_NAME_ATTRIBUTE));
-        productDTO.setPictureUrl(productDetails.select(PRODUCT_IMAGE_TAG).first().attr("src"));
+        String productUrl = productDetails.attr(PRODUCT_URL_ATTRIBUTE);
+        String productName = productDetails.attr(PRODUCT_NAME_ATTRIBUTE);
+        String pictureUrl = productDetails.select(PRODUCT_IMAGE_TAG).first().attr(SRC);
         String oldPrice = elements.select(OLD_PRICE_TAG).text();
-        productDTO.setOldPrice(PriceMapper.priceFactory(oldPrice));
         String newPrice = elements.select(NEW_PRICE_TAG).text();
-        productDTO.setNewPrice(PriceMapper.priceFactory(newPrice));
-        productDTO.setAmount(elements.select(AMOUNT_TAG).text().replaceAll("\\D+", ""));
-        return productDTO;
+        String amount = elements.select(AMOUNT_TAG).text().replaceAll("\\D+", "");
+
+        return new ProductDTOBuilder()
+                .withShopName(SHOP_NAME)
+                .withProductUrl(productUrl)
+                .withProductName(productName)
+                .withPictureUrl(pictureUrl)
+                .withOldPrice(oldPrice)
+                .withNewPrice(newPrice)
+                .withAmount(amount)
+                .build();
     }
 }

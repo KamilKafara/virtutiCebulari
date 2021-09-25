@@ -1,10 +1,6 @@
 package pl.promotion.finder.feature.product.dto;
 
-import com.google.common.base.Objects;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.validation.annotation.Validated;
 import pl.promotion.finder.feature.shop.dto.ShopDTO;
@@ -24,11 +20,12 @@ import java.util.List;
 import java.util.Random;
 
 @Log4j2
+@ToString
+@Validated
 @Setter
 @Getter
-@ToString
-@NoArgsConstructor
-@Validated
+@AllArgsConstructor
+@EqualsAndHashCode
 public class ProductDTO {
     private Long id;
     @NotNull
@@ -39,13 +36,21 @@ public class ProductDTO {
     private String productName;
     @NotNull
     private String oldPrice;
+    @NotNull
     private String newPrice;
+    @NotNull
     private String amount;
     @NotNull
     private String pictureUrl;
     private Double percentageCut;
     private Timestamp createDate;
     private ShopDTO shop;
+
+    public ProductDTO() {
+        this.amount = "empty";
+        Date date = new Date();
+        this.createDate = new Timestamp(date.getTime());
+    }
 
     public ProductDTO(String shopName, String productUrl) {
         this.shopName = shopName;
@@ -95,14 +100,6 @@ public class ProductDTO {
 
     public Double getPercentageCut() {
         return percentageCut;
-    }
-
-    public void setOldPrice(String oldPrice) {
-        this.oldPrice = oldPrice;
-    }
-
-    public void setNewPrice(String newPrice) {
-        this.newPrice = newPrice;
     }
 
     private BigDecimal parse(String amount) {
@@ -165,26 +162,5 @@ public class ProductDTO {
         }
         setupPercentageCut();
         return true;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof ProductDTO)) return false;
-        ProductDTO that = (ProductDTO) o;
-        return Objects.equal(getId(), that.getId()) &&
-                Objects.equal(getShopName(), that.getShopName()) &&
-                Objects.equal(getProductUrl(), that.getProductUrl()) &&
-                Objects.equal(getProductName(), that.getProductName()) &&
-                Objects.equal(getOldPrice(), that.getOldPrice()) &&
-                Objects.equal(getNewPrice(), that.getNewPrice()) &&
-                Objects.equal(getAmount(), that.getAmount()) &&
-                Objects.equal(getPictureUrl(), that.getPictureUrl()) &&
-                Objects.equal(getPercentageCut(), that.getPercentageCut());
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hashCode(getId(), getShopName(), getProductUrl(), getProductName(), getOldPrice(), getNewPrice(), getAmount(), getPictureUrl(), getPercentageCut());
     }
 }

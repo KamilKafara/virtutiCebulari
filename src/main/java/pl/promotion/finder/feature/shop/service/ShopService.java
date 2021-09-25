@@ -20,15 +20,15 @@ import java.util.stream.Collectors;
 public class ShopService {
 
     private final ShopRepository shopRepository;
-    private final ShopTransformer shopTransformer;
+    private final ShopMapper shopMapper;
 
-    public ShopService(ShopRepository shopRepository, ShopTransformer shopTransformer) {
+    public ShopService(ShopRepository shopRepository, ShopMapper shopMapper) {
         this.shopRepository = shopRepository;
-        this.shopTransformer = shopTransformer;
+        this.shopMapper = shopMapper;
     }
 
     public List<ShopDTO> getAll() {
-        return shopRepository.findAll().stream().map(shopTransformer::convertToDTO).collect(Collectors.toList());
+        return shopRepository.findAll().stream().map(shopMapper::convertToDTO).collect(Collectors.toList());
     }
 
     public ShopDTO getById(Long id) {
@@ -36,7 +36,7 @@ public class ShopService {
         if (!shop.isPresent()) {
             throw new NotFoundException("Shop with this id " + id + " not found", new FieldInfo("id", ErrorCode.NOT_FOUND));
         }
-        return shopTransformer.convertToDTO(shop.get());
+        return shopMapper.convertToDTO(shop.get());
     }
 
     public ShopDTO getByName(String name) {
@@ -44,7 +44,7 @@ public class ShopService {
         if (!shop.isPresent()) {
             throw new NotFoundException("Shop with this name " + name + " not found", new FieldInfo("name", ErrorCode.BAD_REQUEST));
         }
-        return shopTransformer.convertToDTO(shop.get());
+        return shopMapper.convertToDTO(shop.get());
     }
 
     public ShopDTO save(@Validated ShopDTO shopDTO) {
@@ -59,8 +59,8 @@ public class ShopService {
         if (shop.isPresent()) {
             throw new BadRequestException("Shop with this name " + shopDTO.getName() + " already exists", new FieldInfo("name", ErrorCode.BAD_REQUEST));
         }
-        Shop newShop = shopTransformer.convertFromDTO(shopDTO);
-        return shopTransformer.convertToDTO(shopRepository.save(newShop));
+        Shop newShop = shopMapper.convertFromDTO(shopDTO);
+        return shopMapper.convertToDTO(shopRepository.save(newShop));
     }
 
     public ShopDTO edit(ShopDTO shopDTO, Long id) {
@@ -68,8 +68,8 @@ public class ShopService {
         if (!shopDTO.getId().equals(id)) {
             throw new BadRequestException("Shop ids is not equals.", new FieldInfo("id", ErrorCode.BAD_REQUEST));
         }
-        Shop newShop = shopRepository.save(shopTransformer.convertFromDTO(shopDTO));
-        return shopTransformer.convertToDTO(newShop);
+        Shop newShop = shopRepository.save(shopMapper.convertFromDTO(shopDTO));
+        return shopMapper.convertToDTO(newShop);
     }
 
     public void delete(Long id) {

@@ -10,11 +10,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import pl.promotion.finder.exception.ErrorCode;
 import pl.promotion.finder.exception.FieldInfo;
-import pl.promotion.finder.feature.product.dto.PriceMapper;
 import pl.promotion.finder.feature.product.dto.ProductDTO;
+import pl.promotion.finder.feature.product.dto.ProductDTOBuilder;
 
 import java.io.IOException;
 import java.text.ParseException;
+
+import static pl.promotion.finder.utils.HtmlTag.*;
 
 @Log4j2
 @Service
@@ -42,21 +44,32 @@ public class SonyCentreService implements Promotion {
     public ProductDTO getProduct(Document document) throws ParseException {
         Elements elements = document.select(HOT_SHOT_TAG);
         Element productDetails = elements.select("div.desc").last();
-        ProductDTO productDTO = new ProductDTO(SHOP_NAME, PRODUCT_URL);
-        String productUrl = productDetails.select("a").attr("href");
-        productDTO.setProductUrl(PRODUCT_URL + productUrl);
+
+        String productUrl = PRODUCT_URL + productDetails.select(A).attr(HREF);
         Elements oldPriceElements = productDetails.getElementsByClass(OLD_PRICE_TAG);
-        Element oldPrice = oldPriceElements.select("span").first();
-        if (oldPrice.attr("itemprop").equals("price")) {
-            productDTO.setOldPrice(PriceMapper.priceFactory(oldPrice.text()));
+        Element oldPriceElement = oldPriceElements.select(SPAN).first();
+        String oldPrice = "";
+        if (oldPriceElement.attr("itemprop").equals("price")) {
+            oldPrice = oldPriceElement.text();
         }
+
         Elements newPriceElements = productDetails.getElementsByClass(NEW_PRICE_TAG);
-        Element newPrice = newPriceElements.select("span").first();
-        if (oldPrice.attr("itemprop").equals("price")) {
-            productDTO.setNewPrice(PriceMapper.priceFactory(newPrice.text()));
+        Element newPriceElement = newPriceElements.select(SPAN).first();
+        String newPrice = "";
+        if (oldPriceElement.attr("itemprop").equals("price")) {
+            newPrice = newPriceElement.text();
         }
-        productDTO.setProductName(productDetails.select(PRODUCT_NAME_TAG).text());
-        productDTO.setPictureUrl(PRODUCT_URL + productDetails.select("div.img").select("img").attr("src"));
-        return productDTO;
+
+        String productName = productDetails.select(PRODUCT_NAME_TAG).text();
+        String pictureUrl = PRODUCT_URL + productDetails.select("div.img").select(IMG).attr(SRC);
+
+        return new ProductDTOBuilder()
+                .withShopName(SHOP_NAME)
+                .withProductUrl(pictureUrl)
+                .withProductName(productName)
+                .withPictureUrl(productUrl)
+                .withOldPrice(oldPrice)
+                .withNewPrice(newPrice)
+                .build();
     }
 }

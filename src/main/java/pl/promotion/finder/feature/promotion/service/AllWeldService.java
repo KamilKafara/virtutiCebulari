@@ -10,11 +10,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import pl.promotion.finder.exception.ErrorCode;
 import pl.promotion.finder.exception.FieldInfo;
-import pl.promotion.finder.feature.product.dto.PriceMapper;
 import pl.promotion.finder.feature.product.dto.ProductDTO;
+import pl.promotion.finder.feature.product.dto.ProductDTOBuilder;
 
 import java.io.IOException;
 import java.text.ParseException;
+
+import static pl.promotion.finder.utils.HtmlTag.*;
 
 @Log4j2
 @Service
@@ -41,15 +43,31 @@ public class AllWeldService implements Promotion {
     @Override
     public ProductDTO getProduct(Document document) throws ParseException {
         Element elements = document.getElementById(HOT_SHOT_TAG);
+        if (elements == null) {
+            return new ProductDTO();
+        }
         Element productDetails = elements.select(PRODUCT_DETAILS).last();
-        ProductDTO productDTO = new ProductDTO(SHOP_NAME, PRODUCT_URL);
-        String productUrl = productDetails.select("a").attr("href");
-        productDTO.setProductUrl(PRODUCT_URL + productUrl);
+        if (productDetails == null) {
+            return new ProductDTO();
+        }
         Elements prices = productDetails.select(PRICE_TAG);
-        productDTO.setOldPrice(PriceMapper.priceFactory(prices.select("del").text()));
-        productDTO.setNewPrice(PriceMapper.priceFactory(prices.select("em").text()));
-        productDTO.setProductName(productDetails.select(PRODUCT_NAME_TAG).text());
-        productDTO.setPictureUrl(PRODUCT_URL + productDetails.select("a.row").select("img").attr("data-src"));
-        return productDTO;
+        if (prices.isEmpty()) {
+            return new ProductDTO();
+        }
+        String productUrl = productDetails.select(A).attr(HREF);
+        String productName = productDetails.select(PRODUCT_NAME_TAG).text();
+        String pictureUrl = PRODUCT_URL + productDetails.select("a.row").select(IMG).attr(DATA_SRC);
+
+        String oldPrice = prices.select(EM).text();
+        String newPrice = prices.select(DEL).text();
+
+        return new ProductDTOBuilder()
+                .withShopName(SHOP_NAME)
+                .withProductUrl(productUrl)
+                .withProductName(productName)
+                .withPictureUrl(pictureUrl)
+                .withOldPrice(oldPrice)
+                .withNewPrice(newPrice)
+                .build();
     }
 }
