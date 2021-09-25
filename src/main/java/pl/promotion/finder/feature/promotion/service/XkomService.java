@@ -22,6 +22,7 @@ import static pl.promotion.finder.utils.HtmlTag.*;
 @Service
 public class XkomService implements Promotion {
     private static final String XKOM_TIMEOUT = System.getenv("XKOM_TIMEOUT");
+    private static final String XKOM_AGENT_DETAILS = "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:54.0) Gecko/20100101 Firefox/70.0";
 
     private static final String HOT_SHOT_TAG = "div.dyQMoT";
     private static final String PROPERTY_TAG = "div.sc-1bb6kqq-1";
@@ -30,15 +31,15 @@ public class XkomService implements Promotion {
 
     private static final String SHOP_NAME = "x-kom";
     private static final String SHOP_URL = "https://www.x-kom.pl/";
-    private static final String PRODUCT_URL = "https://www.x-kom.pl/goracy_strzal";
+    private static final String PRODUCT_URL = SHOP_URL + "goracy_strzal";
 
     @Override
     public ProductDTO getPromotion() throws IOException {
         try {
             Document document = Jsoup.connect(SHOP_URL)
-                    .userAgent("Mozilla/5.0 (Windows NT 6.1; WOW64; rv:54.0) Gecko/20100101 Firefox/70.0")
+                    .userAgent(XKOM_AGENT_DETAILS)
                     .followRedirects(true)
-                    .timeout(5000)
+                    .timeout(Integer.parseInt(XKOM_TIMEOUT))
                     .ignoreContentType(true)
                     .get();
 

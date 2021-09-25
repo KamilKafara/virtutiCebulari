@@ -6,6 +6,7 @@ import pl.promotion.finder.feature.product.dto.ProductDTO;
 import pl.promotion.finder.feature.shop.dto.Shop;
 
 import java.io.IOException;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -22,7 +23,7 @@ public class PromotionService {
     private final ApolloService apolloService;
     private final KomputronikService komputronikService;
 
-    public List<ProductDTO> getDailyPromotion() throws IOException {
+    public List<ProductDTO> getDailyPromotion() throws IOException, ParseException {
         List<ProductDTO> productDTOList = new ArrayList<>();
         productDTOList.add(amsoService.getPromotion());
         productDTOList.add(apolloService.getPromotion());

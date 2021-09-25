@@ -33,9 +33,8 @@ public class CombatService implements Promotion {
     private CombatDTO combatDTO;
 
     public ProductDTO getPromotion() throws IOException {
-        URL url = new URL(JSON_URL);
         try {
-            prepareJsonFromUrl(url);
+            combatDTO = prepareJsonFromUrl(JSON_URL);
             return getProduct(EMPTY_DOCUMENT);
         } catch (ParseException ex) {
             log.error(new ResponseStatusException(HttpStatus.NOT_FOUND, "Not found promotion in " + SHOP_NAME, new FieldInfo(SHOP_NAME, ErrorCode.NOT_FOUND)));
@@ -44,7 +43,8 @@ public class CombatService implements Promotion {
         return null;
     }
 
-    private void prepareJsonFromUrl(URL url) throws IOException {
+    private CombatDTO prepareJsonFromUrl(String path) throws IOException {
+        URL url = new URL(path);
         String ioURL = IOUtils.toString(url, String.valueOf(StandardCharsets.UTF_8));
 
         Gson gson = new Gson();
@@ -52,8 +52,9 @@ public class CombatService implements Promotion {
 
         ModelMapper modelMapper = new ModelMapper();
         if (!jsonList.isEmpty()) {
-            this.combatDTO = modelMapper.map(jsonList.stream().findFirst(), (Type) CombatDTO.class);
+            return modelMapper.map(jsonList.stream().findFirst(), (Type) CombatDTO.class);
         }
+        return null;
     }
 
     @Override

@@ -6,6 +6,9 @@ import org.springframework.web.bind.annotation.RestController;
 import pl.promotion.finder.feature.product.dto.ProductDTO;
 import pl.promotion.finder.feature.promotion.service.AmsoService;
 
+import java.io.IOException;
+import java.text.ParseException;
+
 @RestController
 @RequestMapping("/amso")
 public class AmsoController {
@@ -17,7 +20,7 @@ public class AmsoController {
     }
 
     @GetMapping
-    public ProductDTO getPromotion() {
+    public ProductDTO getPromotion() throws IOException, ParseException {
         return amsoService.getPromotion();
     }
 }

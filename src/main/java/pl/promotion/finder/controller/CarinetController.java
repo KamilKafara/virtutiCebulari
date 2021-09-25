@@ -7,6 +7,7 @@ import pl.promotion.finder.feature.product.dto.ProductDTO;
 import pl.promotion.finder.feature.promotion.service.CarinetService;
 
 import java.io.IOException;
+import java.text.ParseException;
 
 @RestController
 @RequestMapping("/carinet")
@@ -19,7 +20,7 @@ public class CarinetController {
     }
 
     @GetMapping
-    public ProductDTO getPromotion() throws IOException {
+    public ProductDTO getPromotion() throws IOException, ParseException {
         return carinetService.getPromotion();
     }
 

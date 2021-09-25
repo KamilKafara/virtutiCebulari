@@ -7,6 +7,7 @@ import pl.promotion.finder.feature.product.dto.ProductDTO;
 import pl.promotion.finder.feature.promotion.service.MoreleService;
 
 import java.io.IOException;
+import java.text.ParseException;
 
 @RestController
 @RequestMapping("/morele")
@@ -19,7 +20,7 @@ public class MoreleController {
     }
 
     @GetMapping
-    public ProductDTO getMethod() throws IOException {
+    public ProductDTO getMethod() throws IOException, ParseException {
         return moreleService.getPromotion();
     }
 }

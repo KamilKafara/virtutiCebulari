@@ -13,7 +13,6 @@ import pl.promotion.finder.feature.shop.repository.ShopRepository;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Log4j2
 @Service
@@ -28,12 +27,12 @@ public class ShopService {
     }
 
     public List<ShopDTO> getAll() {
-        return shopRepository.findAll().stream().map(shopMapper::convertToDTO).collect(Collectors.toList());
+        return shopRepository.findAll().stream().map(shopMapper::convertToDTO).toList();
     }
 
     public ShopDTO getById(Long id) {
         Optional<Shop> shop = shopRepository.findById(id);
-        if (!shop.isPresent()) {
+        if (shop.isEmpty()) {
             throw new NotFoundException("Shop with this id " + id + " not found", new FieldInfo("id", ErrorCode.NOT_FOUND));
         }
         return shopMapper.convertToDTO(shop.get());
@@ -41,7 +40,7 @@ public class ShopService {
 
     public ShopDTO getByName(String name) {
         Optional<Shop> shop = Optional.ofNullable(shopRepository.getShopByName(name));
-        if (!shop.isPresent()) {
+        if (shop.isEmpty()) {
             throw new NotFoundException("Shop with this name " + name + " not found", new FieldInfo("name", ErrorCode.BAD_REQUEST));
         }
         return shopMapper.convertToDTO(shop.get());

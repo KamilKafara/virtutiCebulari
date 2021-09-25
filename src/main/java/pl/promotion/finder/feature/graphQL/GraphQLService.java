@@ -20,7 +20,7 @@ import java.nio.charset.StandardCharsets;
 public class GraphQLService {
     private final AllProductDataFetcher allProductDataFetcher;
     private final ProductDataFetcher productDataFetcher;
-    private static final String fileName = "/schema.graphql";
+    private static final String FILE_NAME = "/schema.graphql";
 
     private GraphQL graphQL;
 
@@ -32,7 +32,7 @@ public class GraphQLService {
     @PostConstruct
     private void loadSchema() {
         String data = "";
-        ClassPathResource resource = new ClassPathResource(fileName);
+        ClassPathResource resource = new ClassPathResource(FILE_NAME);
         try {
             byte[] dataArr = FileCopyUtils.copyToByteArray(resource.getInputStream());
             data = new String(dataArr, StandardCharsets.UTF_8);

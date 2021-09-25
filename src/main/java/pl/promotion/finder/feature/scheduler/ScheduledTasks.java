@@ -13,6 +13,7 @@ import pl.promotion.finder.feature.shop.dto.ShopDTO;
 import pl.promotion.finder.feature.slackbot.SlackMessageSender;
 
 import java.io.IOException;
+import java.text.ParseException;
 import java.util.List;
 
 @Log4j2
@@ -50,7 +51,7 @@ public class ScheduledTasks {
         ProductDTO productDTO = null;
         try {
             productDTO = promotionService.getPromotion();
-        } catch (IOException e) {
+        } catch (IOException | ParseException e) {
             log.error(e.getMessage());
         }
         if (productDTO != null) {

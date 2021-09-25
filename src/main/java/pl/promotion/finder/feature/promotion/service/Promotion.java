@@ -9,7 +9,7 @@ import java.text.ParseException;
 
 @Service
 public interface Promotion {
-    ProductDTO getPromotion() throws IOException;
+    ProductDTO getPromotion() throws IOException, ParseException;
 
     ProductDTO getProduct(Document document) throws ParseException;
 

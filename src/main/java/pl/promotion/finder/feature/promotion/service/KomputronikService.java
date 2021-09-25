@@ -31,26 +31,27 @@ public class KomputronikService implements Promotion {
     private static final String JSON_URL = "https://www.komputronik.pl/frontend-api/product/box/occasions";
     private KomputronikDTO komputronikDTO;
 
-    public ProductDTO getPromotion() throws IOException {
-        String ioURL = fetchJSON();
+    private static KomputronikDTO prepareJsonFromUrl(String path) throws IOException {
+        URL url = new URL(path);
         Gson gson = new Gson();
 
-        this.komputronikDTO = gson.fromJson(ioURL, KomputronikDTO.class);
+        URLConnection urlConnection = url.openConnection();
+        urlConnection.setRequestProperty("User-Agent", "Mozilla 5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.8.0.11)");
+        InputStream inputFile = urlConnection.getInputStream();
+        String ioURL = IOUtils.toString(inputFile, StandardCharsets.UTF_8.name());
+
+        return gson.fromJson(ioURL, KomputronikDTO.class);
+    }
+
+    public ProductDTO getPromotion() throws IOException {
         try {
+            komputronikDTO = prepareJsonFromUrl(JSON_URL);
             return getProduct(null);
         } catch (ParseException ex) {
             log.error(new ResponseStatusException(HttpStatus.NOT_FOUND, "Not found promotion in " + SHOP_NAME, new FieldInfo(SHOP_NAME, ErrorCode.NOT_FOUND)));
             log.error(ex.getStackTrace());
         }
         return null;
-    }
-
-    private static String fetchJSON() throws IOException {
-        URL url = new URL(JSON_URL);
-        URLConnection urlConnection = url.openConnection();
-        urlConnection.setRequestProperty("User-Agent", "Mozilla 5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.8.0.11) ");
-        InputStream inputFile = urlConnection.getInputStream();
-        return IOUtils.toString(inputFile, StandardCharsets.UTF_8.name());
     }
 
     @Override
