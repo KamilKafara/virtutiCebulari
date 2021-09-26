@@ -60,7 +60,7 @@ public class KomputronikService implements Promotion {
         }
 
         Optional<KomputronikProductDTO> optionalProduct = this.komputronikDTO.getProducts().stream().findFirst();
-        if (optionalProduct.isEmpty()) {
+        if (!optionalProduct.isPresent()) {
             return null;
         }
 

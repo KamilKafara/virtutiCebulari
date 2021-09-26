@@ -15,6 +15,7 @@ import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Log4j2
 @Service
@@ -35,11 +36,11 @@ public class ProductService {
     }
 
     public List<ProductDTO> getAll() {
-        return productRepository.findAll().stream().map(productMapper::convertToDto).toList();
+        return productRepository.findAll().stream().map(productMapper::convertToDto).collect(Collectors.toList());
     }
 
     public List<ProductDTO> getByName(String name) {
-        return productRepository.findProductsByProductName(name).stream().map(productMapper::convertToDto).toList();
+        return productRepository.findProductsByProductName(name).stream().map(productMapper::convertToDto).collect(Collectors.toList());
     }
 
     public ProductDTO getProductByNameWithLowerPrice(String name) {
@@ -48,7 +49,7 @@ public class ProductService {
     }
 
     public List<ProductDTO> findProductsByInterval(String name) {
-        return productRepository.findProductsByProductNameAndCreateDate(name).stream().map(productMapper::convertToDto).toList();
+        return productRepository.findProductsByProductNameAndCreateDate(name).stream().map(productMapper::convertToDto).collect(Collectors.toList());
     }
 
     public ProductDTO getById(Long id) {
@@ -57,7 +58,7 @@ public class ProductService {
 
     public ProductDTO save(ProductDTO productDTO) {
         Optional<Shop> findShop = Optional.ofNullable(shopRepository.getShopByName(productDTO.getShopName()));
-        if (findShop.isEmpty()) {
+        if (!findShop.isPresent()) {
             ShopDTO shopDTO = shopService.save(new ShopDTO(productDTO.getShopName()));
             productDTO.setShop(shopDTO);
         } else {
