@@ -1,12 +1,10 @@
 package pl.promotion.finder.feature.promotion.service;
 
-import com.google.gson.Gson;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.log4j.Log4j2;
-import org.apache.commons.io.IOUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
-import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -15,58 +13,57 @@ import pl.promotion.finder.exception.FieldInfo;
 import pl.promotion.finder.feature.product.dto.ProductDTO;
 import pl.promotion.finder.feature.product.dto.ProductDTOBuilder;
 import pl.promotion.finder.feature.promotion.dto.CombatDTO;
+import pl.promotion.finder.utils.DataDownloader;
 
 import java.io.IOException;
-import java.lang.reflect.Type;
-import java.net.URL;
-import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
-import java.util.List;
+import java.util.Arrays;
+import java.util.Optional;
 
 @Log4j2
 @Service
 public class CombatService implements Promotion {
     private static final String SHOP_NAME = "combat";
     private static final String SHOP_URL = "https://www.combat.pl/media/catalog/product";
-    private static final String JSON_URL = "https://www.combat.pl/rest/V1/get-hot-shot";
+    private static final String API_URL = "https://www.combat.pl/rest/V1/get-hot-shot";
     private static final Document EMPTY_DOCUMENT = null;
     private CombatDTO combatDTO;
 
-    public ProductDTO getPromotion() throws IOException {
-        URL url = new URL(JSON_URL);
+    public CombatDTO getCombatDTO() {
+        return combatDTO;
+    }
+
+    public void setCombatDTO(CombatDTO combatDTO) {
+        this.combatDTO = combatDTO;
+    }
+
+    public ProductDTO getPromotion() {
         try {
-            prepareJsonFromUrl(url);
+            String data = DataDownloader.fetchData(API_URL);
+            ObjectMapper objectMapper = new ObjectMapper();
+            CombatDTO[] value = objectMapper.readValue(data, CombatDTO[].class);
+            Optional<CombatDTO> dtoOptional = Arrays.stream(value).findFirst();
+            dtoOptional.ifPresent(this::setCombatDTO);
             return getProduct(EMPTY_DOCUMENT);
-        } catch (ParseException ex) {
+        } catch (ParseException | IOException ex) {
             log.error(new ResponseStatusException(HttpStatus.NOT_FOUND, "Not found promotion in " + SHOP_NAME, new FieldInfo(SHOP_NAME, ErrorCode.NOT_FOUND)));
             log.error(ex.getStackTrace());
         }
         return null;
     }
 
-    private void prepareJsonFromUrl(URL url) throws IOException {
-        String ioURL = IOUtils.toString(url, String.valueOf(StandardCharsets.UTF_8));
-
-        Gson gson = new Gson();
-        List<String> jsonList = gson.fromJson(ioURL, List.class);
-
-        ModelMapper modelMapper = new ModelMapper();
-        if (!jsonList.isEmpty()) {
-            this.combatDTO = modelMapper.map(jsonList.stream().findFirst(), (Type) CombatDTO.class);
-        }
-    }
-
     @Override
     public ProductDTO getProduct(Document document) throws ParseException {
-        String pictureUrl = SHOP_URL + combatDTO.getPhoto();
-        String oldPrice = parsePrice(combatDTO.getRegular_price());
-        String newPrice = parsePrice(combatDTO.getPromotion_price());
-        String amount = String.valueOf(combatDTO.getLeft());
+        CombatDTO dto = getCombatDTO();
+        String pictureUrl = dto.getPhoto();
+        String oldPrice = parsePrice(dto.getRegularPrice());
+        String newPrice = parsePrice(dto.getPromoPrice());
+        String amount = String.valueOf(dto.getLeft());
 
         return new ProductDTOBuilder()
                 .withShopName(SHOP_NAME)
-                .withProductUrl(combatDTO.getRegular_url())
-                .withProductName(combatDTO.getName())
+                .withProductUrl(dto.getRegularUrl())
+                .withProductName(dto.getTitle())
                 .withPictureUrl(pictureUrl)
                 .withOldPrice(oldPrice)
                 .withNewPrice(newPrice)

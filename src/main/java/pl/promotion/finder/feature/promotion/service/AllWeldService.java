@@ -29,11 +29,11 @@ public class AllWeldService implements Promotion {
     private static final String PRODUCT_URL = "https://allweld.pl/";
 
     @Override
-    public ProductDTO getPromotion() throws IOException {
+    public ProductDTO getPromotion() {
         try {
             Document document = Jsoup.connect(PRODUCT_URL).get();
             return getProduct(document);
-        } catch (NullPointerException | ParseException ex) {
+        } catch (NullPointerException | ParseException | IOException ex) {
             log.error(new ResponseStatusException(HttpStatus.NOT_FOUND, "Not found promotion in " + SHOP_NAME, new FieldInfo(SHOP_NAME, ErrorCode.NOT_FOUND)));
             log.error(ex.getStackTrace());
         }

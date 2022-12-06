@@ -35,15 +35,15 @@ public class ScheduledTasks {
 
     @Scheduled(fixedRate = DURATION)
     public void reportPromotion() {
-        checkNewPromotion(amsoService, Shop.AMSO);
-        checkNewPromotion(carinetService, Shop.CARINET);
-        checkNewPromotion(moreleService, Shop.MORELE);
+//        checkNewPromotion(amsoService, Shop.AMSO);
+//        checkNewPromotion(carinetService, Shop.CARINET);
+//        checkNewPromotion(moreleService, Shop.MORELE);
         checkNewPromotion(xkomService, Shop.XKOM);
-        checkNewPromotion(apolloService, Shop.APOLLO);
-        checkNewPromotion(combatService, Shop.COMBAT);
-        checkNewPromotion(komputronikService, Shop.KOMPUTRONIK);
-        checkNewPromotion(sonyCentreService, Shop.SONY_CENTRE);
-        checkNewPromotion(allWeldService, Shop.ALL_WELD);
+//        checkNewPromotion(apolloService, Shop.APOLLO);
+//        checkNewPromotion(combatService, Shop.COMBAT);
+//        checkNewPromotion(komputronikService, Shop.KOMPUTRONIK);
+//        checkNewPromotion(sonyCentreService, Shop.SONY_CENTRE);
+//        checkNewPromotion(allWeldService, Shop.ALL_WELD);
     }
 
     private void checkNewPromotion(Promotion promotionService, Shop shop) {
@@ -64,7 +64,7 @@ public class ScheduledTasks {
     private void sendMessage(ProductDTO promotionToSend, Shop shop) {
         log.info("Send message to slack: " + promotionToSend.toString());
 
-        slackMessageSender.sendPromotionMessage(promotionToSend);
+//        slackMessageSender.sendPromotionMessage(promotionToSend);
         promotionToSend.setShop(new ShopDTO(shop.name().toLowerCase()));
         productService.save(promotionToSend);
 

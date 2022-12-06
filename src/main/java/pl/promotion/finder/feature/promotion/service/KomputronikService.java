@@ -2,7 +2,6 @@ package pl.promotion.finder.feature.promotion.service;
 
 import com.google.gson.Gson;
 import lombok.extern.log4j.Log4j2;
-import org.apache.commons.io.IOUtils;
 import org.jsoup.nodes.Document;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -15,12 +14,9 @@ import pl.promotion.finder.feature.product.dto.ProductDTOBuilder;
 import pl.promotion.finder.feature.promotion.dto.KomputronikDTO;
 import pl.promotion.finder.feature.promotion.dto.KomputronikPricesDTO;
 import pl.promotion.finder.feature.promotion.dto.KomputronikProductDTO;
+import pl.promotion.finder.utils.DataDownloader;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
-import java.net.URLConnection;
-import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
 import java.util.Optional;
 
@@ -28,38 +24,39 @@ import java.util.Optional;
 @Service
 public class KomputronikService implements Promotion {
     private static final String SHOP_NAME = "komputronik";
-    private static final String JSON_URL = "https://www.komputronik.pl/frontend-api/product/box/occasions";
+    private static final String API_URL = "https://www.komputronik.pl/frontend-api/product/box/occasions";
+    private static final String API_HEADER = "User-Agent";
+    private static final String API_KEY = "Mozilla 5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.8.0.11) ";
     private KomputronikDTO komputronikDTO;
 
-    public ProductDTO getPromotion() throws IOException {
-        String ioURL = fetchJSON();
-        Gson gson = new Gson();
+    public KomputronikDTO getProductDTO() {
+        return komputronikDTO;
+    }
 
-        this.komputronikDTO = gson.fromJson(ioURL, KomputronikDTO.class);
+    public void setProductDTO(KomputronikDTO komputronikDTO) {
+        this.komputronikDTO = komputronikDTO;
+    }
+
+    public ProductDTO getPromotion() {
         try {
+            String data = DataDownloader.fetchData(API_URL, API_HEADER, API_KEY);
+            Gson gson = new Gson();
+            setProductDTO(gson.fromJson(data, KomputronikDTO.class));
             return getProduct(null);
-        } catch (ParseException ex) {
+        } catch (ParseException | IOException ex) {
             log.error(new ResponseStatusException(HttpStatus.NOT_FOUND, "Not found promotion in " + SHOP_NAME, new FieldInfo(SHOP_NAME, ErrorCode.NOT_FOUND)));
             log.error(ex.getStackTrace());
         }
         return null;
     }
 
-    private static String fetchJSON() throws IOException {
-        URL url = new URL(JSON_URL);
-        URLConnection urlConnection = url.openConnection();
-        urlConnection.setRequestProperty("User-Agent", "Mozilla 5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.8.0.11) ");
-        InputStream inputFile = urlConnection.getInputStream();
-        return IOUtils.toString(inputFile, StandardCharsets.UTF_8.name());
-    }
-
     @Override
     public ProductDTO getProduct(Document document) throws ParseException {
-        if (this.komputronikDTO.getProducts().isEmpty()) {
+        if (getProductDTO().getProducts().isEmpty()) {
             return null;
         }
 
-        Optional<KomputronikProductDTO> optionalProduct = this.komputronikDTO.getProducts().stream().findFirst();
+        Optional<KomputronikProductDTO> optionalProduct = getProductDTO().getProducts().stream().findFirst();
         if (!optionalProduct.isPresent()) {
             return null;
         }

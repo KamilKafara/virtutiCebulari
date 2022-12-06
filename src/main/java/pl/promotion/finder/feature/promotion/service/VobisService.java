@@ -35,11 +35,11 @@ public class VobisService implements Promotion {
     private static final String SHOP_PROMOTION_URL = "https://vobis.pl/nocne-wyprzedaze";
 
     @Override
-    public ProductDTO getPromotion() throws IOException {
+    public ProductDTO getPromotion() {
         try {
             Document document = Jsoup.connect(SHOP_PROMOTION_URL).get();
             return getProduct(document);
-        } catch (NullPointerException | ParseException ex) {
+        } catch (NullPointerException | ParseException | IOException ex) {
             log.error(new ResponseStatusException(HttpStatus.NOT_FOUND, "Not found promotion in " + SHOP_NAME, new FieldInfo(SHOP_NAME, ErrorCode.NOT_FOUND)));
             log.error(ex.getStackTrace());
         }

@@ -1,10 +1,10 @@
 package pl.promotion.finder.feature.promotion.service;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.PropertyAccessor;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.log4j.Log4j2;
-import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -12,66 +12,52 @@ import pl.promotion.finder.exception.ErrorCode;
 import pl.promotion.finder.exception.FieldInfo;
 import pl.promotion.finder.feature.product.dto.ProductDTO;
 import pl.promotion.finder.feature.product.dto.ProductDTOBuilder;
+import pl.promotion.finder.feature.promotion.dto.xkom.XkomDTO;
+import pl.promotion.finder.utils.DataDownloader;
 
 import java.io.IOException;
 import java.text.ParseException;
 
-import static pl.promotion.finder.utils.HtmlTag.*;
+import static com.fasterxml.jackson.databind.DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES;
 
 @Log4j2
 @Service
 public class XkomService implements Promotion {
-    private static final String XKOM_TIMEOUT = System.getenv("XKOM_TIMEOUT");
-
-    private static final String HOT_SHOT_TAG = "div.dyQMoT";
-    private static final String PROPERTY_TAG = "div.sc-1bb6kqq-1";
-    private static final String OLD_PRICE_TAG = "span.lfqgAC";
-    private static final String NEW_PRICE_TAG = "span.ccdajt";
-
+    private static final String API_URL = "https://mobileapi.x-kom.pl/api/v1/xkom/hotShots/current";
+    private static final String API_HEADER = "x-api-key";
+    private static final String API_KEY = "jfsTOgOL23CN2G8Y";
     private static final String SHOP_NAME = "x-kom";
-    private static final String SHOP_URL = "https://www.x-kom.pl/";
     private static final String PRODUCT_URL = "https://www.x-kom.pl/goracy_strzal";
 
     @Override
-    public ProductDTO getPromotion() throws IOException {
+    public ProductDTO getPromotion() {
         try {
-            Document document = Jsoup.connect(SHOP_URL)
-                    .userAgent("Mozilla/5.0 (Windows NT 6.1; WOW64; rv:54.0) Gecko/20100101 Firefox/70.0")
-                    .followRedirects(true)
-                    .timeout(5000)
-                    .ignoreContentType(true)
-                    .get();
-
-            return getProduct(document);
-        } catch (NullPointerException | ParseException ex) {
+            String data = DataDownloader.fetchData(API_URL, API_HEADER, API_KEY);
+            ObjectMapper objectMapper = new ObjectMapper();
+            objectMapper.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
+            objectMapper.disable(FAIL_ON_UNKNOWN_PROPERTIES);
+            XkomDTO value = objectMapper.readValue(data, XkomDTO.class);
+            return getProduct(value);
+        } catch (NullPointerException | ParseException | IOException ex) {
             log.error(new ResponseStatusException(HttpStatus.NOT_FOUND, "Not found promotion in " + SHOP_NAME, new FieldInfo(SHOP_NAME, ErrorCode.NOT_FOUND)));
             log.error(ex.getStackTrace());
         }
         return null;
     }
 
+    @Override
     public ProductDTO getProduct(Document document) throws ParseException {
-        Elements elements = document.select(HOT_SHOT_TAG);
-        if (elements.isEmpty()) {
-            return new ProductDTO();
-        }
-        Element productInfo = elements.first();
-        Element productProperty = productInfo.select(PROPERTY_TAG).first();
-        if (productProperty == null) {
-            return new ProductDTO();
-        }
-        String productName = productProperty.select(IMG).attr(ALT);
-        String productUrl = productProperty.select(IMG).attr(SRC);
-        String oldPriceText = elements.select(OLD_PRICE_TAG).text();
-        String newPriceText = elements.select(NEW_PRICE_TAG).text();
+        return null;
+    }
 
+    public ProductDTO getProduct(XkomDTO dto) throws ParseException {
         return new ProductDTOBuilder()
                 .withShopName(SHOP_NAME)
                 .withProductUrl(PRODUCT_URL)
-                .withProductName(productName)
-                .withPictureUrl(productUrl)
-                .withOldPrice(oldPriceText)
-                .withNewPrice(newPriceText)
+                .withProductName(dto.getPromotionName())
+                .withPictureUrl(dto.getPromotionPhoto().getUrl())
+                .withOldPrice(String.valueOf(dto.getOldPrice()))
+                .withNewPrice(String.valueOf(dto.getPrice()))
                 .build();
     }
 }

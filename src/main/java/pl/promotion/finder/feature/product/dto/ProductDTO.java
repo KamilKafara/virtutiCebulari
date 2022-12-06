@@ -1,5 +1,6 @@
 package pl.promotion.finder.feature.product.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.validation.annotation.Validated;
@@ -26,6 +27,7 @@ import java.util.Random;
 @Getter
 @AllArgsConstructor
 @EqualsAndHashCode
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class ProductDTO {
     private Long id;
     @NotNull
