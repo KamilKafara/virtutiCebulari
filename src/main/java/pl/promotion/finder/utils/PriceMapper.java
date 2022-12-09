@@ -1,12 +1,15 @@
-package pl.promotion.finder.feature.product.dto;
+package pl.promotion.finder.utils;
+
+import lombok.extern.log4j.Log4j2;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.util.Locale;
 
-
+@Log4j2
 public class PriceMapper {
     private static String currency = " zł";
     private static BigDecimal decimalPrice;
@@ -22,9 +25,9 @@ public class PriceMapper {
         PriceMapper.currency = currency;
     }
 
-    public static String priceFactory(String context) throws ParseException {
+    public static BigDecimal priceFactory(String context) {
         if (context == null) {
-            return "0.00" + currency;
+            return BigDecimal.ZERO.setScale(2, RoundingMode.UP);
         }
         context = removeWhitespaces(context);
 
@@ -40,11 +43,25 @@ public class PriceMapper {
         }
 
         String clearContext = clear(context);
-        BigDecimal bigDecimal = parse(clearContext, Locale.US).setScale(2);
+        BigDecimal bigDecimal = null;
+        try {
+            bigDecimal = parse(clearContext, Locale.US).setScale(2, RoundingMode.UP);
+        } catch (ParseException e) {
+            log.warn(e.getMessage());
+            return BigDecimal.ZERO.setScale(2, RoundingMode.UP);
+        }
         PriceMapper.decimalPrice = bigDecimal;
-
-        return addCurrency(bigDecimal.toString());
+        return bigDecimal;
     }
+
+    public static String priceFactoryWithCurrency(BigDecimal context) {
+        return addCurrency(priceFactory(context.toString()).toString());
+    }
+
+    public static String priceFactoryWithCurrency(String context) {
+        return addCurrency(priceFactory(context).toString());
+    }
+
 
     private static String removeFirstSeparator(String context) {
         String newContext = context.replace(",", "\\.");

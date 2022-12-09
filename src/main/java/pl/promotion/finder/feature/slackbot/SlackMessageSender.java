@@ -11,12 +11,11 @@ import org.springframework.stereotype.Service;
 import pl.promotion.finder.exception.ErrorCode;
 import pl.promotion.finder.exception.FieldInfo;
 import pl.promotion.finder.exception.NotFoundException;
-import pl.promotion.finder.feature.product.dto.PriceMapper;
 import pl.promotion.finder.feature.product.dto.ProductDTO;
 import pl.promotion.finder.feature.product.service.ProductService;
+import pl.promotion.finder.utils.PriceMapper;
 
 import java.io.IOException;
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -88,7 +87,7 @@ public class SlackMessageSender {
         ActionsBlock productURLActionBlock = actions(
                 a -> a.elements(asElements(button(btn ->
                         btn.text(plainText(pt -> pt.emoji(true)
-                                .text("Przejdź do promocji")))
+                                        .text("Przejdź do promocji")))
                                 .url(productDTO.getProductUrl())))));
 
         Payload payload = payload(b -> b.blocks(
@@ -106,20 +105,15 @@ public class SlackMessageSender {
     private void addAnnotationWithLowerPrice(List<TextObject> priceFields, ProductDTO productDTO) {
         Optional<ProductDTO> productWithLowerPrice = Optional.ofNullable(productService.getProductByNameWithLowerPrice(productDTO.getProductName()));
         if (productWithLowerPrice.isPresent()) {
-            try {
-                PriceMapper.priceFactory(productWithLowerPrice.get().getNewPrice());
-                double lowerPrice = PriceMapper.getDecimalPrice().doubleValue();
-                PriceMapper.priceFactory(productDTO.getNewPrice());
-                double currentProductPrice = PriceMapper.getDecimalPrice().doubleValue();
+            PriceMapper.priceFactory(productWithLowerPrice.get().getNewPrice());
+            double lowerPrice = PriceMapper.getDecimalPrice().doubleValue();
+            PriceMapper.priceFactory(productDTO.getNewPrice());
+            double currentProductPrice = PriceMapper.getDecimalPrice().doubleValue();
 
-                if (lowerPrice < currentProductPrice) {
-                    priceFields.add(markdownText("Ten produkt już kosztował mniej - " + productWithLowerPrice.get().getNewPrice()));
-                    priceFields.add(markdownText("Korzystniejsza promocja już była: " + productWithLowerPrice.get().getCreateDate()));
-                    priceFields.add(markdownText("Zastanów się dwa razy zanim zdecydujesz się na zakup."));
-                }
-            } catch (ParseException e) {
-                log.error(e.getMessage());
-                log.error(e);
+            if (lowerPrice < currentProductPrice) {
+                priceFields.add(markdownText("Ten produkt już kosztował mniej - " + productWithLowerPrice.get().getNewPrice()));
+                priceFields.add(markdownText("Korzystniejsza promocja już była: " + productWithLowerPrice.get().getCreateDate()));
+                priceFields.add(markdownText("Zastanów się dwa razy zanim zdecydujesz się na zakup."));
             }
         }
     }

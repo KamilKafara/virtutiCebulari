@@ -6,8 +6,6 @@ import org.springframework.web.bind.annotation.RestController;
 import pl.promotion.finder.feature.product.dto.ProductDTO;
 import pl.promotion.finder.feature.promotion.service.XkomService;
 
-import java.io.IOException;
-
 @RestController
 @RequestMapping("/xkom")
 public class XkomControllerController {
@@ -19,7 +17,7 @@ public class XkomControllerController {
     }
 
     @GetMapping
-    public ProductDTO getPromotionByShop() throws IOException {
+    public ProductDTO getPromotionByShop() {
         return xkomService.getPromotion();
     }
 }

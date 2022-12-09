@@ -12,7 +12,7 @@ import pl.promotion.finder.exception.ErrorCode;
 import pl.promotion.finder.exception.FieldInfo;
 import pl.promotion.finder.feature.product.dto.ProductDTO;
 import pl.promotion.finder.feature.product.dto.ProductDTOBuilder;
-import pl.promotion.finder.feature.promotion.dto.CombatDTO;
+import pl.promotion.finder.feature.promotion.dto.combat.CombatDTO;
 import pl.promotion.finder.utils.DataDownloader;
 
 import java.io.IOException;

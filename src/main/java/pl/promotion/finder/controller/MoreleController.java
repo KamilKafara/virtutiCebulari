@@ -6,8 +6,6 @@ import org.springframework.web.bind.annotation.RestController;
 import pl.promotion.finder.feature.product.dto.ProductDTO;
 import pl.promotion.finder.feature.promotion.service.MoreleService;
 
-import java.io.IOException;
-
 @RestController
 @RequestMapping("/morele")
 public class MoreleController {
@@ -19,7 +17,7 @@ public class MoreleController {
     }
 
     @GetMapping
-    public ProductDTO getMethod() throws IOException {
+    public ProductDTO getMethod() {
         return moreleService.getPromotion();
     }
 }

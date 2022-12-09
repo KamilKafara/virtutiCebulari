@@ -1,8 +1,7 @@
 package pl.promotion.finder.feature.product.dto;
 
 import pl.promotion.finder.feature.shop.dto.ShopDTO;
-
-import java.text.ParseException;
+import pl.promotion.finder.utils.PriceMapper;
 
 public final class ProductDTOBuilder {
     private Long id;
@@ -42,13 +41,13 @@ public final class ProductDTOBuilder {
         return this;
     }
 
-    public ProductDTOBuilder withOldPrice(String oldPrice) throws ParseException {
-        this.oldPrice = PriceMapper.priceFactory(oldPrice);
+    public ProductDTOBuilder withOldPrice(String oldPrice) {
+        this.oldPrice = PriceMapper.priceFactoryWithCurrency(oldPrice);
         return this;
     }
 
-    public ProductDTOBuilder withNewPrice(String newPrice) throws ParseException {
-        this.newPrice = PriceMapper.priceFactory(newPrice);
+    public ProductDTOBuilder withNewPrice(String newPrice) {
+        this.newPrice = PriceMapper.priceFactoryWithCurrency(newPrice);
         return this;
     }
 

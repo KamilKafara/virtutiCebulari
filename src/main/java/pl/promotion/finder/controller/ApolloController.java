@@ -6,8 +6,6 @@ import org.springframework.web.bind.annotation.RestController;
 import pl.promotion.finder.feature.product.dto.ProductDTO;
 import pl.promotion.finder.feature.promotion.service.ApolloService;
 
-import java.io.IOException;
-
 @RestController
 @RequestMapping("/apollo")
 public class ApolloController {
@@ -19,7 +17,7 @@ public class ApolloController {
     }
 
     @GetMapping
-    public ProductDTO getMethod() throws IOException {
+    public ProductDTO getMethod() {
         return apolloService.getPromotion();
     }
 }

@@ -3,8 +3,8 @@ package pl.promotion.finder.feature.product.dto;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.junit.MockitoJUnitRunner;
+import pl.promotion.finder.utils.PriceMapper;
 
-import java.text.ParseException;
 import java.util.Arrays;
 import java.util.List;
 
@@ -45,25 +45,25 @@ public class PriceMapperTest {
     );
 
     @Test
-    public void testFullPrices() throws ParseException {
+    public void testFullPrices() {
         String currency = " PLN";
         String expectedPrice = "12345.67" + currency;
 
         PriceMapper.setCurrency(currency);
 
-        String result0 = PriceMapper.priceFactory(prices.get(0));
-        String result1 = PriceMapper.priceFactory(prices.get(1));
-        String result2 = PriceMapper.priceFactory(prices.get(2));
-        String result3 = PriceMapper.priceFactory(prices.get(3));
-        String result4 = PriceMapper.priceFactory(prices.get(4));
-        String result5 = PriceMapper.priceFactory(prices.get(5));
-        String result6 = PriceMapper.priceFactory(prices.get(6));
-        String result7 = PriceMapper.priceFactory(prices.get(7));
-        String result8 = PriceMapper.priceFactory(prices.get(8));
-        String result9 = PriceMapper.priceFactory(prices.get(9));
-        String result10 = PriceMapper.priceFactory(prices.get(10));
-        String result11 = PriceMapper.priceFactory(prices.get(11));
-        String result12 = PriceMapper.priceFactory(prices.get(12));
+        String result0 = PriceMapper.priceFactoryWithCurrency(prices.get(0));
+        String result1 = PriceMapper.priceFactoryWithCurrency(prices.get(1));
+        String result2 = PriceMapper.priceFactoryWithCurrency(prices.get(2));
+        String result3 = PriceMapper.priceFactoryWithCurrency(prices.get(3));
+        String result4 = PriceMapper.priceFactoryWithCurrency(prices.get(4));
+        String result5 = PriceMapper.priceFactoryWithCurrency(prices.get(5));
+        String result6 = PriceMapper.priceFactoryWithCurrency(prices.get(6));
+        String result7 = PriceMapper.priceFactoryWithCurrency(prices.get(7));
+        String result8 = PriceMapper.priceFactoryWithCurrency(prices.get(8));
+        String result9 = PriceMapper.priceFactoryWithCurrency(prices.get(9));
+        String result10 = PriceMapper.priceFactoryWithCurrency(prices.get(10));
+        String result11 = PriceMapper.priceFactoryWithCurrency(prices.get(11));
+        String result12 = PriceMapper.priceFactoryWithCurrency(prices.get(12));
 
         assertEquals(expectedPrice, result0);
         assertEquals(expectedPrice, result1);
@@ -81,19 +81,19 @@ public class PriceMapperTest {
     }
 
     @Test
-    public void testNullPrices() throws ParseException {
+    public void testNullPrices() {
         String currency = " PLN";
         String expectedPriceWithNullRest = "0.00" + currency;
 
         PriceMapper.setCurrency(currency);
 
-        String result0 = PriceMapper.priceFactory(nullPrices.get(0));
-        String result1 = PriceMapper.priceFactory(nullPrices.get(1));
-        String result2 = PriceMapper.priceFactory(nullPrices.get(2));
-        String result3 = PriceMapper.priceFactory(nullPrices.get(3));
-        String result4 = PriceMapper.priceFactory(nullPrices.get(4));
-        String result5 = PriceMapper.priceFactory(nullPrices.get(5));
-        String result6 = PriceMapper.priceFactory(nullPrices.get(6));
+        String result0 = PriceMapper.priceFactoryWithCurrency(nullPrices.get(0));
+        String result1 = PriceMapper.priceFactoryWithCurrency(nullPrices.get(1));
+        String result2 = PriceMapper.priceFactoryWithCurrency(nullPrices.get(2));
+        String result3 = PriceMapper.priceFactoryWithCurrency(nullPrices.get(3));
+        String result4 = PriceMapper.priceFactoryWithCurrency(nullPrices.get(4));
+        String result5 = PriceMapper.priceFactoryWithCurrency(nullPrices.get(5));
+        String result6 = PriceMapper.priceFactoryWithCurrency(nullPrices.get(6));
 
         assertEquals(expectedPriceWithNullRest, result0);
         assertEquals(expectedPriceWithNullRest, result1);
@@ -105,16 +105,16 @@ public class PriceMapperTest {
     }
 
     @Test
-    public void testPricesWithNullRest() throws ParseException {
+    public void testPricesWithNullRest() {
         String currency = " PLN";
         String expectedPriceWithNullRest = "12345.00" + currency;
 
         PriceMapper.setCurrency(currency);
 
-        String result1 = PriceMapper.priceFactory(prices.get(13));
-        String result2 = PriceMapper.priceFactory(prices.get(14));
-        String result3 = PriceMapper.priceFactory(prices.get(15));
-        String result4 = PriceMapper.priceFactory(prices.get(16));
+        String result1 = PriceMapper.priceFactoryWithCurrency(prices.get(13));
+        String result2 = PriceMapper.priceFactoryWithCurrency(prices.get(14));
+        String result3 = PriceMapper.priceFactoryWithCurrency(prices.get(15));
+        String result4 = PriceMapper.priceFactoryWithCurrency(prices.get(16));
 
         assertEquals(expectedPriceWithNullRest, result1);
         assertEquals(expectedPriceWithNullRest, result2);

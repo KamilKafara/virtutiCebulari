@@ -6,8 +6,6 @@ import org.springframework.web.bind.annotation.RestController;
 import pl.promotion.finder.feature.product.dto.ProductDTO;
 import pl.promotion.finder.feature.promotion.service.AltoService;
 
-import java.io.IOException;
-
 @RestController
 
 @RequestMapping("/alto")
@@ -20,7 +18,7 @@ public class AltoController {
     }
 
     @GetMapping
-    public ProductDTO getPromotion() throws IOException {
+    public ProductDTO getPromotion() {
         return altoService.getPromotion();
     }
 }

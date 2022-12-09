@@ -6,8 +6,6 @@ import org.springframework.web.bind.annotation.RestController;
 import pl.promotion.finder.feature.product.dto.ProductDTO;
 import pl.promotion.finder.feature.promotion.service.CarinetService;
 
-import java.io.IOException;
-
 @RestController
 @RequestMapping("/carinet")
 public class CarinetController {
@@ -19,7 +17,7 @@ public class CarinetController {
     }
 
     @GetMapping
-    public ProductDTO getPromotion() throws IOException {
+    public ProductDTO getPromotion() {
         return carinetService.getPromotion();
     }
 

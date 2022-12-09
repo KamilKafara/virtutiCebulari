@@ -1,4 +1,4 @@
-package pl.promotion.finder.feature.promotion.dto;
+package pl.promotion.finder.feature.promotion.dto.combat;
 
 import lombok.*;
 

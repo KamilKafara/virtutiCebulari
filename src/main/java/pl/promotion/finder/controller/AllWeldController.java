@@ -6,8 +6,6 @@ import org.springframework.web.bind.annotation.RestController;
 import pl.promotion.finder.feature.product.dto.ProductDTO;
 import pl.promotion.finder.feature.promotion.service.AllWeldService;
 
-import java.io.IOException;
-
 @RestController
 @RequestMapping("/allWeld")
 public class AllWeldController {
@@ -19,7 +17,7 @@ public class AllWeldController {
     }
 
     @GetMapping
-    public ProductDTO getPromotion() throws IOException {
+    public ProductDTO getPromotion() {
         return allWeldService.getPromotion();
     }
 }
