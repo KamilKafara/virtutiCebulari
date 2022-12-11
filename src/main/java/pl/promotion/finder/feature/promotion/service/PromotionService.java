@@ -13,10 +13,7 @@ import pl.promotion.finder.feature.shop.dto.Shop;
 import pl.promotion.finder.utils.PriceMapper;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static pl.promotion.finder.feature.exchange.rates.utils.CurrencyType.EUR;
@@ -44,10 +41,17 @@ public class PromotionService {
         productDTOList.add(komputronikService.getPromotion());
 
         List<ProductDTO> dtoList = productDTOList.parallelStream()
+                .filter(Objects::nonNull)
                 .filter(ProductDTO::isFilled)
                 .collect(Collectors.toList());
         if (!withExchangeRate) {
-            return dtoList;
+            List<ProductDTO> result = new ArrayList<>();
+            for (int i = 0; i < dtoList.size(); i++) {
+                ProductDTO productDTO = dtoList.get(i);
+                productDTO.setId((long) i);
+                result.add(productDTO);
+            }
+            return result;
         }
         return getProductPriceInForeignCurrencies(dtoList);
     }
