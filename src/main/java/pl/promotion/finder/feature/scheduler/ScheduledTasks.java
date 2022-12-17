@@ -30,11 +30,9 @@ public class ScheduledTasks {
     }
 
     private void checkNewPromotion(ProductDTO productDTO) {
-        if (productDTO != null) {
-            List<ProductDTO> productsFromJPA = productService.findProductsByInterval(productDTO.getProductName());
-            if (productsFromJPA.isEmpty()) {
-                sendMessage(productDTO);
-            }
+        List<ProductDTO> productsFromJPA = productService.findProductsByInterval(productDTO.getProductName());
+        if (productsFromJPA.isEmpty()) {
+            sendMessage(productDTO);
         }
     }
 

@@ -1,6 +1,7 @@
 package pl.promotion.finder.controller;
 
 import graphql.ExecutionResult;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,6 +18,7 @@ public class ProductController {
     private final ProductService productService;
     private final GraphQLService graphQLService;
 
+    @Autowired
     public ProductController(ProductService productService, GraphQLService graphQLService) {
         this.productService = productService;
         this.graphQLService = graphQLService;

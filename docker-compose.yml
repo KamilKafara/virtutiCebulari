@@ -1,0 +1,42 @@
+version: '3.8'
+
+services:
+  application:
+    container_name: virtuti-cebulari-core-app
+    image: virtuti-cebulari:latest
+    restart: always
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://database:5432/virtuti-cebulari
+      - SPRING_DATASOURCE_USERNAME=admin
+      - SPRING_DATASOURCE_PASSWORD=password
+    ports:
+      - 8080:8080
+    depends_on:
+      - database
+      - postgres_db_client
+  database:
+    container_name: postgres_database
+    image: postgres
+    restart: always
+    environment:
+      - POSTGRES_HOST_AUTH_MODE=trust
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=virtuti-cebulari
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./database:/var/lib/postgresql
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U admin" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+  postgres_db_client:
+    image: dpage/pgadmin4
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=admin@domain.com
+      - PGADMIN_DEFAULT_PASSWORD=password
+    restart: always
+    ports:
+      - "5050:80"
